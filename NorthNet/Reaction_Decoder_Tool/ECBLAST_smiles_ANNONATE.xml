@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EC_BLAST>
+  <ANNOTATION>
+    <FINGERPRINTS BC="1">
+      <FORMED_CLEAVED>[C-N:1.0, C-S:1.0]</FORMED_CLEAVED>
+    </FINGERPRINTS>
+    <FINGERPRINTS RC="2">
+      <CENTRE>[O=C(N(C[CH2])C[CH2])C:1.0, O=C(N([CH2])[CH2])C:1.0, O=C(SC(=C[CH])C=[CH])C&gt;&gt;[CH]C=C(S)C=[CH]:1.0, O=C(SC([CH])=[CH])C:1.0, O=C(SC([CH])=[CH])C&gt;&gt;O=C(N(C[CH2])C[CH2])C:1.0, O=C(SC([CH])=[CH])C&gt;&gt;[CH]C(=[CH])S:1.0, O=C([S])C:1.0, O=C([S])C&gt;&gt;[N]C(=O)C:1.0, [CH2]CNC[CH2]:1.0, [CH2]CNC[CH2]&gt;&gt;O=C(N(C[CH2])C[CH2])C:1.0, [CH2]N[CH2]:1.0, [CH2]N[CH2]&gt;&gt;[C]N([CH2])[CH2]:1.0, [CH]C(=[CH])S:1.0, [C]:2.0, [C]N([CH2])[CH2]:1.0, [C]S:1.0, [C]SC(=O)C:1.0, [C]SC(=O)C&gt;&gt;O=C(N([CH2])[CH2])C:1.0, [C]S[C]:1.0, [C]S[C]&gt;&gt;[C]S:1.0, [NH]:1.0, [N]:1.0, [N]1CCNCC1&gt;&gt;O=C(N1CC[N]CC1)C:1.0, [N]C(=O)C:1.0, [SH]:1.0, [S]:1.0]</CENTRE>
+    </FINGERPRINTS>
+    <MAPPING STATUS="SELECTED">
+      <AAM>[O:1]=[C:2]([S:3][c:4]1[cH:5][cH:6][cH:7][cH:8][cH:9]1)[CH3:10].[O:11]=[CH:12][N:13]1[CH2:14][CH2:15][NH:16][CH2:17][CH2:18]1&gt;&gt;[CH2:14]1[CH2:15][N:16]([C:2](=[O:1])[CH3:10])[CH2:17][CH2:18][N:13]1[CH:12]=[O:11].[SH:3][c:4]1[cH:5][cH:6][cH:7][cH:8][cH:9]1</AAM>
+      <RANK_REACTANT>{1=9, 2=7, 3=6, 4=5, 5=4, 6=3, 7=11, 8=10, 9=2, 10=1, 11=8, 12=12, 13=13, 14=14, 15=15, 16=16, 17=17, 18=18}</RANK_REACTANT>
+      <RANK_PRODUCT>{1=9, 2=7, 3=6, 4=5, 5=4, 6=3, 7=11, 8=10, 9=2, 10=1, 11=8, 12=12, 13=13, 14=14, 15=15, 16=16, 17=17, 18=18}</RANK_PRODUCT>
+    </MAPPING>
+  </ANNOTATION>
+</EC_BLAST>
