@@ -138,21 +138,6 @@ def load_cluster_locations(fname):
             output[ins[0]] = ins[1:]
     return output
 
-def get_vectors_from_file(fname):
-    header = [x+' M' for x in info_params.smiles_to_names]
-    concs = {}
-    with open(fname, 'r') as f:
-        for c,line in enumerate(f):
-            if c == 0:
-                ins = line.strip('\n').split(',')
-                order = [x.replace('/','') for x in ins[1:]]
-            else:
-                ins = line.strip('\n').split(',')
-                vals = {o:v for o,v in zip(order, ins[1:])}
-                concs[ins[0]] = [float(vals[h]) for h in header]
-
-    return concs
-
 def get_series_vectors(exp_info, sets = [], param = 'offsets',second_folder_path= "Wave_parameters"):
     '''
     Parameters
