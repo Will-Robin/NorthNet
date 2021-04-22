@@ -134,17 +134,13 @@ def load_exp_compound_file(fname, header):
     with open(fname, 'r') as f:
         for c,line in enumerate(f):
             if c == 0:
-                ins  = line.strip('/n').split(',')
-                f_head = ins[1:]
+                ins  = line.strip('\n').split(',')
+                f_head = [x for x in ins[1:] if x != '']
             else:
-                ins = line.strip('/n').split(',')
-                data = ins[1:]
+                ins = line.strip('\n').split(',')
+                data = [float(x) for x in ins[1:] if x != '']
                 fill_line = [0.0]*len(header)
                 for x in range(0,len(f_head)):
-
-                    print(header)
-                    print(f_head[x])
-                    
                     idx = header.index(f_head[x])
                     fill_line[idx] = data[x]
 
