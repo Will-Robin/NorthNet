@@ -114,7 +114,7 @@ polyolU,OC[C@H](O)C(O)=C(O)[C@H](O)CO,OC[C@@H](O)C(O)=C(O)[C@@H](O)CO,enolate,#d
 polyolV,OC[C@@H](O)C(O)=C(O)[C@H](O)CO,OC[C@H](O)C(O)=C(O)[C@@H](O)CO,enolate,#d0d1df,180.06,120
 polyolW,OCC(O)(CO)CO,OCC(O)(CO)CO,polyol,#d0d1df,112.12,121
 polyolX,OC[C@@H](O)C(O)(CO)CO,OC[C@H](O)C(O)(CO)CO,polyol,#d0d1df,152.15,122
-glycerol,OCCO,OCCO,polyol,#d0d1df,62.07,124
+ethylene_glycol,OCCO,OCCO,polyol,#d0d1df,62.07,124
 methanol,CO,CO,polyol,#d0d1df,32.04,125
 polyolZ,OC[C@H](O)[C@@H](O)[C@H](O)CO,OC[C@@H](O)[C@H](O)[C@@H](O)CO,polyol,#d0d1df,152.15,126
 2_enolate_1,OC=CO,OC=CO,enolate,#d0d1df,60.05,127

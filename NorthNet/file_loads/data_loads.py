@@ -129,6 +129,28 @@ def load_flow_profiles(fname):
                 flow_info[ins[0]][ins[1]] = np.array([float(z) for z in ins[2:]])
     return flow_info
 
+def load_exp_compound_file(fname, header):
+    output = {}
+    with open(fname, 'r') as f:
+        for c,line in enumerate(f):
+            if c == 0:
+                ins  = line.strip('/n').split(',')
+                f_head = ins[1:]
+            else:
+                ins = line.strip('/n').split(',')
+                data = ins[1:]
+                fill_line = [0.0]*len(header)
+                for x in range(0,len(f_head)):
+
+                    print(header)
+                    print(f_head[x])
+                    
+                    idx = header.index(f_head[x])
+                    fill_line[idx] = data[x]
+
+                output[ins[0]] = fill_line
+    return output
+
 def load_cluster_locations(fname):
     output = {}
     proc_line = lambda x:[z for z in x.strip("\n").split(",") if z != ""]
