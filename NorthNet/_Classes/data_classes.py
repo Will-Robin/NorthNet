@@ -1,6 +1,6 @@
 import numpy as np
 from NorthNet import data_processing as d_p
-from NorthNet.information import info_params
+from NorthNet import info_params
 
 class Dataset:
     '''

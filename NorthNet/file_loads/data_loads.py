@@ -1,5 +1,5 @@
 import numpy as np
-from NorthNet.information import info_params
+from NorthNet import info_params
 
 def get_data(file, x_axis_key = "time/ s", flow_data = True):
     '''

@@ -7,7 +7,7 @@ from graphviz import Digraph
 from pathlib import Path
 
 from NorthNet import Classes
-from NorthNet.information import info_params
+from NorthNet import info_params
 
 from NorthNet.file_loads.data_loads import *
 from NorthNet.file_loads.info_loads import *
