@@ -1,12 +1,12 @@
 from pathlib import Path
 
-def readTwoColInfo(file, col_idx):
+def readTwoColInfo(file, col_idx_a, col_idx_b):
     assignments = {}
     with open(file, 'r') as f:
         for c, line in enumerate(f):
             if c > 0:
                 spl = line.strip('\n').split(',')
-                assignments[spl[0]] = spl[col_idx]
+                assignments[spl[col_idx_a]] = spl[col_idx_b]
             else:
                 pass
     return assignments
@@ -29,9 +29,12 @@ props_dict = {}
 for n,i in zip(header, info_container):
     props_dict[n] = i
 
-colour_assignments = {k:v for k,v in zip(props_dict['@ SMILES'], props_dict['colour'])}
-mms = {k:float(v) for k,v in zip(props_dict['@ SMILES'], props_dict['Mr_gmol-1'])}
-canonical_SMILES = {k:v for k,v in zip(props_dict['compound_name'], props_dict['@ SMILES'])}
+colour_assignments = {k:v for k,v in
+                              zip(props_dict['@ SMILES'], props_dict['colour'])}
+molecular_masses = {k:float(v) for k,v in
+                           zip(props_dict['@ SMILES'], props_dict['Mr_gmol-1'])}
+canonical_SMILES = {k:v for k,v in
+                       zip(props_dict['compound_name'], props_dict['@ SMILES'])}
 smiles_to_names = {}
 init_can_SMILES = [c for c in canonical_SMILES]
 for c in init_can_SMILES:
@@ -39,11 +42,12 @@ for c in init_can_SMILES:
     canonical_SMILES[spl_name[0]] = canonical_SMILES[c]
     smiles_to_names[canonical_SMILES[c]] = spl_name[0]
 
-class_assignments =  {k:v for k,v in zip(props_dict['@ SMILES'], props_dict['Class'])}
+class_assignments =  {k:v for k,v in
+                               zip(props_dict['@ SMILES'], props_dict['Class'])}
 for sm,cls in zip(props_dict['@@ SMILES'], props_dict['Class']):
     class_assignments[sm] = cls
 
-reaction_colours = readTwoColInfo(script_dir/'reaction_colour_assignments.csv', 1)
-fr_assign = readTwoColInfo(script_dir/'fragment_assignments.csv', 1)
+reaction_colours = readTwoColInfo(script_dir/'reaction_colour_assignments.csv', 0, 1)
+fr_assign = readTwoColInfo(script_dir/'fragment_assignments.csv', 0, 1)
 frag_assignments = {float(f):fr_assign[f] for f in fr_assign}
-frag_colours = readTwoColInfo(script_dir/'fragment_assignments.csv', 2)
+frag_colours = readTwoColInfo(script_dir/'fragment_assignments.csv', 0, 2)

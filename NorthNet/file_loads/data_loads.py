@@ -1,5 +1,28 @@
-import numpy as np
-from NorthNet import info_params
+def loadDataSetsFromFolder(path):
+    '''
+    Paramters
+    ---------
+    path: pathlib Path or str
+        Path to directory containing files
+        (expecting two .csv files per directory).
+    Returns
+    -------
+        datasets: NorthNet DataSet object
+            Data sets in files combined into one.
+    '''
+    if type(path) == str:
+        from pathlib import Path
+        folder = Path(path)
+    else:
+        folder = path
+
+    for f in os.listdir(folder):
+        Classes.DataReport(file = folder/f)
+
+    return d_ops.combine_datasets(d_sets, d_sets[0].conditions, time_independent = t_inep,
+                                  interpolation_length = len(d_sets[0].time),
+                                  x_axis_key = d_sets[0].independent_name)
+    return 0
 
 def get_data(file, x_axis_key = "time/ s", flow_data = True):
     '''
@@ -17,21 +40,14 @@ def get_data(file, x_axis_key = "time/ s", flow_data = True):
     Dataset object:
         A dataset object created from the file.
     '''
+    import numpy as np
+    from NorthNet import Classes
+    from NorthNet.file_loads import text_parsing
 
-    condset = []
-    readstate = False
-    with open(file, "r", encoding = 'latin-1') as f:
-        for c,line in enumerate(f):
-            if 'Dataset' in line:
-                dset_name = line.strip("\n").split(",")[1]
-            if "start_conditions" in line:
-                readstate = True
-                line = next(f)
-            if "end_conditions" in line:
-                readstate = False
-            if readstate:
-                newline = line.strip("\n")
-                condset.append([x for x in newline.split(",") if x != ""])
+
+    condset = text_parsing.import_file_section(file,
+                                           "start_conditions", "end_conditions")
+
     c_out = {}
     for c in condset:
         try:
@@ -60,6 +76,8 @@ def get_data(file, x_axis_key = "time/ s", flow_data = True):
 
 def load_data_set(path):
     from NorthNet import dataset_operations as d_ops
+    from NorthNet import file_in_out as f_io
+
     home = os.getcwd()
     t_inep = False
     os.chdir(path)
@@ -70,12 +88,11 @@ def load_data_set(path):
             try:
                 dset = f_io.get_data(f)
                 d_sets.append(dset)
-                print('loaded flow')
+
             except:
                 t_inep = True
                 dset = f_io.get_data(f, x_axis_key = "sample number/ n", flow_data = False)
                 d_sets.append(dset)
-                print('not flow')
 
     os.chdir(home)
     return d_ops.combine_datasets(d_sets, d_sets[0].conditions, time_independent = t_inep,
@@ -117,6 +134,8 @@ def data_from_directory(directory):
     return data_dict
 
 def load_flow_profiles(fname):
+    import numpy as np
+
     flow_info = {}
     proc_line = lambda x:[z for z in x.strip("\n").split(",") if z != ""]
     with open(fname, "r") as f:
@@ -175,6 +194,8 @@ def get_series_vectors(exp_info, sets = [], param = 'offsets',second_folder_path
     header: list
         List of compounds: indices of vectors in output are same as in header.
     '''
+    import numpy as np
+    from NorthNet import file_in_out as f_io
 
     home = os.getcwd()
     # get composition vectors
@@ -242,6 +263,9 @@ def get_composition_vectors(exp_info, sets = [], second_folder_path= "Wave_param
     header: list
         List of compounds: indices of vectors in output are same as in header.
     '''
+    from NorthNet import file_in_out as f_io
+    from NorthNet import info_params
+    import numpy as np
 
     home = os.getcwd()
     # get composition vectors
@@ -284,6 +308,7 @@ def get_composition_vectors(exp_info, sets = [], second_folder_path= "Wave_param
     return output, header
 
 def get_composition_base_vectors(fname):
+    import numpy as np
     clusters = {}
     with open(fname,"r") as f:
         for line in f:
@@ -295,6 +320,8 @@ def get_composition_base_vectors(fname):
     return clusters
 
 def read_mass_balance_file(filename,header):
+    import numpy as np
+
     mass_balances = {}
     labels = {}
     with open(filename, 'r') as f:
@@ -317,6 +344,8 @@ def read_mass_balance_file(filename,header):
     return output
 
 def get_reaction_expressions(fname):
+    import numpy as np
+
     rxn_clusters = {}
     process_line = lambda x: x.strip("\n").split(",")
     with open(fname, "r") as f:
@@ -349,6 +378,9 @@ def read_wave_parameters_file(fname):
     return amps, phases, offsets
 
 def get_wave_parameters(path):
+    import os
+    from NorthNet import file_in_out as f_io
+
     cwd = os.getcwd()
     pt = path/"Wave_parameters"
     os.chdir(pt)

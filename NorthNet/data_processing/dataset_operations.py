@@ -1,45 +1,154 @@
 import numpy as np
-from NorthNet.DataProcessing import signal_processing
-from NorthNet.DataProcessing import interpolations
+from NorthNet.data_processing import signal_processing
+from NorthNet.data_processing import interpolations
 from NorthNet import Classes
 
-def get_mass_in_reactor(dataset, flow_profiles, inputs):
+def combine_datasets(datasets, time_dependent = False):
+    '''
+    Parameters
+    ----------
+    datasets: list (len = 2) of NorthNet DataReport objects
+        Two datasets with identical conditions to be merged.
+    Returns
+    -------
+    merged_dataset: NorthNet DataReport object.
+        Merged datasets with linearly interpolated values
+        in new time axis.
+    '''
+    from NorthNet import Classes
+
+    # create an empty data report
+    merged_dataset = Classes.DataReport()
+    # Add in information from the first data report in the list
+    merged_dataset.experiment_code = datasets[0].experiment_code
+    merged_dataset.conditions = datasets[0].conditions
+    merged_dataset.analysis_details = datasets[0].analysis_details
+    merged_dataset.series_unit = datasets[0].series_unit
+
+    if time_dependent:
+        # If the data are time independent, interpolations are
+        # performed so that the two datasets share identical time axes.
+        # The interpolation is based on the union of the time axes of the
+        # two data sets, excluding the values outside of each others'
+        # range.
+        from scipy import interpolate
+
+        t_a = datasets[0].series_values
+        t_b = datasets[1].series_values
+
+        # merge timepoints for the two datasets
+        combined_times = np.hstack((t_a, t_b))
+        time_axis = np.sort(combined_times)
+
+        # Get the interpolation range
+        max_time = min((np.amax(t_a), np.amax(t_b)))
+        min_time = max((np.amin(t_a), np.amin(t_b)))
+        slice_inds = np.where((time_axis > min_time)&
+                              (time_axis < max_time))[0]
+
+        merged_dataset.series_values = time_axis[slice_inds]
+
+        new_data = {}
+        for d in datasets:
+            for comp in d.data:
+                f = interpolate.interp1d(d.series_values,
+                                         d.data[comp], kind = "linear")
+                new_data[comp] = f(merged_dataset.series_values)
+    elif len(datasets[0].series_values) == len(datasets[1].series_values):
+
+        merged_dataset.series_values = datasets[0].series_values
+        # If the data are considered time-independent and of the same length,
+        # measurements between data sets can be considered to be at similar
+        # sampling points.
+        new_data = {}
+
+        for d in datasets:
+            for comp in d.data:
+                new_data[comp] = d.data[comp]
+    else:
+        # find the shortest data set
+        shortest = min(datasets, key = lambda x:len(x.series_values))
+        # Create new data container with the longest dataset trimmed to be
+        # the same length as the shortest
+        new_data = {}
+        for d in datasets:
+            for comp in d.data:
+                new_data[comp] = d.data[comp][:len(shortest)]
+
+
+    # Put the merged data into the new DataReport object.
+    merged_dataset.data = new_data
+
+    return merged_dataset
+
+
+def get_mass_in_reactor(dataset, flow_profiles, inputs,
+                        time_key = 'flow_time/ s'):
 
     '''
+    Parameters
+    ----------
+    dataset: NorthNet DataReport object
+        Data set for mass balance calculation
+    flow_profiles: dict
+        Dictionary of flow inputs into the experiment.
     flow_keys: list of tuples
         (c,d,e) c = concentration field, d = flow key, e = key to molecular_masses
+
+    Returns
+    -------
+    mass_in_reactor: numpy 1D array
+        Total mass of carbon in the reactor over time
+        (same time axis as the input DataReport)
     '''
-    time = flow_profiles['flow_time/ s']
-    net_flow = np.zeros(len(flow_profiles['flow_time/ s']))
+    import numpy as np
+    from NorthNet import info_params
+
+    # get the total flow rate over time from the flow profiles.
+    flow_time = flow_profiles[time_key]
+    # container for net flow to be added to.
+    net_flow = np.zeros(len(flow_profiles[time_key]))
+    # iterate through the flow profiles to create an array of the total flow
+    # rate for the experiment over time.
+    # Further use of this array assumes its values are in seconds.
     for f in flow_profiles:
         if 'flow' in f and not 'time' in f:
-            net_flow += flow_profiles[f][:len(time)]/(60*60*10e6)
+            # Conversion to L/s from uL/ h
+            net_flow += flow_profiles[f][:len(flow_time)]/(60*60*10e6)
 
+    # get the reactor volume
+    # (assumes volume is given in micro litres and is converted to L here)
     reactor_vol = dataset.conditions["reactor_volume/ uL"][0]/10e6
 
-    deltat = time[1] - time[0]
+    # Get delta t for mass integration over time.
+    deltat = flow_time[1] - flow_time[0]
 
-    mass_input = np.zeros(len(time))
+    # Create empty array for total carbon inputs at each time point.
+    mass_input = np.zeros(len(flow_time))
     for i in inputs:
-        for f in flow_profiles:
-            if i in f and 'flow' in f:
-                flow_k = f
-            elif i in f and not 'flow' in f:
-                inp_k = f
+        conc_key = i[0]
+        flow_key = i[1]
+        # dictionary of molecular masses keyed by SMILES strings
+        Mr = info_params.molecular_masses[i[2]]
+        # (Mr*flow rate)/(total flow rate)
+        mass_input += Mr*flow_profiles[conc_key]*(
+                        flow_profiles[flow_key][:len(flow_time)]/
+                        (60*60*10e6))*deltat
 
-        mass_input += info_params.molecular_masses[i]*flow_profiles[inp_k]*(flow_profiles[flow_k][:len(time)]/(60*60*10e6))*deltat
-
-    mass_in_reactor = np.zeros(len(time))
-
+    # Container for calculated mass in the reactor.
+    mass_in_reactor = np.zeros(len(flow_time))
+    # Initialise mass in the reactor
     mass_in_reactor[0] = np.nan_to_num(reactor_vol*mass_input[0]/(deltat*net_flow[0]))
 
+    # iterate over inputs and outputs over time to get mass in reactor over time
     for x in range(0,len(mass_in_reactor)-1):
         mass_out = (mass_in_reactor[x]/reactor_vol)*net_flow[x]*deltat
         delta_mass = mass_input[x] - mass_out
         mass_in_reactor[x+1] = mass_in_reactor[x] + delta_mass
 
-    inds = np.where((time > dataset.time[0])&(time < dataset.time[-1]))[0]
-    return time[inds], mass_in_reactor[inds]
+    # find where calculated time points are the same as the 
+    inds = np.where((flow_time > dataset.series_values[0])&(flow_time < dataset.series_values[-1]))[0]
+    return mass_in_reactor[inds]
 
 def get_amplitudes(dataset, write_f = False):
     '''
@@ -189,67 +298,7 @@ def data_to_amplitude_correlations(multiple_data_sets,info_dict):
 def get_input_profile(data_set):
     return data_set.get_input_profile()
 
-def combine_datasets(data_sets, conditions, interpolation_length = 100, time_independent = False, x_axis_key = 'time/ s'):
 
-    '''
-    Combines two separate datasets into one dataset object
-
-    Parameters
-    ---------
-    data_sets: list
-        List of data sets to be combined. All datasets must have similarly
-        spaced x-axis values.
-    conditions: dict
-        Dictionary of conditions to be input into the new dataset.
-
-    Returns
-    -------
-        Dataset object combinging the two datasets named after the last dataset
-        in the list with specified conditions.
-    '''
-    temp_interp = {}
-
-    if not time_independent:
-        t_max = 1e100
-        t_min = 0
-
-        for x in data_sets:
-
-            if x.time[-1] < t_max:
-                t_max = x.time[-1]
-            if x.time[0] > t_min:
-                t_min = x.time[0]
-
-        for x in data_sets:
-
-            deps = sorted([*x.dependents])
-
-            for d in deps:
-                inds = np.where((x.time >= t_min)&(x.time <= t_max))[0]
-                if len(inds) == 0:
-                    pass
-                else:
-                    new_x, new_y = interpolations.interpolate_traces(x.time[inds],x.dependents[d][inds], length = interpolation_length)
-                    temp_interp[d] = new_y
-        else:
-            for x in data_sets:
-                deps = sorted([*x.dependents])
-                for d in deps:
-                    new_x, new_y = interpolations.interpolate_traces(x.time,x.dependents[d], length = interpolation_length)
-                    temp_interp[d] = new_y
-
-        temp_interp[x_axis_key] = np.linspace(t_min,t_max, num = interpolation_length)
-
-        return Classes.Dataset("{}_interpolated".format(x.name), conditions, temp_interp)
-
-    else:
-        deps = {}
-        for x in data_sets:
-            deps[x_axis_key] = x.time
-            for d in x.dependents:
-                deps[d] = x.dependents[d]
-        print('combining', x_axis_key)
-        return Classes.Dataset("{}".format(x.name), conditions, deps, time_key = x_axis_key, get_flow_profile = False)
 
 def add_flow_segment(profile_time, profile, dataset):
     profile_time = np.array(profile_time)
