@@ -1,4 +1,6 @@
 def add_coords_to_network(network, pos):
+    import numpy as np
+
     xmin = np.mean([pos[p][0] for p in pos])
     ymin = np.mean([pos[p][1] for p in pos])
     for n in network.nodes:
@@ -41,7 +43,7 @@ def set_network_coordinates(G, coords_file):
     return G
 
 def get_network_coordinates(G):
-
+    import numpy as np 
     net_lines = []
     for e in G.edges:
         for n in e:
@@ -53,8 +55,10 @@ def get_network_coordinates(G):
     return net_lines
 
 def normalise_network_coordinates(G):
+    from NorthNet.networkx_manipulations.networkx_ops import coordinates
+    import numpy as np
 
-    coords = network_view.get_network_coordinates(G)
+    coords = coordinates.get_network_coordinates(G)
 
     net_width = (np.nanmax(coords[0])-np.nanmin(coords[0]))
     net_height = (np.nanmax(coords[1])-np.nanmin(coords[1]))
