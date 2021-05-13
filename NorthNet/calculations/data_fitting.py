@@ -1,16 +1,20 @@
+from NorthNet.calculations import data_fitting
+from NorthNet.calculations import processing
+from NorthNet.calculations import calculations
+import numpy as np
 
 def fit_clusters(data, clusters):
     from scipy.optimize import minimize
-    ans = minimize(fitting_functions.compare, np.random.rand(len(clusters)), args = (data,clusters), bounds = [(0,10) for x in range(0,len(clusters))], tol = 1e-9)
+    ans = minimize(calculations.compare, np.random.rand(len(clusters)), args = (data,clusters), bounds = [(0,10) for x in range(0,len(clusters))], tol = 1e-9)
     return ans.x
 
 def fit_vectors_to_data(data, clusters, header):
 
-    mod_data, mod_clusters = pre_process_cluster_data(data, clusters)
+    mod_data, mod_clusters = processing.pre_process_cluster_data(data, clusters)
 
-    weights = fitting_functions.fit_clusters(mod_data, mod_clusters)
+    weights = data_fitting.fit_clusters(mod_data, mod_clusters)
 
-    x = fitting_functions.calculate_weighted_vector(clusters, weights)
+    x = calculations.calculate_weighted_vector(clusters, weights)
     resid = data-x
     pc_resid = np.abs(np.sum(resid))/np.sum(data)
 
@@ -19,8 +23,8 @@ def fit_vectors_to_data(data, clusters, header):
 def fit_discrepancy_vector(data, clusters, weights):
 
     from scipy.optimize import minimize
-    reconst = fitting_functions.calculate_weighted_vector(clusters, weights)
-    ans = minimize(fitting_functions.test_vector, np.random.rand(len(clusters[[*clusters][0]])), args = (data,reconst), bounds = [(0,10) for x in range(0,len(clusters[[*clusters][0]]))], tol = 1e-9)
+    reconst = calculations.calculate_weighted_vector(clusters, weights)
+    ans = minimize(data_fitting.test_vector, np.random.rand(len(clusters[[*clusters][0]])), args = (data,reconst), bounds = [(0,10) for x in range(0,len(clusters[[*clusters][0]]))], tol = 1e-9)
 
     return ans.x
 
@@ -31,16 +35,16 @@ def fit_clusters_all_data(data_sets, clusters, header, remove_inds):
     resid_vecs = []
     lb_dat = []
     for d in data_sets:
-        vector_dict = fitting_functions.convert_dataset_to_vector(data_sets[d], header)
+        vector_dict = data_fitting.convert_dataset_to_vector(data_sets[d], header)
         for a in vector_dict:
             for i in remove_inds:
                 vector_dict[a][i] = 0.0
         for c,a in enumerate(vector_dict):
-            phenotype,resid = fitting_functions.fit_vectors_to_data(vector_dict[a], clusters, header)
+            phenotype,resid = data_fitting.fit_vectors_to_data(vector_dict[a], clusters, header)
             residuals.append(resid)
             wghts.append(phenotype)
-            tuning_vectors.append(fitting_functions.fit_discrepancy_vector(vector_dict[a], clusters, phenotype))
-            resid_vecs.append(vector_dict[a] - fitting_functions.calculate_weighted_vector(clusters, phenotype))
+            tuning_vectors.append(data_fitting.fit_discrepancy_vector(vector_dict[a], clusters, phenotype))
+            resid_vecs.append(vector_dict[a] - calculations.calculate_weighted_vector(clusters, phenotype))
             lb_dat.append("{};{}".format(d,data_sets[d].time[c]))
 
     return wghts, residuals, tuning_vectors, resid_vecs, lb_dat
@@ -55,7 +59,7 @@ def cross_fit_clusters(clusters):
     for c1,d in enumerate(clusters):
         loc_clust = {k:clusters[k] for k in clusters}
         loc_clust[d] = np.ones(len(clusters[d]))
-        phenotype,resid = fitting_functions.fit_vectors_to_data(clusters[d], loc_clust, header)
+        phenotype,resid = data_fitting.fit_vectors_to_data(clusters[d], loc_clust, header)
         cross_mat[c1] = phenotype
     return cross_mat
 

@@ -149,6 +149,24 @@ def load_flow_profiles(fname):
     return flow_info
 
 def load_exp_compound_file(fname, header):
+
+    '''
+    For loading compositional arrays in a dictionary from a
+    formatted file.
+
+    Parameters
+    ----------
+    fname: str or pathlib Path object
+        Path to file.
+    header: list
+        Standardised list of compounds of similar format
+        to the column header of the file
+
+    Returns:
+    output: dict of numpy arrays
+        
+    '''
+    import numpy as np
     output = {}
     with open(fname, 'r') as f:
         for c,line in enumerate(f):
@@ -163,7 +181,7 @@ def load_exp_compound_file(fname, header):
                     idx = header.index(f_head[x])
                     fill_line[idx] = data[x]
 
-                output[ins[0]] = fill_line
+                output[ins[0]] = np.array(fill_line)
     return output
 
 def load_cluster_locations(fname):

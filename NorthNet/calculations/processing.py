@@ -1,3 +1,5 @@
+import numpy as np
+
 def pre_process_cluster_data(data, clusters):
 
     mod_clusters = {}

@@ -1,14 +1,17 @@
 def calculate_weighted_vector(clusters, weights):
+    import numpy as np
     sum = np.zeros(len(clusters[[*clusters][0]]))
     for c,clust in enumerate(clusters):
         sum += weights[c]*clusters[clust]
     return sum
 
 def _error(data,x):
+    import numpy as np
     return np.sum((data-x)*(data-x))
 
 def compare(weights, data, clusters):
-    x = fitting_functions.calculate_weighted_vector(clusters, weights)
+    from NorthNet.calculations import calculations
+    x = calculations.calculate_weighted_vector(clusters, weights)
     return _error(data,x)
 
 def test_vector(newvec, data, reconst):
