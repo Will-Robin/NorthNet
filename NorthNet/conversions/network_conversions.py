@@ -1,5 +1,4 @@
-def convert_to_networkx(network, default_node_size = 10, default_node_color = "b",
-                        default_edge_width = 2, default_edge_color = "#6c6c7a", save_images = False):
+def convert_to_networkx(network):
     '''
     Converts NorthNet network object to networkx object.
 
@@ -14,40 +13,18 @@ def convert_to_networkx(network, default_node_size = 10, default_node_color = "b
     G: networkx DiGraph object
         Networkx version of the NorthNet network.
     '''
+    import networkx as nx
+
     G = nx.DiGraph()
-    n = 0
-    C_patt = Chem.MolFromSmarts("[C]")
+
     for node in network.NetworkCompounds:
-        if save_images:
-            im = drw.create_image(node,n)
-            n+=1
-        else:
-            im = "None"
-        G.add_node( node, label = str(node), type = 'species', Image = im, C_count = len( network.NetworkCompounds[node].Mol.GetSubstructMatches(C_patt) ) )
+        G.add_node(node)
 
     for r in network.NetworkReactions:
-
-        ref_arr = []
-        reaction_IDs = []
-        for entry in network.NetworkReactions[r].Database_Entries:
-            ref_arr.append(entry.Info["References"])
-            reaction_IDs.append(entry.Info["Reaction ID"])
-
         for sr in network.NetworkReactions[r].Reactants:
             for sp in network.NetworkReactions[r].Products:
-                G.add_edge(sr,r, Label = r, refs = ",".join(ref_arr), ReactionID = ",".join(reaction_IDs))
-                G.add_edge(r,sp, Label = r, refs = ",".join(ref_arr), ReactionID = ",".join(reaction_IDs))
-
-    for n in G.nodes:
-        G.nodes[n]["size"] = default_node_size
-        if ">>" in n:
-            G.nodes[n]["color"] = "k"
-        else:
-            G.nodes[n]["color"] = default_node_color
-
-    for e in G.edges:
-        G.edges[e]["width"] = default_edge_width
-        G.edges[e]["color"] = default_edge_color
+                G.add_edge(sr,r)
+                G.add_edge(r,sp)
 
     return G
 

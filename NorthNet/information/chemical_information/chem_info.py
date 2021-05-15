@@ -31,6 +31,10 @@ for n,i in zip(header, info_container):
 
 colour_assignments = {k:v for k,v in
                               zip(props_dict['@ SMILES'], props_dict['colour'])}
+
+for c,p in enumerate(props_dict['@@ SMILES']):
+    colour_assignments[p] = props_dict['colour'][c]
+
 molecular_masses = {k:float(v) for k,v in
                            zip(props_dict['@ SMILES'], props_dict['Mr_gmol-1'])}
 canonical_SMILES = {k:v for k,v in

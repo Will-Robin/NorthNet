@@ -1,3 +1,26 @@
+def remove_nodes(G, node_list):
+    '''
+    Parameters
+    ----------
+    G: networkx DiGraph
+        Graph from which nodes will be removed.
+    node_list: list
+        list of nodes to be removed from the graph.
+
+    Returns
+    -------
+    F: networkx DiGraph
+        Copy of G with nodes removed.
+
+    '''
+    F = G.copy()
+
+    for n in node_list:
+        if n in F.nodes:
+            F.remove_node(n)
+
+    return F
+
 def remove_long_reactions(graph,network, length = 10):
     '''
     Parameters

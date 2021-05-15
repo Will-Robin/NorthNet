@@ -1,4 +1,4 @@
-def add_coords_to_network(network, pos):
+def set_network_coords(network, pos):
     import numpy as np
 
     xmin = np.mean([pos[p][0] for p in pos])
@@ -10,6 +10,70 @@ def add_coords_to_network(network, pos):
             network.nodes[n]['pos'] = (xmin, ymin)
 
     return network
+
+def get_network_lineplot(G):
+    '''
+    Parameters
+    ----------
+    G: networkx DiGraph
+        Graph to extract nodes from.
+
+    Returns
+    -------
+    net_lines: numpy 2D array
+        Coordinates for plotting a line plot of the network.
+    '''
+
+    import numpy as np
+
+    net_lines = []
+    for e in G.edges:
+        for n in e:
+            net_lines.append(G.nodes[n]["pos"])
+        net_lines.append((np.nan,np.nan))
+
+    net_lines = np.array(net_lines)
+    net_lines = net_lines.T
+    return net_lines
+
+def get_network_scatter(G):
+    '''
+    Parameters
+    ----------
+    G: networkx DiGraph
+        Graph to extract nodes from.
+
+    Returns
+    -------
+    net_lines: numpy 2D array
+        Coordinates for plotting a line plot of the network.
+    '''
+
+    import numpy as np
+
+    net_scatter = []
+    for n in G.nodes:
+        net_scatter.append(G.nodes[n]["pos"])
+
+    net_scatter = np.array(net_scatter)
+    net_scatter = net_scatter.T
+    return net_scatter
+
+
+def normalise_network_coordinates(G):
+    from NorthNet.networkx_manipulations.networkx_ops import coordinates
+    import numpy as np
+
+    coords = coordinates.get_network_coordinates(G)
+
+    net_width = (np.nanmax(coords[0])-np.nanmin(coords[0]))
+    net_height = (np.nanmax(coords[1])-np.nanmin(coords[1]))
+
+    for n in G.nodes:
+        pos = G.nodes[n]['pos']
+        a = pos[0]/net_width
+        b = pos[1]/net_height
+        G.nodes[n]['pos'] = (a,b)
 
 def set_network_coordinates(G, coords_file):
     '''
@@ -41,30 +105,3 @@ def set_network_coordinates(G, coords_file):
             G.nodes[n]["pos"] = (randint(0,100),randint(0,100))
 
     return G
-
-def get_network_coordinates(G):
-    import numpy as np 
-    net_lines = []
-    for e in G.edges:
-        for n in e:
-            net_lines.append(G.nodes[n]["pos"])
-        net_lines.append((np.nan,np.nan))
-    net_lines = np.array(net_lines)
-    net_lines = net_lines.T
-
-    return net_lines
-
-def normalise_network_coordinates(G):
-    from NorthNet.networkx_manipulations.networkx_ops import coordinates
-    import numpy as np
-
-    coords = coordinates.get_network_coordinates(G)
-
-    net_width = (np.nanmax(coords[0])-np.nanmin(coords[0]))
-    net_height = (np.nanmax(coords[1])-np.nanmin(coords[1]))
-
-    for n in G.nodes:
-        pos = G.nodes[n]['pos']
-        a = pos[0]/net_width
-        b = pos[1]/net_height
-        G.nodes[n]['pos'] = (a,b)

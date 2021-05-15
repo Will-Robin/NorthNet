@@ -1,12 +1,48 @@
+def plot_nodes(G, ax, color = '#000000', size = 2, alpha = 1, zorder = 1):
+    '''
+    Parameters
+    ----------
+
+    Returns
+    -------
+    None
+    '''
+    from NorthNet.networkx_manipulations.networkx_ops import coordinates
+
+    if color == 'nodewise':
+        colors = [G.nodes[n]['color'] for n in G.nodes]
+    else:
+        colors = color
+
+    if size == 'nodewise':
+        sizes = [G.nodes[n]['size'] for n in G.nodes]
+    else:
+        sizes = size
+
+
+    coords = coordinates.get_network_scatter(G)
+    print(coords.shape)
+    print(len(colors))
+
+    ax.scatter(coords[0], coords[1],
+               s = sizes, c = colors, alpha = alpha,
+               zorder = zorder)
+
 def draw_arrow_connectors(G,ax, color = '#000000',linew = 'edgewise', alpha = 1,
                           zorder = 0, shrink_a = 0, shrink_b = 0):
     '''
+    Parameters
+    ----------
     G: networkx DiGraph with position info in nodes
     ax: matplotlib axis in which to place arrows.
+
+    Returns
+    -------
+    None
     '''
     from matplotlib.patches import FancyArrowPatch
     if color == 'edgewise':
-        color_return = lambda x:G.edges[e]['color']
+        color_return = lambda x:G.edges[x]['color']
     else:
         color_return = lambda x: color
 
