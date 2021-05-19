@@ -128,10 +128,11 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-.DS_store
-
 # don't sync .pngs
 *.png
 *.svg
 *.json
 *.pickle
+
+.DS_store
+.DS_Store
