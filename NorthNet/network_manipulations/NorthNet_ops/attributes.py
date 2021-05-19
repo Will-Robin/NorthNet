@@ -1,22 +1,3 @@
-def network_indices(network):
-
-    compounds = [x for x in network.NetworkCompounds]
-    reactions = [*network.NetworkReactions]
-
-    species = {s:"S[{}]".format(c) for c,s in enumerate(compounds)}
-    rate_consts = {k:"k[{}]".format(c) for c,k in enumerate(reactions)}
-
-    out_ind = -1
-    for c,k in enumerate(rate_consts):
-        if k.endswith(">>") and out_ind == -1:
-            out_ind = c
-        if k.endswith(">>") and out_ind != -1:
-            rate_consts[k] = "k[{}]".format(out_ind)
-
-    inflows = {k:"C[{}]".format(c) for c,k in enumerate([x for x in network.NetworkReactions if x.startswith(">>")])}
-
-    return species, rate_consts, inflows
-
 def sort_mols(network):
     '''
     Sorts molecules in a network by carbon.

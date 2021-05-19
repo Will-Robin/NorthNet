@@ -78,7 +78,8 @@ def error_calculation(data, calc):
     return error
 
 def polar_to_xy(magnitude, angle):
-
+    import numpy as np
+    
     x = magnitude*np.cos(np.deg2rad(angle))
     y = magnitude*np.sin(np.deg2rad(angle))
 

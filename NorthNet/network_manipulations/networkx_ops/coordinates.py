@@ -61,10 +61,19 @@ def get_network_scatter(G):
 
 
 def normalise_network_coordinates(G):
-    from NorthNet.networkx_manipulations.networkx_ops import coordinates
-    import numpy as np
+    '''
+    Parameters
+    ----------
+    G: networkx DiGraph
+        Graph to extract nodes from.
 
-    coords = coordinates.get_network_coordinates(G)
+    Returns
+    -------
+    None
+    '''
+    import numpy as np
+    from NorthNet.network_manipulations.networkx_ops import coordinates
+    coords = coordinates.get_network_lineplot(G)
 
     net_width = (np.nanmax(coords[0])-np.nanmin(coords[0]))
     net_height = (np.nanmax(coords[1])-np.nanmin(coords[1]))

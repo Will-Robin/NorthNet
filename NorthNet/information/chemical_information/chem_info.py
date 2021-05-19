@@ -33,7 +33,10 @@ colour_assignments = {k:v for k,v in
                               zip(props_dict['@ SMILES'], props_dict['colour'])}
 
 for c,p in enumerate(props_dict['@@ SMILES']):
-    colour_assignments[p] = props_dict['colour'][c]
+    if p in colour_assignments:
+        pass
+    else:
+        colour_assignments[p] = props_dict['colour'][c]
 
 molecular_masses = {k:float(v) for k,v in
                            zip(props_dict['@ SMILES'], props_dict['Mr_gmol-1'])}

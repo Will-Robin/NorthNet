@@ -7,7 +7,7 @@ def plot_nodes(G, ax, color = '#000000', size = 2, alpha = 1, zorder = 1):
     -------
     None
     '''
-    from NorthNet.networkx_manipulations.networkx_ops import coordinates
+    from NorthNet.network_manipulations.networkx_ops import coordinates
 
     if color == 'nodewise':
         colors = [G.nodes[n]['color'] for n in G.nodes]
@@ -21,8 +21,6 @@ def plot_nodes(G, ax, color = '#000000', size = 2, alpha = 1, zorder = 1):
 
 
     coords = coordinates.get_network_scatter(G)
-    print(coords.shape)
-    print(len(colors))
 
     ax.scatter(coords[0], coords[1],
                s = sizes, c = colors, alpha = alpha,

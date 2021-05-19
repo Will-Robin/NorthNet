@@ -277,6 +277,10 @@ def coordinates_from_file(coords_file):
     return spec_coords
 
 def network_from_reaction_list(reaction_list, network_name = "", description = "", reaction_mapping = False):
+    from NorthNet import Classes
+    from rdkit import Chem
+    from NorthNet import reaction_operations as r_ops
+    from NorthNet import network_operations as net_ops
 
     header = ["Reaction", "Description", "Reaction ID","References"]
     alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
