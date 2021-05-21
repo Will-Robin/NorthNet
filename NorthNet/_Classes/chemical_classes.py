@@ -169,11 +169,25 @@ class Reaction:
             self.MappedReaction = None # If mapping can be introduced inot the reaction generation process. If it is, this can be changed accordingly.
             self.update_reaction()
 
+        if reaction_object.__class__.__name__ == "str":
+            self.Database_Entries = []
+            self.Generation_Details = []
+            self.Reactants, self.Products = self.reactants_products_from_string(reaction_object)
+            self.ReactionTemplate = None
+            self.MappedReaction = None # If mapping can be introduced inot the reaction generation process. If it is, this can be changed accordingly.
+            self.update_reaction()
+
     def add_reaction_entry(self, new_entry):
         if new_entry.__class__.__name__ == "Reaction_Database_Entry":
             self.Database_Entries.append(new_entry)
         if new_entry.__class__.__name__ == "Generated_Reaction":
             self.Generation_Details.append(new_entry)
+
+    def reactants_products_from_string(self, reaction_smiles):
+        split_rxn_smiles = reaction_smiles.split('>>')
+        reactants = split_rxn_smiles[0].split('.')
+        products = split_rxn_smiles[1].split('.')
+        return reactants, products
 
     def update_reaction(self):
         '''

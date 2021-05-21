@@ -24,7 +24,7 @@ def loadDataSetsFromFolder(path):
                                   x_axis_key = d_sets[0].independent_name)
     return 0
 
-def get_data(file, x_axis_key = "time/ s", flow_data = True):
+def get_data(file, flow_data = True, x_axis_key = ''):
     '''
     From data_fitting_functions.py
     For creating a Dataset object from a report format file.
@@ -44,9 +44,16 @@ def get_data(file, x_axis_key = "time/ s", flow_data = True):
     from NorthNet import Classes
     from NorthNet.file_loads import text_parsing
 
+    with open(file, 'r') as f:
+        for line in f:
+            if 'Dataset' in line:
+                dset_name = line.split(',')[0]
+                break
 
     condset = text_parsing.import_file_section(file,
                                            "start_conditions", "end_conditions")
+    dataset = text_parsing.import_file_section(file, "start_data", "end_data")
+    errors = text_parsing.import_file_section(file, "start_errors", "end_errors")
 
     c_out = {}
     for c in condset:
@@ -54,18 +61,6 @@ def get_data(file, x_axis_key = "time/ s", flow_data = True):
             c_out[c[0]] = [float(x) for x in c[1:]]
         except:
             c_out[c[0]] = [x for x in c[1:]]
-
-    dataset = []
-    with open(file, 'r',encoding='latin1') as f:
-        for n,line in enumerate(f,0):
-            if "start_data" in line:
-                readstate = True
-                line = next(f)
-            if "end_data" in line:
-                readstate = False
-            if readstate:
-                newline = line.strip("\n")
-                dataset.append([x for x in newline.split(",") if x != ""])
 
     e = [list(i) for i in zip(*dataset)]
     d_out = {}
@@ -164,7 +159,7 @@ def load_exp_compound_file(fname, header):
 
     Returns:
     output: dict of numpy arrays
-        
+
     '''
     import numpy as np
     output = {}

@@ -17,6 +17,17 @@ def combine_datasets(datasets, time_dependent = False):
     '''
     from NorthNet import Classes
 
+    # check if one data set is void of data,
+    # if so, return the other.
+    del_idx = False
+    for c,d in enumerate(datasets):
+        if len(d.series_values) == 0:
+            del_idx = c
+
+    if del_idx:
+        del datasets[del_idx]
+        return datasets[0]
+
     # create an empty data report
     merged_dataset = Classes.DataReport()
     # Add in information from the first data report in the list
@@ -146,7 +157,7 @@ def get_mass_in_reactor(dataset, flow_profiles, inputs,
         delta_mass = mass_input[x] - mass_out
         mass_in_reactor[x+1] = mass_in_reactor[x] + delta_mass
 
-    # find where calculated time points are the same as the 
+    # find where calculated time points are the same as the
     inds = np.where((flow_time > dataset.series_values[0])&(flow_time < dataset.series_values[-1]))[0]
     return mass_in_reactor[inds]
 

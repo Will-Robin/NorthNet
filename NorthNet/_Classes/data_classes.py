@@ -186,7 +186,11 @@ class DataReport:
 
         c_out = {}
         for c in condset:
-            self.conditions[c[0]] = [float(x) for x in c[1:]]
+            entry = [float(x) for x in c[1:]]
+            if len(entry) == 1:
+                self.conditions[c[0]] = entry[0]
+            else:
+                self.conditions[c[0]] = np.array(entry)
 
         dataset = self.import_file_section(file, "start_data", "end_data")
 
@@ -202,7 +206,17 @@ class DataReport:
 
         self.data = d_out
 
-        readstate = False
+        errors = self.import_file_section(file, "start_errors", "end_errors")
+
+        e = [list(i) for i in zip(*dataset)]
+        errors_out = {}
+        for s in e:
+            errors_out[s[0]] = np.array([0 if x == 'nan' else float(x) for x in s[1:]])
+
+        del errors_out[self.series_unit]
+
+        self.errors = errors_out
+
         analysis = self.import_file_section(file, "start_analysis_details",
                                                          "end_analysis_details")
         for a in analysis:
