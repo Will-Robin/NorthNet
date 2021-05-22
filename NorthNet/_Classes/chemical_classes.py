@@ -42,8 +42,64 @@ class Compound:
 
         self.In = []
         self.Out = []
-        self.Block = False
-        self.EdgeLog = []
+
+        self.ReactiveSubstructures = None
+
+class SystemInput:
+    '''
+    Class to store inputs into reaction network
+    '''
+    def __init__(self,id):
+        '''
+        Designed to behave like a compound object
+        self.SMILES does not actually hold a valid SMILES string,
+        it stores the input ID code.
+
+        Parameters
+        ----------
+        id: str
+            token for reaction input
+            should follow the convention
+            SMILES_#0
+        '''
+        self.Mol = Chem.MolFromSmiles(id.split('_')[0])
+
+        # Note that the self.SMILES does not
+        # actually hold a valid SMILES string,
+        # it stores the input ID code
+        self.SMILES = id
+
+        self.In = None
+        self.Out = []
+
+        self.ReactiveSubstructures = None
+
+class SystemOutput:
+    '''
+    Class to store inputs into reaction network
+    '''
+    def __init__(self,id):
+        '''
+        Designed to behave like a compound object
+        self.SMILES does not actually hold a valid SMILES string,
+        it stores the input ID code.
+
+        Parameters
+        ----------
+        id: str
+            token for reaction input
+            should follow the convention
+            SMILES_#0
+        '''
+        self.Mol = None
+
+        # Note that the self.SMILES does not
+        # actually hold a valid SMILES string,
+        # it stores the input ID code
+        self.SMILES = id
+
+        self.In = []
+        self.Out = None
 
         self.ReactiveSubstructures = None
 
@@ -157,6 +213,7 @@ class Reaction:
             self.ReactionTemplate = None
             self.MappedReaction = None
 
+            self.Classification = 'Reaction_Database_Entry'
             self.update_reaction()
 
         if reaction_object.__class__.__name__ == "Generated_Reaction":
@@ -167,6 +224,8 @@ class Reaction:
 
             self.ReactionTemplate = reaction_object.Reaction_Template
             self.MappedReaction = None # If mapping can be introduced inot the reaction generation process. If it is, this can be changed accordingly.
+            self.Classification = reaction_object.Reaction_Template.Name
+            self.Classification = 'generated_reaction'
             self.update_reaction()
 
         if reaction_object.__class__.__name__ == "str":
@@ -175,6 +234,7 @@ class Reaction:
             self.Reactants, self.Products = self.reactants_products_from_string(reaction_object)
             self.ReactionTemplate = None
             self.MappedReaction = None # If mapping can be introduced inot the reaction generation process. If it is, this can be changed accordingly.
+            self.Classification = 'reaction'
             self.update_reaction()
 
     def add_reaction_entry(self, new_entry):
@@ -185,8 +245,8 @@ class Reaction:
 
     def reactants_products_from_string(self, reaction_smiles):
         split_rxn_smiles = reaction_smiles.split('>>')
-        reactants = split_rxn_smiles[0].split('.')
-        products = split_rxn_smiles[1].split('.')
+        reactants = [x for x in split_rxn_smiles[0].split('.') if x != '']
+        products = [x for x in split_rxn_smiles[1].split('.') if x != '']
         return reactants, products
 
     def update_reaction(self):
@@ -203,6 +263,81 @@ class Reaction:
         for d in self.Database_Entries:
             d.ReactionSMILES = self.ReactionSMILES
             d.Info["Reaction"] = self.ReactionSMILES
+
+class ReactionInput:
+    '''
+    Class to store reaction inputs as into reaction network
+    '''
+    def __init__(self, reaction_input_string):
+        '''
+        Designed to behave like a Reaction object
+        self.SMILES does not actually hold a valid SMILES string,
+
+        Parameters
+        ----------
+        reaction_input_string: str
+            token for reaction input
+            should follow the convention
+            SMILES_#0>>SMILES
+        '''
+        self.Reaction = None
+        self.ReactionSMILES = reaction_input_string
+        self.Reactants, self.Products = self.reactants_products_from_string(reaction_input_string)
+
+        self.CompoundInput = self.Products
+        self.InputID = self.Reactants
+
+        self.ReactionTemplate = None
+
+        self.MappedReaction = None
+        self.Database_Entries = []
+        self.Generation_Details = []
+        self.Classification = 'reaction_input'
+        self.Info["Reaction"] = self.ReactionSMILES
+
+    def reactants_products_from_string(self, reaction_smiles):
+        split_rxn_smiles = reaction_smiles.split('>>')
+        reactants = [x for x in split_rxn_smiles[0].split('.') if x != '']
+        products = [x for x in split_rxn_smiles[1].split('.') if x != '']
+        return reactants, products
+
+class ReactionOutput:
+    '''
+    Class to store reaction inputs as into reaction network
+    '''
+    def __init__(self, reaction_input_string):
+        '''
+        Designed to behave like a Reaction object
+        self.SMILES does not actually hold a valid SMILES string,
+
+        Parameters
+        ----------
+        reaction_input_string: str
+            token for reaction input
+            should follow the convention
+            SMILES_#0>>SMILES
+        '''
+        self.Reaction = None
+        self.ReactionSMILES = reaction_input_string
+        self.Reactants, self.Products = self.reactants_products_from_string(reaction_input_string)
+
+        self.OutputID = self.Products
+        self.CompoundOutput = self.Reactants
+
+        self.ReactionTemplate = None
+
+        self.MappedReaction = None
+        self.Database_Entries = []
+        self.Generation_Details = []
+        self.Classification = 'reaction_input'
+        self.Info["Reaction"] = self.ReactionSMILES
+
+    def reactants_products_from_string(self, reaction_smiles):
+        split_rxn_smiles = reaction_smiles.split('>>')
+        reactants = [x for x in split_rxn_smiles[0].split('.') if x != '']
+        products = [x for x in split_rxn_smiles[1].split('.') if x != '']
+        return reactants, products
+
 
 class Network:
     def __init__(self, reactions, name, description):
@@ -221,6 +356,12 @@ class Network:
         '''2. Create dictionary of Compound objects used as reactants
         and products from the reaction objects (SMILES used as keys).'''
         self.NetworkCompounds = {}
+
+        '''3. Create dictionary to store network inputs'''
+        self.NetworkInputs = {}
+
+        '''4. Create dictionary of n twork outputs'''
+        self.NetworkOutputs = {}
 
         if len(reactions) == 0:
             pass
@@ -255,6 +396,43 @@ class Network:
                     else:
                         self.NetworkCompounds[b] = Classes.Compound(b)
                         self.NetworkCompounds[b].In = [r.ReactionSMILES]
+
+    def add_inputs(self, inputs):
+        for i in inputs:
+            if i in self.NetworkInputs:
+                pass
+            else:
+                self.NetworkReactions[i.ReactionSMILES] = i
+
+                if i.CompoundInput in self.NetworkCompounds:
+                    self.NetworkCompounds[i.SystemInput].In.append(i.ReactionSMILES)
+                else:
+                    self.NetworkCompounds[i.SystemInput] = Classes.Compound(i.SystemInput)
+                    self.NetworkCompounds[a].In = [i.ReactionSMILES]
+
+                if i.InputID in self.NetworkInputs:
+                    self.NetworkInputs[i.InputID].Out.append(i.ReactionSMILES)
+                else:
+                    self.NetworkInputs[i.InputID] = Classes.CompoundInput(i.InputID)
+
+
+    def add_outputs(self, outputs):
+        for i in outputs:
+            if i in self.NetworkOutputs:
+                pass
+            else:
+                self.NetworkReactions[i.ReactionSMILES] = i
+
+                if i.CompoundOutput in self.NetworkCompounds:
+                    self.NetworkCompounds[i.SystemOutput].Out.append(i.ReactionSMILES)
+                else:
+                    self.NetworkCompounds[i.SystemOutput] = Classes.Compound(i.CompoundInput)
+                    self.NetworkCompounds[a].Out = [i.ReactionSMILES]
+
+                if i.InputID in self.NetworkOutputs:
+                    self.NetworkOutputs[i.OutputID].In.append(i.ReactionSMILES)
+                else:
+                    self.NetworkOutputs[i.OutputID] = [Classes.CompoundOutput(i.OutputID)]
 
     def add_compounds(self,compounds):
         for n in compounds:
