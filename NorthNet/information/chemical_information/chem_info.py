@@ -42,6 +42,12 @@ molecular_masses = {k:float(v) for k,v in
                            zip(props_dict['@ SMILES'], props_dict['Mr_gmol-1'])}
 canonical_SMILES = {k:v for k,v in
                        zip(props_dict['compound_name'], props_dict['@ SMILES'])}
+
+for a,b in zip(props_dict['Other_names'], props_dict['@ SMILES']):
+    for s in a.split(';'):
+        if s != '':
+            canonical_SMILES[s] = b
+
 smiles_to_names = {}
 init_can_SMILES = [c for c in canonical_SMILES]
 for c in init_can_SMILES:
