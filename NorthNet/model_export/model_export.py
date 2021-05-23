@@ -1,5 +1,6 @@
 from NorthNet.model_export import model_export
 from NorthNet import info_params
+from NorthNet import Classes
 import numpy as np
 
 def add_flow_terms(network, inputs):
@@ -17,10 +18,10 @@ def add_flow_terms(network, inputs):
 
     add_outputs = []
     for c in network.NetworkCompounds:
-        r_obj = Classes.Reaction("{}>>".format(c))
-        r_obj.Classification = 'flow_output'
-        add_reactions.append(r_obj)
+        r_obj = Classes.ReactionOutput("{}>>Sample".format(c))
+        add_outputs.append(r_obj)
 
+    network.add_outputs(add_outputs)
 
 def network_indices(network):
     '''
@@ -31,29 +32,27 @@ def network_indices(network):
 
     Returns
     -------
-    species, rate_consts, inflows
+    species, rate_consts, inflows, flow_ins, flow_outs
         Dictionaries of tokens and their indices.
     '''
 
     compounds = [network.NetworkCompounds[x] for x in network.NetworkCompounds]
-    reactions = [*network.NetworkReactions]
+    network_inputs = [*network.NetworkInputs]
+    inflows = [r for r in network.NetworkReactions if '_#0' in r]
+    outflows = [r for r in network.NetworkReactions if 'Sample' in r]
+    reactions = [r for r in network.NetworkReactions]
+    for i in inflows:
+        reactions.remove(i)
+    for o in outflows:
+        reactions.remove(o)
 
-    species = {s.SMILES:"S[{}]".format(c) for c,s in enumerate(compounds) if s. != ''}
+    species = {s.SMILES:"S[{}]".format(c) for c,s in enumerate(compounds) if s != ''}
     rate_consts = {k:"k[{}]".format(c) for c,k in enumerate(reactions)}
+    inputs = {i:'I[{}]'.format(c) for c,i in enumerate(network_inputs)}
+    flow_ins = {i:'F[{}]'.format(c) for c,i in enumerate(inflows)}
+    flow_outs = {o:'sigma_flow' for o in outflows}
 
-    out_ind = -1
-    for c,k in enumerate(rate_consts):
-        if k.endswith(">>") and out_ind == -1:
-            out_ind = c
-        if k.endswith(">>") and out_ind != -1:
-            rate_consts[k] = "k[{}]".format(out_ind)
-
-    inflows = {}
-    inflow_reactions = [x for x in network.NetworkReactions if x.startswith(">>")]
-    for c,k in enumerate(inflow_reactions):
-        inflows[k] = "C[{}]".format(c)
-
-    return species, rate_consts, inflows
+    return species, rate_consts, inputs, flow_ins, flow_outs
 
 def write_model_equation_text(network):
     '''
@@ -71,30 +70,40 @@ def write_model_equation_text(network):
     compounds = [x for x in network.NetworkCompounds]
     reactions = [*network.NetworkReactions]
 
-    species, rate_consts, inflows = model_export.network_indices(network)
+    species, rate_consts, inflows, flow_ins, flow_outs = model_export.network_indices(network)
 
     eq_text = ""
 
     for count,c in enumerate(compounds):
         eq_text += "P[{}] = ".format(count)
         for i in network.NetworkCompounds[c].In:
-
-            reactants = network.NetworkReactions[i].Reactants
-            reactants = [x for x in reactants if x not in ['','O']]
-
-            ki = "+{}*".format(rate_consts[i])
-
-            if len(reactants) == 0:
-                specs = ''#inflows[i]
+            if '_#0' in i:
+                in_compound = network.NetworkReactions[i].InputID
+                ki = '+{}*{}'.format(flow_ins[i], inflows[in_compound])
+                eq_text += ki
             else:
-                specs = "*".join([species[x] for x in reactants])
+                reactants = network.NetworkReactions[i].Reactants
+                # remove water from reactants
+                reactants = [x for x in reactants if x != 'O']
 
-            eq_text += "{}{}".format(ki,specs)
+                ki = "+{}*".format(rate_consts[i])
+
+                if len(reactants) == 0:
+                    specs = ''#inflows[i]
+                else:
+                    specs = "*".join([species[x] for x in reactants])
+
+                eq_text += "{}{}".format(ki,specs)
 
         for o in network.NetworkCompounds[c].Out:
-            ki = "-{}*".format(rate_consts[o])
-            specs = "*".join([species[x] for x in network.NetworkReactions[o].Reactants])
-            eq_text += "{}{}".format(ki,specs)
+            if 'Sample' in o:
+                out_compound = network.NetworkReactions[o].CompoundOutput
+                ki = '-{}*{}'.format(flow_outs[o], species[out_compound])
+                eq_text += ki
+            else:
+                ki = "-{}*".format(rate_consts[o])
+                specs = "*".join([species[x] for x in network.NetworkReactions[o].Reactants])
+                eq_text += "{}{}".format(ki,specs)
 
         eq_text += "\n"
 
@@ -115,7 +124,7 @@ def write_model_matrix_text(network):
     compounds = [x for x in network.NetworkCompounds]
     reactions = [*network.NetworkReactions]
 
-    species, rate_consts, inflows = model_export.network_indices(network)
+    species, rate_consts, inflows, flow_ins, flow_outs = model_export.network_indices(network)
 
     ratemat = [['0' for x in species] for x in species]
 
@@ -195,7 +204,7 @@ def write_Jacobian_matrix_text(network):
     compounds = [x for x in network.NetworkCompounds]
     reactions = [*network.NetworkReactions]
 
-    species, rate_consts, inflows = model_export.network_indices(network)
+    species, rate_consts, inflows, flow_ins, flow_outs = model_export.network_indices(network)
 
     jac_mat = [['0' for x in species] for x in species]
 
@@ -203,7 +212,9 @@ def write_Jacobian_matrix_text(network):
         for c2,comp2 in enumerate(compounds):
             element = ""
             for i in network.NetworkCompounds[comp1].In:
-                if comp2 in network.NetworkReactions[i].Reactants:
+                if '_#0' in i:
+                    pass
+                elif comp2 in network.NetworkReactions[i].Reactants:
                     reacs = [species[x] for x in network.NetworkReactions[i].Reactants if x != comp2]
                     ki = "+{}".format(rate_consts[i])
                     element += "{}*{}".format(ki,"*".join(reacs))
@@ -211,7 +222,10 @@ def write_Jacobian_matrix_text(network):
                     pass
 
             for o in network.NetworkCompounds[comp1].Out:
-                if comp2 in network.NetworkReactions[o].Reactants:
+                if 'Sample' in o:
+                    ki = '-{}'.format(flow_outs[o])
+                    element += ki
+                elif comp2 in network.NetworkReactions[o].Reactants:
                     reacs = [species[x] for x in network.NetworkReactions[o].Reactants if x != comp2]
                     ki = "-{}".format(rate_consts[o])
                     element += "{}*{}".format(ki,"*".join(reacs))
@@ -334,28 +348,25 @@ def write_flow_profile_text(flow_profiles, network, time_limit = 1e100):
     '''
     get_index = lambda x: int(x[x.find("[")+1:x.find("]")])
 
-    t, conc_dict = model_export.concentrations_from_flow_profile(flow_profiles,
-                                                            time_limit = time_limit)
-
     t, total_flow = model_export.get_flow_rate(flow_profiles, time_limit = time_limit)
 
-    species_indices, rate_consts_indices, inflows = model_export.network_indices(network)
+    species, rate_consts, inflows, flow_ins, flow_outs = model_export.network_indices(network)
 
 
     collection_array = np.zeros((len(conc_dict)+2, len(t)))
     collection_array[0] = t
     for i in inflows:
-        if i == '>>O':
+        if 'O_#0' in i:
             pass
         else:
-            key = i + '/ M'
+            key = i.strip('_#0') + '/ M'
             key = key.replace(">>","")
             idx = get_index(inflows[i])
             collection_array[idx+1] = conc_dict[key]
 
     collection_array[-1] = total_flow
 
-    text = 'F = np.array('
+    text = 'allF = np.array('
     text += np.array2string(collection_array,
                                  formatter={'float_kind':lambda x: "%.9f" % x},
                                  separator=',',threshold=np.inf)
@@ -383,7 +394,7 @@ def write_model_as_module(network, numba_decoration = False, filename = ''):
     # mat_text = model_export.write_model_matrix_text(network)
     jac_text = model_export.write_Jacobian_matrix_text(network)
 
-    species_indices, rate_consts_indices, inflows = model_export.network_indices(network)
+    species, rate_consts, inflows, flow_ins, flow_outs = model_export.network_indices(network)
 
     if filename == '':
         fname = "{}.py".format(network.Name)
@@ -457,13 +468,14 @@ def write_model_as_module_text_B(network, flow_profiles,
 
     get_index = lambda x: int(x[x.find("[")+1:x.find("]")])
 
-    flow_profile_text = model_export.write_flow_profile_text(flow_profiles, network,
-                                                time_limit = time_limit)
     eq_text = model_export.write_model_equation_text(network).split("\n")
     # mat_text = model_export.write_model_matrix_text(network)
     jac_text = model_export.write_Jacobian_matrix_text(network)
 
-    species_indices, rate_consts_indices, inflows = model_export.network_indices(network)
+    flow_profile_text = model_export.write_flow_profile_text(flow_profiles, network,
+                                                time_limit = time_limit)
+
+    species, rate_consts, inflows, flow_ins, flow_outs = model_export.network_indices(network)
 
     lines = ["import numpy as np\n"]
     if numba_decoration:
@@ -504,15 +516,15 @@ def write_model_as_module_text_B(network, flow_profiles,
     lines.append("\n")
     lines.append("species = {")
 
-    for k in species_indices:
-        idx = get_index(species_indices[k])
+    for k in species:
+        idx = get_index(species[k])
         lines.append("'{}':{},".format(k,idx))
     lines.append("}\n")
     lines.append("\n")
 
     lines.append("reactions = {")
-    for k in rate_consts_indices:
-        idx = get_index(rate_consts_indices[k])
+    for k in rate_consts:
+        idx = get_index(rate_consts[k])
         lines.append("'{}':{},".format(k,idx))
 
     lines.append("}\n")

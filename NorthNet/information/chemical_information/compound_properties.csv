@@ -1,5 +1,5 @@
 compound_name,@ SMILES,@@ SMILES,Class,colour,Mr_gmol-1,Number,Other_names
-formaldehyde,C=O,C=O,C1_Class_I,#0917e5,30.03,1,form;H2C=O
+formaldehyde,C=O,C=O,C1_Class_I,#0917e5,30.03,1,form;H2C=O;formaldehyde_concentration;Formaldehyde
 formic_acid,O=CO,O=CO,Carboxylic_acid,#040404,46,2,;
 glycolaldehyde,O=CCO,O=CCO,C2_Class_I,#6d1df1,60.05,3,;
 dihydroxyacetone,O=C(CO)CO,O=C(CO)CO,C3_Class_II,#e7a529,90.08,4,DHA;Dihydroxyacetone
@@ -20,7 +20,7 @@ aldotetrose_alpha_branch_syn,O=C[C@](O)(CO)[C@H](O)CO,O=C[C@@](O)(CO)[C@@H](O)CO
 aldotetrose_beta_branch,O=C[C@H](O)C(O)(CO)CO,O=C[C@@H](O)C(O)(CO)CO,C5_Class_V,#f53f06,150.13,19,;
 arabinose,O=C[C@@H](O)[C@H](O)[C@H](O)CO,O=C[C@H](O)[C@@H](O)[C@@H](O)CO,C5_Class_I,#DD7790,150.13,20,;
 lyxose,O=C[C@@H](O)[C@@H](O)[C@H](O)CO,O=C[C@H](O)[C@H](O)[C@@H](O)CO,C5_Class_I,#771124,150.13,21,;
-ribose,O=C[C@H](O)[C@H](O)[C@H](O)CO,O=C[C@@H](O)[C@@H](O)[C@@H](O)CO,C5_Class_I,#AA4457,150.13,22,;
+ribose,O=C[C@H](O)[C@H](O)[C@H](O)CO,O=C[C@@H](O)[C@@H](O)[C@@H](O)CO,C5_Class_I,#AA4457,150.13,22,Ribose;ribose_concentration;
 ribulose,O=C(CO)[C@H](O)[C@H](O)CO,O=C(CO)[C@@H](O)[C@@H](O)CO,C5_Class_II,#eeb29f,150.13,23,;
 xylose,O=C[C@H](O)[C@@H](O)[C@H](O)CO,O=C[C@@H](O)[C@H](O)[C@@H](O)CO,C5_Class_I,#cd0d3c,150.13,24,;
 xylulose,O=C(CO)[C@@H](O)[C@H](O)CO,O=C(CO)[C@H](O)[C@@H](O)CO,C5_Class_II,#eeb29f,150.13,25,;
@@ -113,3 +113,6 @@ polyolZ,OC[C@H](O)[C@@H](O)[C@H](O)CO,OC[C@@H](O)[C@H](O)[C@@H](O)CO,polyol,#d0d
 6_enolate_16,OCC(O)=C(O)[C@H](O)[C@@H](O)CO,OCC(O)=C(O)[C@@H](O)[C@H](O)CO,enolate,#d0d1df,180.06,112,;
 6_enolate_17,OCC(O)=C(O)[C@H](O)[C@H](O)CO,OCC(O)=C(O)[C@@H](O)[C@@H](O)CO,enolate,#d0d1df,180.06,113,;
 6_enolate_18,OCC(O)=C(O)C(O)(CO)CO,OCC(O)=C(O)C(O)(CO)CO,enolate,#d0d1df,180.06,114,;
+hydroxide,[OH-],[OH-],base,#000000,17,115,sodium_hydroxide;sodium hydroxide;NaOH;sodium_hydroxide_concentration;NaOH_concentration
+calcium_chloride,CaCl2,CaCl2,reagent,#000000,147.01,116,CaCl2;calcium chloride;CaCl2_concentration
+water,O,O,solvent,#000000,18,117,H2O;
