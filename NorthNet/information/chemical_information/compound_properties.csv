@@ -1,5 +1,5 @@
 compound_name,@ SMILES,@@ SMILES,Class,colour,Mr_gmol-1,Number,Other_names
-formaldehyde,C=O,C=O,C1_Class_I,#0917e5,30.03,1,form;H2C=O;formaldehyde_concentration;Formaldehyde
+formaldehyde,C=O,C=O,C1_Class_I,#0917e5,30.03,1,form;H2C=O;formaldehyde_concentration;Formaldehyde;HCHO
 formic_acid,O=CO,O=CO,Carboxylic_acid,#040404,46,2,;
 glycolaldehyde,O=CCO,O=CCO,C2_Class_I,#6d1df1,60.05,3,;
 dihydroxyacetone,O=C(CO)CO,O=C(CO)CO,C3_Class_II,#e7a529,90.08,4,DHA;Dihydroxyacetone
