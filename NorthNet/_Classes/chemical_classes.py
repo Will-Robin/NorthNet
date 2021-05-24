@@ -466,7 +466,6 @@ class Network:
 
             del self.NetworkReactions[r]
 
-
 class Substructure_Network:
     '''
     A network designed to show the relationship between functional
@@ -570,7 +569,8 @@ class ModelWriter:
                        input_token = '_#0',
                        output_token = 'Sample',
                        flowrate_time_conversion = 3600,
-                       time_limit = False):
+                       time_limit = False,
+                       lead_time = 1000):
         '''
         network: NorthNet Network
         experiment: NorthNet DataReport,
@@ -593,6 +593,7 @@ class ModelWriter:
         self.flowrate_time_conversion = flowrate_time_conversion
         self.time = np.inf
         self.time_limit = time_limit
+        self.lead_time = lead_time
         self.observed_compounds = []
         self.reactor_volume = 1.0
         self.flow_profile_time = []
@@ -604,6 +605,7 @@ class ModelWriter:
         self.inputs = {}
         self.inflows = {}
         self.outflows = {}
+        self.time_offset = 0.0
 
         if network == None:
             pass
@@ -643,6 +645,52 @@ class ModelWriter:
         self.inputs = inputs
         self.inflows = flow_ins
         self.outflows = flow_outs
+
+    def load_experiment_details(self, experiment):
+        if experiment.series_unit == 'time/ s':
+            self.time = experiment.series_values.copy()
+
+        for d in experiment.data:
+            self.observed_compounds.append(d.split('/')[0].split(' ')[0])
+
+        for c in experiment.conditions:
+            if 'reactor_volume' in c:
+                self.reactor_volume = experiment.conditions[c]
+            elif ' M' in c:
+                standardised_key = c.split('_')[0].split('/')[0]
+                clef = info_params.canonical_SMILES[standardised_key]
+                for f in self.inputs:
+                    stand_flow_key = f.split('_')[0]
+                    if clef == stand_flow_key:
+                        self.inputs[f] = experiment.conditions[c]
+            elif 'time' in c and 'flow' in c:
+                self.flow_profile_time = experiment.conditions[c].copy()
+
+            elif 'flow' in c and not 'time' in c:
+                standardised_key = c.split(' ')
+                clef = info_params.canonical_SMILES[standardised_key[0].split('_')[0]]
+                self.flow_profiles[clef] = experiment.conditions[c].copy()
+
+        if self.time_limit:
+            t_lim_max = min(np.amax(self.time), self.time_limit)
+        else:
+            t_lim_max = np.amax(self.time)
+
+        t_lim_min = self.time[0] - self.lead_time
+
+        idx = np.where((self.flow_profile_time > t_lim_min)&
+                       (self.flow_profile_time < t_lim_max))[0]
+
+        self.flow_profile_time = self.flow_profile_time[idx]
+        self.time_offset = self.flow_profile_time[0]
+        self.flow_profile_time -= self.time_offset
+        self.time -= self.time_offset
+
+        self.sigma_flow = np.zeros(len(self.flow_profile_time))
+        for f in self.flow_profiles:
+            self.flow_profiles[f] = self.flow_profiles[f][idx]/self.reactor_volume
+            self.flow_profiles[f] /= self.flowrate_time_conversion
+            self.sigma_flow += self.flow_profiles[f]
 
     def write_equation_text(self):
 
@@ -696,42 +744,6 @@ class ModelWriter:
             eq_text += "\n"
 
         return eq_text
-
-    def load_experiment_details(self, experiment):
-        if experiment.series_unit == 'time/ s':
-            self.time = experiment.series_values
-
-        for d in experiment.data:
-            self.observed_compounds.append(d.split('/')[0].split(' ')[0])
-
-        for c in experiment.conditions:
-            if 'reactor_volume' in c:
-                self.reactor_volume =experiment.conditions[c]
-            elif ' M' in c:
-                standardised_key = c.strip('M').strip(' ').strip('/')
-                clef = info_params.canonical_SMILES[standardised_key]
-                for f in self.inputs:
-                    if clef in f:
-                        self.inputs[f] = experiment.conditions[c]
-            elif 'time' in c and 'flow' in c:
-                if self.time_limit:
-                    t_lim = min(np.amax(self.time), self.time_limit)
-                else:
-                    t_lim = np.amax(self.time)
-
-                idx = np.where(experiment.conditions[c] < t_lim)[0]
-                self.flow_profile_time = experiment.conditions[c][idx]
-
-            elif 'flow' in c and not 'time' in c:
-                standardised_key = c.split(' ')
-                clef = info_params.canonical_SMILES[standardised_key[0].split('_')[0]]
-                self.flow_profiles[clef] = experiment.conditions[c]
-
-        self.sigma_flow = np.zeros(len(self.flow_profile_time))
-        for f in self.flow_profiles:
-            self.flow_profiles[f] = self.flow_profiles[f][idx]/self.reactor_volume
-            self.flow_profiles[f] /= self.flowrate_time_conversion
-            self.sigma_flow += self.flow_profiles[f]
 
     def write_flow_profile_text(self):
         collection_array = np.zeros((len(self.flow_profiles)+2,
@@ -809,14 +821,11 @@ class ModelWriter:
 
         lines = ["import numpy as np\n"]
         if numba_decoration:
-            lines.append("import numba\n")
-            lines.append("\n")
+            lines.append("import numba\n\n")
             lines.append("@numba.jit(numba.float64[:](numba.float64,numba.float64[:],numba.float64[:]),\n"
                        "\tlocals={'P': numba.float64[:],'F': numba.float64[:,:],'I':numba.float64[:]},nopython=True)\n")
-        lines.append("def model_function(time, S, k):\n")
-        lines.append("\n")
-        lines.append("\tP = np.zeros(len(S))\n")
-        lines.append("\n")
+        lines.append("def model_function(time, S, k):\n\n")
+        lines.append("\tP = np.zeros(len(S))\n\n")
         lines.append("\t")
         lines.append(flow_profile_text)
         lines.append("\n")
@@ -868,7 +877,8 @@ class ModelWriter:
 
         lines.append("C = np.zeros(len(inputs)) # input concentrations\n")
         lines.append("\n")
-
+        lines.append("time_offset = {}\n".format(self.time_offset))
+        lines.append("lead_in_time = {}\n".format(self.lead_time))
 
         text = ''
         for l in lines:

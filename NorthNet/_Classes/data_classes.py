@@ -1,8 +1,9 @@
 import numpy as np
+from pathlib import Path
 from NorthNet import data_processing as d_p
 from NorthNet import info_params
 
-class Dataset:
+class Dataset_old:
     '''
     Dataset object consisting of time series data for mutiple variables
     sharing the same time axis.
@@ -132,6 +133,7 @@ class DataReport:
         self.series_values = np.array([])
         self.series_unit = 'not specified'
         self.data = {}
+        self.errors = {}
 
         if file == '':
             pass
@@ -173,7 +175,10 @@ class DataReport:
         '''
         spl_lin = lambda x : [e for e in x.strip('\n').split(',') if e != '']
 
-        self.filename = str(file)
+        if type(file) == str:
+            file = Path(file)
+
+        self.filename = file.name
 
         with open(file, 'r', encoding = 'latin-1') as f:
             for line in f:
@@ -194,9 +199,9 @@ class DataReport:
 
         dataset = self.import_file_section(file, "start_data", "end_data")
 
-        e = [list(i) for i in zip(*dataset)]
+        transposed_datalines = [list(i) for i in zip(*dataset)]
         d_out = {}
-        for s in e:
+        for s in transposed_datalines:
             d_out[s[0]] = np.array([0 if x == 'nan' else float(x) for x in s[1:]])
 
         self.series_unit = dataset[0][0]
@@ -208,14 +213,15 @@ class DataReport:
 
         errors = self.import_file_section(file, "start_errors", "end_errors")
 
-        e = [list(i) for i in zip(*dataset)]
-        errors_out = {}
-        for s in e:
-            errors_out[s[0]] = np.array([0 if x == 'nan' else float(x) for x in s[1:]])
-
-        del errors_out[self.series_unit]
-
-        self.errors = errors_out
+        if len(errors) == 0:
+            self.errors = {d:np.zeros(len(self.series_values)) for d in self.data}
+        else:
+            transposed_error_lines = [list(i) for i in zip(*errors)]
+            errors_out = {}
+            for s in transposed_error_lines:
+                errors_out[s[0]] = np.array([0 if x == 'nan' else float(x) for x in s[1:]])
+            del errors_out[self.series_unit]
+            self.errors = errors_out
 
         analysis = self.import_file_section(file, "start_analysis_details",
                                                          "end_analysis_details")
@@ -233,7 +239,10 @@ class DataReport:
         outfile.write("start_conditions\n")
         for c in self.conditions:
             outfile.write("{},".format(c))
-            [outfile.write("{},".format(x)) for x in self.conditions[c]]
+            if type(self.conditions[c]) == float:
+                outfile.write("{},".format(self.conditions[c]))
+            else:
+                [outfile.write("{},".format(x)) for x in self.conditions[c]]
             outfile.write("\n")
         outfile.write("end_conditions\n")
         # writing analysis details
@@ -258,12 +267,15 @@ class DataReport:
         '''
 
         import numpy as np
-        an_type = self.analysis_details['Chromatography_method'][0]
+        if 'Chromatography_method' in self.analysis_details:
+            an_type = self.analysis_details['Chromatography_method'][0]
+        else:
+            an_type = 'not specified'
 
         if filename == '':
             filename = self.filename
-        elif not filename.endswith('csv'):
-            filename = filename + 'csv'
+        elif not filename.endswith('.csv'):
+            filename = filename + '.csv'
         if path == None:
             fname = filename
         else:
@@ -369,3 +381,50 @@ class DataReport:
                 del_list.append(d)
 
         self.remove_specific_entries(del_list)
+
+class DataSet:
+    def __init__(self, data_reports = []):
+        self.data_reports = {}
+        self.compounds = []
+
+        if len(data_reports) == 0:
+            pass
+        else:
+            for d in data_reports:
+                self.add_data_report(d)
+
+
+    def add_data_report(self, data_report):
+        '''
+        data_report: NorthNet DataReport
+        '''
+        self.data_reports[len(self.data_reports)+1] = data_report
+
+        for d in data_report.data:
+            if d not in self.compounds:
+                self.compounds.append(d)
+
+    def find_entry(self,entry_name):
+        x_ax = np.array([])
+        y_ax = np.array([])
+        for d in self.data_reports:
+            if entry_name in self.data_reports[d].data:
+                y_ax = np.hstack((y_ax, self.data_reports[d].data[entry_name]))
+                x_ax = np.hstack((x_ax, self.data_reports[d].series_values))
+
+        return x_ax, y_ax
+
+    def get_entry(self, entry_name):
+
+        x_ax, y_ax = self.find_entry(entry_name)
+
+        i = np.argsort(x_ax)
+        x_ax = x_ax[i]
+        y_ax = y_ax[i]
+
+        return x_ax, y_ax
+
+    def get_entry_indices(self,entry):
+        x_ax, y_ax = self.find_entry(entry)
+        i = np.argsort(x_ax)
+        return i
