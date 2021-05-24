@@ -65,27 +65,32 @@ def combine_datasets(datasets, time_dependent = False):
                 f = interpolate.interp1d(d.series_values,
                                          d.data[comp], kind = "linear")
                 new_data[comp] = f(merged_dataset.series_values)
-    elif len(datasets[0].series_values) == len(datasets[1].series_values):
 
-        merged_dataset.series_values = datasets[0].series_values
+    elif len(datasets[0].series_values) == len(datasets[1].series_values):
         # If the data are considered time-independent and of the same length,
         # measurements between data sets can be considered to be at similar
         # sampling points.
+        merged_dataset.series_values = datasets[0].series_values
         new_data = {}
 
         for d in datasets:
             for comp in d.data:
                 new_data[comp] = d.data[comp]
     else:
+        # measurements between the two data sets will be combined
+        # with the longer one trimmed to the length of the shorter one
         # find the shortest data set
         shortest = min(datasets, key = lambda x:len(x.series_values))
         # Create new data container with the longest dataset trimmed to be
         # the same length as the shortest
+        new_data_length = len(shortest.series_values)
         new_data = {}
         for d in datasets:
             for comp in d.data:
-                new_data[comp] = d.data[comp][:len(shortest)]
+                new_data[comp] = d.data[comp][:new_data_length]
 
+        min_val = min(datasets[0].series_values[0],datasets[1].series_values[0])
+        merged_dataset.series_values = np.arange(min_val,min_val+new_data_length,1)
 
     # Put the merged data into the new DataReport object.
     merged_dataset.data = new_data
