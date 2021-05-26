@@ -113,6 +113,6 @@ polyolZ,OC[C@H](O)[C@@H](O)[C@H](O)CO,OC[C@@H](O)[C@H](O)[C@@H](O)CO,polyol,#d0d
 6_enolate_16,OCC(O)=C(O)[C@H](O)[C@@H](O)CO,OCC(O)=C(O)[C@@H](O)[C@H](O)CO,enolate,#d0d1df,180.06,112,;
 6_enolate_17,OCC(O)=C(O)[C@H](O)[C@H](O)CO,OCC(O)=C(O)[C@@H](O)[C@@H](O)CO,enolate,#d0d1df,180.06,113,;
 6_enolate_18,OCC(O)=C(O)C(O)(CO)CO,OCC(O)=C(O)C(O)(CO)CO,enolate,#d0d1df,180.06,114,;
-hydroxide,[OH-],[OH-],base,#000000,17,115,sodium_hydroxide;sodium hydroxide;NaOH;sodium_hydroxide_concentration;NaOH_concentration
-calcium_chloride,CaCl2,CaCl2,reagent,#000000,147.01,116,CaCl2;calcium chloride;CaCl2_concentration
+hydroxide,[OH-],[OH-],base,#9f9ec7,17,115,sodium_hydroxide;sodium hydroxide;NaOH;sodium_hydroxide_concentration;NaOH_concentration
+calcium_chloride,CaCl2,CaCl2,reagent,#3be3b3,147.01,116,CaCl2;calcium chloride;CaCl2_concentration
 water,O,O,solvent,#000000,18,117,H2O;
