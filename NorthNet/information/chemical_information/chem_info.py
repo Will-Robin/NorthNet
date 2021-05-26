@@ -38,6 +38,16 @@ for c,p in enumerate(props_dict['@@ SMILES']):
     else:
         colour_assignments[p] = props_dict['colour'][c]
 
+
+for c,p in enumerate(props_dict['Other_names']):
+    for s in p.split(';'):
+        if s == '':
+            pass
+        elif s in colour_assignments:
+            pass
+        else:
+            colour_assignments[s] = props_dict['colour'][c]
+
 molecular_masses = {k:float(v) for k,v in
                            zip(props_dict['@ SMILES'], props_dict['Mr_gmol-1'])}
 canonical_SMILES = {k:v for k,v in
@@ -49,14 +59,13 @@ for a,b in zip(props_dict['Other_names'], props_dict['@ SMILES']):
             canonical_SMILES[s] = b
 
 smiles_to_names = {}
-init_can_SMILES = [c for c in canonical_SMILES]
-for c in init_can_SMILES:
-    spl_name = c.split(' ')
-    canonical_SMILES[spl_name[0]] = canonical_SMILES[c]
-    smiles_to_names[canonical_SMILES[c]] = spl_name[0]
+for c,v in enumerate(props_dict['compound_name']):
+    spl_name = v.split(' ')[0]
+    smiles_to_names[props_dict['@ SMILES'][c]] = spl_name
 
 class_assignments =  {k:v for k,v in
                                zip(props_dict['@ SMILES'], props_dict['Class'])}
+
 for sm,cls in zip(props_dict['@@ SMILES'], props_dict['Class']):
     class_assignments[sm] = cls
 
