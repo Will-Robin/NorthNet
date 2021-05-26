@@ -74,4 +74,13 @@ fr_assign = readTwoColInfo(script_dir/'fragment_assignments.csv', 0, 1)
 frag_assignments = {float(f):fr_assign[f] for f in fr_assign}
 frag_colours = readTwoColInfo(script_dir/'fragment_assignments.csv', 0, 2)
 
-# with open()
+reaction_SMARTS = {}
+reaction_class_colours = {}
+with open(script_dir/'reaction_SMARTS_templates.txt', 'r') as f:
+    for c,line in enumerate(f):
+        if c==0:
+            pass
+        else:
+            ins = line.strip('\n').split('\t')
+            reaction_SMARTS[ins[0]] = ins[3]
+            reaction_class_colours[ins[0]] = ins[4]
