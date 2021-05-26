@@ -1,3 +1,9 @@
+from rdkit import Chem
+from rdkit.Chem import AllChem
+from NorthNet import Classes
+from NorthNet import _network_generation as n_gen
+from NorthNet.molecule_operations import editing
+
 def run_reaction(reactant_compounds, reaction_template):
     '''
     Performs a chemical reaction.
@@ -29,7 +35,7 @@ def run_reaction(reactant_compounds, reaction_template):
     ps = reaction_template.Reaction.RunReactants(reactants) # Run the reaction to give a list of products sets
     for u in ps:
         for p in u:
-            p = n_gen.incorrect_chiral_H_solve(p)
+            p = editing.incorrect_chiral_H_solve(p)
             Chem.SanitizeMol(p)
 
         rxn = AllChem.ChemicalReaction() # Create an empty chemical reaction

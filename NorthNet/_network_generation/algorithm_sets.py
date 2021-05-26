@@ -1,3 +1,6 @@
+from NorthNet import network_generation as n_gen
+from NorthNet import Classes
+
 def carbonyl_migration_isomers(network,
                                deprot_rule = Classes.Reaction_Template("deprotonation","[Ch:1][C:2]=[O:3].[O-:4] >> [C:1]=[C:2][O:3].[O-:4]",["[Ch:1][C:2]=[O:3","[O-:4]"],["[C:1]=[C:2][O:3]","[O-:4]"]),
                                prot_rule = Classes.Reaction_Template("protonation","[C:1]=[C:2][O:3].[O:4] >> [Ch:1][C:2]=[O:3].[O:4]", ["[C:1]=[C:2][O:3]","[O:4]"],["[Ch:1][C:2]=[O:3]","[O:4]"])):

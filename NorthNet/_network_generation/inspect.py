@@ -1,3 +1,5 @@
+from itertools import compress
+
 def reactive_species(species_list, substructures):
     '''
     Find species in 'species_list'  with a given

@@ -1,3 +1,6 @@
+from rdkit import Chem
+from rdkit.Chem import AllChem
+
 def canonicalise(smiles):
     '''
     Canonicalises a SMILES molecular structure.

@@ -1,3 +1,7 @@
+from rdkit import Chem
+from NorthNet import network_generation as n_gen
+from NorthNet import Classes
+
 def extend_network_specific(network, reagents, reaction_template, exceptions):
     '''
     Extend the network using a single reagent set.

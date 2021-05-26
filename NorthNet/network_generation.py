@@ -1,7 +1,5 @@
-from rdkit import Chem
-from rdkit.Chem import AllChem, rdmolops
-from itertools import compress
-from NorthNet import network_generation as n_gen
-from NorthNet import Classes
-from NorthNet import reaction_ops as r_ops
-from NorthNet import network_ops as net_ops
+from NorthNet._network_generation.algorithm_level import *
+from NorthNet._network_generation.algorithm_sets import *
+from NorthNet._network_generation.inspect import *
+from NorthNet._network_generation.reaction_level import *
+from NorthNet.molecule_operations.editing import *
