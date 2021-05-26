@@ -1,3 +1,4 @@
+import numpy as np
 def chord_diagram(corr_mat, labelling = [], colour_map = [], dat_labels = [], ax = None):
 
     from NorthNet import data_processing as d_p
