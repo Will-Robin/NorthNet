@@ -3,7 +3,6 @@ import os
 import networkx as nx
 import pickle
 from rdkit import Chem
-from graphviz import Digraph
 from pathlib import Path
 
 from NorthNet import Classes
