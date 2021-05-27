@@ -466,6 +466,24 @@ class Network:
 
             del self.NetworkReactions[r]
 
+    def get_reaction(self, reaction):
+        return self.NetworkReactions[reaction]
+
+    def get_reactants(self, reaction):
+        return self.get_reaction(reaction).Reactants
+
+    def get_products(self, reaction):
+        return self.get_reaction(reaction).Products
+
+    def get_reaction_template(self, reaction):
+        return self.get_reaction(reaction).ReactionTemplate
+
+    def get_reaction_SMARTS(self, reaction):
+        return self.get_reaction_template(reaction).ReactionSMARTS
+
+    def get_reaction_name(self, reaction):
+        return self.get_reaction_template(reaction).Name
+
 class Substructure_Network:
     '''
     A network designed to show the relationship between functional
