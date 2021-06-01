@@ -10,7 +10,7 @@ threitol,OC[C@@H](O)[C@H](O)CO,OC[C@H](O)[C@@H](O)CO,C4_alcohol,#e0e3e1,112.12,8
 aldotriose_alpha_branched,O=CC(O)(CO)CO,O=CC(O)(CO)CO,C4_Class_II,#44AAAA,120.1,9,;
 erythrose,O=C[C@H](O)[C@H](O)CO,O=C[C@@H](O)[C@@H](O)CO,C4_Class_I,#77AADD,120.1,10,;
 erythrulose,O=C(CO)[C@H](O)CO,O=C(CO)[C@@H](O)CO,C4_Class_II,#117777,120.1,11,;
-glycolaldehyde_dimer,CC1COC(C)CO1,CC1COC(C)CO1,Dimer,#6d1df1,120.1,12,glycolaldehyde dimer;
+glycolaldehyde_dimer,OC1COC(O)CO1,OC1COC(O)CO1,Dimer,#6d1df1,120.1,12,glycolaldehyde dimer;
 threose,O=C[C@@H](O)[C@H](O)CO,O=C[C@H](O)[C@@H](O)CO,C4_Class_I,#525fb7,120.1,13,;
 2-ketotetrose_alpha_branch,O=C(CO)C(O)(CO)CO,O=C(CO)C(O)(CO)CO,C5_Class_III,#a3604b,150.13,14,;
 3-ketopentose_anti,O=C([C@H](O)CO)[C@H](O)CO,O=C([C@@H](O)CO)[C@@H](O)CO,C5_Class_III,#a3604b,150.13,15,;
