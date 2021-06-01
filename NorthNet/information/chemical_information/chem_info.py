@@ -76,7 +76,7 @@ frag_colours = readTwoColInfo(script_dir/'fragment_assignments.csv', 0, 2)
 
 reaction_SMARTS = {}
 reaction_class_colours = {}
-with open(script_dir/'reaction_SMARTS_templates.txt', 'r') as f:
+with open(script_dir/'reaction_SMARTS_templates.tsv', 'r') as f:
     for c,line in enumerate(f):
         if c==0:
             pass
