@@ -79,7 +79,7 @@ def error_calculation(data, calc):
 
 def polar_to_xy(magnitude, angle):
     import numpy as np
-    
+
     x = magnitude*np.cos(np.deg2rad(angle))
     y = magnitude*np.sin(np.deg2rad(angle))
 
@@ -100,17 +100,18 @@ def rect(x1, y1, x2, y2):
     return (a, b)
 
 def curve_between_points(source,target,centre):
+    from NorthNet.calculations import calculations
 
     (x1, y1, x2, y2) = (source[0],source[1],centre[0],centre[1])
-    (a1, b1) = d_p.rect(source[0],source[1], centre[0],centre[1])
-    (a2, b2) = d_p.rect(target[0],target[1], centre[0],centre[1])
+    (a1, b1) = calculations.rect(source[0],source[1], centre[0],centre[1])
+    (a2, b2) = calculations.rect(target[0],target[1], centre[0],centre[1])
     x_p = []
     y_p = []
     for i in range(0, 1000):
         if x1 == x2:
             continue
         else:
-            (a, b) = d_p.rect(x1, y1, x2, y2)
+            (a, b) = calculations.rect(x1, y1, x2, y2)
         x = i*(x2 - x1)/1000 + x1
         y = a*x + b
         x_p.append(x)
