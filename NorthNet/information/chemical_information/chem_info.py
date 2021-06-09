@@ -72,7 +72,8 @@ for sm,cls in zip(props_dict['@@ SMILES'], props_dict['Class']):
 reaction_colours = readTwoColInfo(script_dir/'reaction_colour_assignments.csv', 0, 1)
 fr_assign = readTwoColInfo(script_dir/'fragment_assignments.csv', 0, 1)
 frag_assignments = {float(f):fr_assign[f] for f in fr_assign}
-frag_colours = readTwoColInfo(script_dir/'fragment_assignments.csv', 0, 2)
+frag_colour_load = readTwoColInfo(script_dir/'fragment_assignments.csv', 0, 2)
+frag_colours = {float(f):frag_colour_load[f] for f in frag_colour_load}
 
 reaction_SMARTS = {}
 reaction_class_colours = {}
