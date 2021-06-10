@@ -28,8 +28,10 @@ def graphviz_layout_NorthNet(network, render_engine = 'fdp'):
     from graphviz import Digraph
 
     # Create a graph with graphviz to plot a scheme of the network
-    dot = Digraph(comment = '', engine=render_engine, strict = 'True',
-                format = 'json')
+    dot = Digraph(comment = '',
+                  engine = render_engine,
+                  strict = 'True',
+                  format = 'json')
 
     for n in network.NetworkCompounds:
         dot.node(n,n)
