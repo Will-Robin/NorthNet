@@ -31,7 +31,7 @@ def run_reaction(reactant_compounds, reaction_template):
     reactant_map_numbers = []
     for r in reactants:
         reactant_map_numbers.append([atom.GetAtomMapNum() for atom in r.GetAtoms()])
-    [print(Chem.MolToSmiles(r)) for r in reactants]
+    
     ps = reaction_template.Reaction.RunReactants(reactants) # Run the reaction to give a list of products sets
     for u in ps:
         for p in u:
