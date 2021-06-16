@@ -84,23 +84,20 @@ def normalise_network_coordinates(G):
         b = pos[1]/net_height
         G.nodes[n]['pos'] = (a,b)
 
-def rotate_network(G, radians, origin):
+def rotate_network(G, radians):
     import numpy as np
 
     xy = get_network_scatter(G)
-    x, y = xy[0], xy[1]
 
-    offset_x, offset_y = origin
-    adjusted_x = (x - offset_x)
-    adjusted_y = (y - offset_y)
-    cos_rad = np.cos(radians)
-    sin_rad = np.sin(radians)
-    qx = offset_x + cos_rad * adjusted_x + sin_rad * adjusted_y
-    qy = offset_y + -sin_rad * adjusted_x + cos_rad * adjusted_y
+    ox, oy = xy[0].mean(),  xy[1].mean()
 
-    for c,n in enumerate(G.nodes):
-        G.nodes[n]['pos'] = (qx[c], qy[c])
+    for n in G.nodes:
+        px,py =  G.nodes[n]['pos']
 
+        qx = ox + np.cos(radians) * (px - ox) - np.sin(radians) * (py - oy)
+        qy = oy + np.sin(radians) * (px - ox) + np.cos(radians) * (py - oy)
+
+        G.nodes[n]['pos'] = (qx, qy)
 
 def set_network_coordinates(G, coords_file):
     '''
