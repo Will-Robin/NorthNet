@@ -78,6 +78,7 @@ frag_colours = {float(f):frag_colour_load[f] for f in frag_colour_load}
 reaction_SMARTS = {}
 reaction_class_colours = {}
 reaction_class_short_names = {}
+reaction_class_names = {}
 with open(script_dir/'reaction_SMARTS_templates.tsv', 'r') as f:
     for c,line in enumerate(f):
         if c==0:
