@@ -14,8 +14,6 @@ class Experiment_Information:
         self.path = path
         self.parameters = parameters
         self.modulation = modulation
-        self.network = None
-        self.path_scores = None
 
 class DataReport:
     def __init__(self, file = ''):
@@ -274,7 +272,7 @@ class DataReport:
     def remove_entries_below_threshold(self, threshold):
         '''
         remove entries whose maximum value does not exceed threshold
-        
+
         Parameters
         ----------
         threshold: float
