@@ -3,37 +3,6 @@ from NorthNet import info_params
 from NorthNet import Classes
 import numpy as np
 
-def network_indices(network):
-    '''
-    Parameters
-    ----------
-    network: NorthNet ReactionNetwork object
-        Network for which model will be written.
-
-    Returns
-    -------
-    species, rate_consts, inflows, flow_ins, flow_outs
-        Dictionaries of tokens and their indices.
-    '''
-
-    compounds = [network.NetworkCompounds[x] for x in network.NetworkCompounds]
-    network_inputs = [*network.NetworkInputs]
-    inflows = [r for r in network.NetworkReactions if '_#0' in r]
-    outflows = [r for r in network.NetworkReactions if 'Sample' in r]
-    reactions = [r for r in network.NetworkReactions]
-    for i in inflows:
-        reactions.remove(i)
-    for o in outflows:
-        reactions.remove(o)
-
-    species = {s.SMILES:"S[{}]".format(c) for c,s in enumerate(compounds) if s != ''}
-    rate_consts = {k:"k[{}]".format(c) for c,k in enumerate(reactions)}
-    inputs = {i:'I[{}]'.format(c) for c,i in enumerate(network_inputs)}
-    flow_ins = {i:'F[{}]'.format(c) for c,i in enumerate(inflows)}
-    flow_outs = {o:'sigma_flow' for o in outflows}
-
-    return species, rate_consts, inputs, flow_ins, flow_outs
-
 def write_model_equation_text(network):
     '''
     Parameters
