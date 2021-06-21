@@ -1,7 +1,5 @@
 import numpy as np
 from pathlib import Path
-from NorthNet import data_processing as d_p
-from NorthNet import info_params
 
 class Experiment_Information:
     def __init__(self, name, path, parameters, modulation):
