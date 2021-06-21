@@ -19,6 +19,10 @@ class Experiment_Information:
 
 class DataReport:
     def __init__(self, file = ''):
+        '''
+        file: pathlib Path or str
+            Path to file
+        '''
         self.filename = 'not specified'
         self.experiment_code = 'not specified'
         self.conditions = {}
@@ -64,7 +68,7 @@ class DataReport:
         '''
         Parameters
         ----------
-        file: path to file
+        file: pathlib Path or str
         '''
         spl_lin = lambda x : [e for e in x.strip('\n').split(',') if e != '']
 
@@ -219,6 +223,9 @@ class DataReport:
             outfile.write('end_errors\n')
 
     def find_repeat_data_entries(self):
+        '''
+        Find compound entries which are repeated in self.data
+        '''
         entries = []
         repeat_entries = []
         for d in self.data:
@@ -230,6 +237,9 @@ class DataReport:
         return list(set(repeat_entries))
 
     def remove_repeat_entries(self):
+        '''
+        Remove compound entries which are repeated in self.data
+        '''
         import numpy as np
         # deleting duplicate entries: taking the entry with the higher signal using the
         # signal sum as a discriminant.
@@ -251,6 +261,8 @@ class DataReport:
 
     def remove_specific_entries(self,remove_list):
         '''
+        remove entries in remove list from self.data
+
         Parameters
         ----------
         remove_list: list
@@ -261,6 +273,8 @@ class DataReport:
 
     def remove_entries_below_threshold(self, threshold):
         '''
+        remove entries whose maximum value does not exceed threshold
+        
         Parameters
         ----------
         threshold: float
