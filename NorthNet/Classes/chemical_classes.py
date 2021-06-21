@@ -47,6 +47,62 @@ class Compound:
 
         self.ReactiveSubstructures = None
 
+class Reaction_Template:
+    '''
+    Class for reaction templates.
+    '''
+    def __init__(self,name,reaction_SMARTS, reactant_substructs, product_substructs):
+        '''
+        Parameters
+        ----------
+        name: str
+            name for reaction.
+        reaction_SMARTS: list
+            List of reaction SMARTS strings.
+        '''
+
+        self.Name = name
+        self.Reaction = AllChem.ReactionFromSmarts(reaction_SMARTS)
+        self.ReactionSMARTS = AllChem.ReactionToSmarts(self.Reaction)
+        self.ReactantSubstructures = reactant_substructs
+        self.ProductSubstructures  = product_substructs
+
+class Reaction:
+    '''
+    A class representing chemical reactions
+    '''
+    def __init__(self, rdkit_reaction, reaction_template = None, info = {}):
+        '''
+
+        Parameters
+        ----------
+
+        rdkit_reaction: rdkit Reaction object
+            Reaction object for the reaction.
+        reaction_template: NorthNet Reaction_Template object
+            Reaction template which created the reaction.
+        info: dict of dicts
+            Dictionaries of dictionaries of information (e.g. database entries)
+
+        Attributes
+        ----------
+        self.Database_Entries: list
+            List of Reaction_Database_Entry objects
+        self.Generation_Details: list
+            list of Generated_Reaction objects
+
+        '''
+        self.Reaction = rdkit_reaction
+        self.ReactionSMILES = AllChem.ReactionToSmiles(rdkit_reaction)
+        self.Reaction_Template = reaction_template
+
+        self.Database_Entries = info
+
+        self.Reactants = [Chem.MolToSmiles(x, canonical = True)
+                                        for x in rdkit_reaction.GetReactants()]
+        self.Products  = [Chem.MolToSmiles(x, canonical = True)
+                                        for x in rdkit_reaction.GetProducts()]
+
 class NetworkInput:
     '''
     Class to store inputs into reaction network
@@ -104,167 +160,6 @@ class NetworkOutput:
         self.Out = None
 
         self.ReactiveSubstructures = None
-
-class Reaction_Template:
-    '''
-    Class for reaction templates.
-    '''
-    def __init__(self,name,reaction_SMARTS, reactant_substructs, product_substructs):
-        '''
-        Parameters
-        ----------
-        name: str
-            name for reaction.
-        reaction_SMARTS: list
-            List of reaction SMARTS strings.
-        '''
-
-        self.Name = name
-        self.Reaction = AllChem.ReactionFromSmarts(reaction_SMARTS)
-        self.ReactionSMARTS = AllChem.ReactionToSmarts(self.Reaction)
-        self.ReactantSubstructures = reactant_substructs
-        self.ProductSubstructures  = product_substructs
-
-class Generated_Reaction:
-    '''
-    An object designed to store generated reactions and their characteristics.
-    '''
-    def __init__(self,rdkit_reaction,reaction_template):
-        '''
-        Parameters
-        ----------
-        rdkit_reaction: rdkit Reaction object
-            Reaction object for the reaction.
-        reaction_template: NorthNet Reaction_Template object
-            Reaction template which created the reaction.
-        '''
-
-        self.Reaction = rdkit_reaction
-        self.ReactionSMILES = AllChem.ReactionToSmiles(rdkit_reaction)
-        self.Reaction_Template = reaction_template
-
-class Reaction_Database_Entry:
-        '''
-        Class for storing information on a single reaction from a database.
-        '''
-        def __init__(self, header, line):
-            '''
-            Parameters
-            ----------
-            header: list
-                Header for field entries.
-            line: list
-                List of field entries from database.
-            '''
-
-            self.Info = {k:v for k,v in zip(header,line)}
-            self.ReactionSMILES = line[header.index('Reaction')].strip(',')
-
-        def recompile(self):
-            '''Creates a modified database entry by modifiying the original with the
-            self.Info.'''
-
-            newline = []
-            for k in [*self.Info]:
-                newline.append(self.Info[k])
-
-            return newline
-
-        def get_header(self):
-            '''
-            For getting the field entries for the database entry.
-            '''
-
-            newline = []
-            for k in [*self.Info]:
-                newline.append(k)
-
-            return newline
-
-class Reaction:
-    '''
-    A class which unites Generated_Reaction and Reaction_Database_Entry classes
-    with the same reaction SMILES so they are combined in the view of a Network.
-
-    Could use multiple inheritance, but this seems simpler.
-    '''
-    def __init__(self, reaction_object):
-        '''
-        Parameters
-        ----------
-        reaction_object: NorthNet Generated_Reaction or Reaction_Database_Entry objects
-            Prototypical reaction to initialise the object.
-
-        Attributes
-        ----------
-        self.Database_Entries: list
-            List of Reaction_Database_Entry objects
-        self.Generation_Details: list
-            list of Generated_Reaction objects
-        '''
-
-        if reaction_object.__class__.__name__ == "Reaction_Database_Entry":
-            self.Database_Entries = [reaction_object]
-            self.Generation_Details = []
-
-            spl = reaction_object.ReactionSMILES.split('>>')
-
-            self.Reactants = [r for r in spl[0].split('.') if Chem.MolFromSmiles(r) != None and r != ""]
-            self.Products  = [p for p in spl[1].split('.') if Chem.MolFromSmiles(p) != None and p != ""]
-
-            self.ReactionTemplate = None
-            self.MappedReaction = None
-
-            self.Classification = 'Reaction_Database_Entry'
-            self.update_reaction()
-
-        if reaction_object.__class__.__name__ == "Generated_Reaction":
-            self.Database_Entries = []
-            self.Generation_Details = [reaction_object]
-            self.Reactants = [Chem.MolToSmiles(r) for r in reaction_object.Reaction.GetReactants()]
-            self.Products  = [Chem.MolToSmiles(p) for p in reaction_object.Reaction.GetProducts()]
-
-            self.ReactionTemplate = reaction_object.Reaction_Template
-            self.MappedReaction = None # If mapping can be introduced inot the reaction generation process. If it is, this can be changed accordingly.
-            self.Classification = reaction_object.Reaction_Template.Name
-            self.Classification = 'generated_reaction'
-            self.update_reaction()
-
-        if reaction_object.__class__.__name__ == "str":
-            self.Database_Entries = []
-            self.Generation_Details = []
-            self.Reactants, self.Products = self.reactants_products_from_string(reaction_object)
-            self.ReactionTemplate = None
-            self.MappedReaction = None # If mapping can be introduced inot the reaction generation process. If it is, this can be changed accordingly.
-            self.Classification = 'reaction'
-            self.update_reaction()
-
-    def add_reaction_entry(self, new_entry):
-        if new_entry.__class__.__name__ == "Reaction_Database_Entry":
-            self.Database_Entries.append(new_entry)
-        if new_entry.__class__.__name__ == "Generated_Reaction":
-            self.Generation_Details.append(new_entry)
-
-    def reactants_products_from_string(self, reaction_smiles):
-        split_rxn_smiles = reaction_smiles.split('>>')
-        reactants = [x for x in split_rxn_smiles[0].split('.') if x != '']
-        products = [x for x in split_rxn_smiles[1].split('.') if x != '']
-        return reactants, products
-
-    def update_reaction(self):
-        '''
-        Updates ReactionSMILES and Species attributes according to self.Reactants
-        and self.Products.
-        '''
-        rxn = AllChem.ChemicalReaction() # Create an empty chemical reaction
-        [rxn.AddReactantTemplate(Chem.MolFromSmiles(r)) for r in self.Reactants]
-        [rxn.AddProductTemplate(Chem.MolFromSmiles(p)) for p in self.Products]
-        self.Reaction = rxn
-        self.ReactionSMILES = AllChem.ReactionToSmiles(rxn)
-
-        for d in self.Database_Entries:
-            d.ReactionSMILES = self.ReactionSMILES
-            d.Info["Reaction"] = self.ReactionSMILES
 
 class ReactionInput:
     '''
