@@ -525,6 +525,30 @@ class Network:
         '''
         return self.get_reaction_template(reaction).Name
 
+    def convert_to_networkx(self):
+        '''
+        Converts NorthNet network object to networkx object.
+
+        Returns
+        -------
+        G: networkx DiGraph object
+            Networkx version of the NorthNet network.
+        '''
+        import networkx as nx
+
+        G = nx.DiGraph()
+
+        for node in network.NetworkCompounds:
+            G.add_node(node)
+
+        for r in network.NetworkReactions:
+            for sr in network.NetworkReactions[r].Reactants:
+                for sp in network.NetworkReactions[r].Products:
+                    G.add_edge(sr,r)
+                    G.add_edge(r,sp)
+
+        return G
+
 class SubstructureNetwork:
     '''
     A network designed to show the relationship between functional
@@ -622,3 +646,88 @@ class SubstructureNetwork:
                             self.SNetworkSubstructs[p_substruct].Out.append(prod)
                         else:
                             pass
+    def SNetwork_convert_to_networkx(snetwork, default_node_size = 20, default_node_color = "b",
+                            default_edge_width = 2, default_edge_color = "#6c6c7a", save_images = False):
+        '''
+
+        TO DO: clean this up
+
+        Converts NorthNet network object to networkx object.
+
+        Parameters
+        ----------
+        network: NorthNet Network object
+            NorthNet Network to be converted to networkx network.
+        save_images: Bool
+            Whether to create images or not.
+        Returns
+        -------
+        G: networkx DiGraph object
+            Networkx version of the NorthNet network.
+        '''
+        print()
+        print('SNetwork_convert_to_networkx: needs to be cleaned up')
+        print()
+        G = nx.DiGraph()
+        cont = 0
+        C_patt = Chem.MolFromSmarts("[C]")
+        for n in snetwork.SNetworkSubstructs:
+            c_node_name  = "S:" + Chem.MolToInchi(snetwork.SNetworkSubstructs[n].Mol).replace(",",".")
+            if save_images:
+                im = drw.create_image(n, str(cont), fig_size = (150,150))
+                cont+=1
+            else:
+                im = "None"
+
+            G.add_node(c_node_name, label = n, type = 'substructure', Image = im)
+
+        for n in snetwork.SNetworkCompounds:
+            c_node_name  = snetwork.SNetworkCompounds[n].SMILES
+            if save_images:
+                im = drw.create_image(n, str(cont), fig_size = (150,150))
+                cont+=1
+            else:
+                im = "None"
+
+            G.add_node(c_node_name, label = n, type = "compound", Image = im, C_count = len( snetwork.SNetworkCompounds[n].Mol.GetSubstructMatches(C_patt) ))
+
+            for i in snetwork.SNetworkCompounds[n].In:
+                G.add_edge( "S:" + Chem.MolToInchi(snetwork.SNetworkSubstructs[i].Mol).replace(",","."), c_node_name)
+            for o in snetwork.SNetworkCompounds[n].Out:
+                G.add_edge(c_node_name, "S:" + Chem.MolToInchi(snetwork.SNetworkSubstructs[o].Mol).replace(",",".") )
+
+        for r in snetwork.SNetworkTemplates:
+            ref_arr = []
+            reaction_IDs = []
+
+            if len(snetwork.SNetworkTemplates[r].Database_Entries) == 0:
+                r_node_name = snetwork.SNetworkTemplates[r].ReactionTemplate.Name
+            else:
+                r_node_name = snetwork.SNetworkTemplates[r].ReactionTemplate.Name
+
+            G.add_node(r_node_name, label = r_node_name, type = "reaction")
+
+            for entry in snetwork.SNetworkTemplates[r].Database_Entries:
+                ref_arr.append(entry.Info["References"])
+                reaction_IDs.append(entry.Info["Reaction ID"])
+
+            for reac in snetwork.SNetworkTemplates[r].ReactionTemplate.ReactantSubstructures:
+                G.add_edge("S:"+Chem.MolToInchi(snetwork.SNetworkSubstructs[reac].Mol).replace(",","."), r_node_name, Label = r_node_name, refs = ",".join(ref_arr), ReactionID = ",".join(reaction_IDs))
+
+            for p in snetwork.SNetworkTemplates[r].ReactionTemplate.ProductSubstructures:
+                G.add_edge(r_node_name, "S:"+Chem.MolToInchi(snetwork.SNetworkSubstructs[p].Mol).replace(",","."), Label = r_node_name, refs = ",".join(ref_arr), ReactionID = ",".join(reaction_IDs))
+
+        for n in G.nodes:
+            G.nodes[n]["size"] = default_node_size
+            if ">>" in n:
+                G.nodes[n]["color"] = "k"
+            if "S:" in n:
+                G.nodes[n]["color"] = "#da2034"
+            else:
+                G.nodes[n]["color"] = default_node_color
+
+        for e in G.edges:
+            G.edges[e]["width"] = default_edge_width
+            G.edges[e]["color"] = default_edge_color
+
+        return G
