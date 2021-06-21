@@ -352,46 +352,6 @@ def sparse_corrcoef(A):
 
     return coeffs
 
-def bin_mass_spectra(masses, data_mat, bound = 0.1):
-    '''
-
-    Parameters
-    ----------
-    masses: numpy array (1D)
-        Masses for binning.
-
-    data_mat: numpy array (2D)
-        shape: (n, len(masses))
-
-    bound: float
-        Boundary for mean shift.
-
-    Returns
-    -------
-    binned_masses: numpy array (1D)
-        Binned masses.
-
-    binned_data: numpy array (2D)
-        shape: (n, len(binned_masses))
-    '''
-    import numpy as np
-    from NorthNet.misc import simple_functions as s_f
-
-    # Binning mass spectra
-    clusters = []
-    for c in s_f.cluster_indices(masses, bound = bound):
-        clusters.append(c)
-
-    binned_masses = np.zeros(len(clusters))
-    binned_data = np.zeros((len(data_mat),len(clusters)))
-
-    for c,cl in enumerate(clusters):
-        binned_masses[c] = np.average(masses[cl])
-        sum_inten = np.sum(data_mat[:,cl], axis = 1)
-        binned_data[:,c] = sum_inten
-
-    return binned_masses, binned_data
-
 def linkage_matrix(model):
     import numpy as np
 
