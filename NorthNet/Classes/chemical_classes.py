@@ -1,8 +1,6 @@
-from rdkit.Chem import AllChem
 from rdkit import Chem
+from rdkit.Chem import AllChem
 from NorthNet import Classes
-from NorthNet import info_params
-import numpy as np
 
 class Substructure:
     '''
