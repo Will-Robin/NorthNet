@@ -261,17 +261,43 @@ class Network:
         else:
             self.add_reactions(reactions)
 
-    def add_reactions(self,reactions):
+    def add_compounds(self,compounds):
         '''
+        Add list of NorthNet Compound objects to the Network
+
         Parameters
         ----------
-        reactions: list of NorthNet Reaction objects
-
-        Use the standardised strings information in the Reaction objects
-        to build them into the Network.
+        compounds: list of NorthNet Compound objects
+            compounds to be added
         '''
-        for r in reactions:
-            self.add_reaction(r)
+        for n in compounds:
+            if n.SMILES in self.NetworkCompounds:
+                pass
+            else:
+                self.NetworkCompounds[n.SMILES] = n
+
+    def remove_compounds(self, compounds):
+        '''
+        Remove list of compounds and the reactions in which they are involved
+        from the network.
+
+        Parameters
+        ----------
+        compounds: list of NorthNet Compound objects
+            compounds to be removed
+        '''
+
+        remove_reactions = []
+        for c in compounds:
+            remove_reactions.extend(self.NetworkCompounds[c.SMILES].In)
+            remove_reactions.extend(self.NetworkCompounds[c.SMILES].Out)
+
+        remove_reactions = list(set(remove_reactions))
+
+        self.remove_reactions(remove_reactions)
+
+        for c in compounds:
+            del self.NetworkCompounds[c.SMILES]
 
     def add_reaction(self, reaction):
         '''
@@ -281,7 +307,7 @@ class Network:
         Parameters
         ----------
         reaction: NorthNet Reaction object
-        
+
         '''
 
         # check if the reaction is in NetworkReactions (avoid overwriting)
@@ -326,7 +352,40 @@ class Network:
                     self.NetworkCompounds[b] = Classes.Compound(b)
                     self.NetworkCompounds[b].In.append(reaction.ReactionSMILES)
 
+    def add_reactions(self,reactions):
+        '''
+        Use the standardised strings information in the Reaction objects
+        to build them into the Network.
+
+        Parameters
+        ----------
+        reactions: list of NorthNet Reaction objects
+            reactions to be added to the Network
+        '''
+        for r in reactions:
+            self.add_reaction(r)
+
+    def remove_reactions(self, remove_reactions):
+        '''
+        Remove a list of reactions from the Network.
+
+        Parameters
+        ----------
+        remove_reactions: list of NorthNet Reaction objects
+            reactions to be removed.
+        '''
+
+        for r in remove_reactions:
+            for rc in self.NetworkReactions[r].Reactants:
+                self.NetworkCompounds[rc].Out.remove(r)
+            for p in self.NetworkReactions[r].Products:
+                self.NetworkCompounds[p].In.remove(r)
+
+            del self.NetworkReactions[r]
+
     def add_inputs(self, inputs):
+        '''
+        '''
         for i in inputs:
             if i in self.NetworkInputs:
                 pass
@@ -363,35 +422,7 @@ class Network:
                     self.NetworkOutputs[i.OutputID] = Classes.NetworkOutput(i.OutputID)
                     self.NetworkOutputs[i.OutputID].In.append(i.ReactionSMILES)
 
-    def add_compounds(self,compounds):
-        for n in compounds:
-            if n.SMILES in self.NetworkCompounds:
-                pass
-            else:
-                self.NetworkCompounds[n.SMILES] = n
 
-    def remove_compounds(self, compounds):
-
-        remove_reactions = []
-        for c in compounds:
-            remove_reactions.extend(self.NetworkCompounds[c].In)
-            remove_reactions.extend(self.NetworkCompounds[c].Out)
-
-        remove_reactions = list(set(remove_reactions))
-
-        self.remove_reactions(remove_reactions)
-
-        for c in compounds:
-            del self.NetworkCompounds[c]
-
-    def remove_reactions(self, remove_reactions):
-        for r in remove_reactions:
-            for rc in self.NetworkReactions[r].Reactants:
-                self.NetworkCompounds[rc].Out.remove(r)
-            for p in self.NetworkReactions[r].Products:
-                self.NetworkCompounds[p].In.remove(r)
-
-            del self.NetworkReactions[r]
 
     def get_reaction(self, reaction):
         return self.NetworkReactions[reaction]
