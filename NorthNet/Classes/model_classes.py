@@ -1,3 +1,5 @@
+import numpy as np
+
 class ModelWriter:
     def __init__(self, network = None, experiment = None,
                        input_token = '_#0',
@@ -16,7 +18,7 @@ class ModelWriter:
             in units of uL/h and reactor volumes to be given in uL,
             so conversion errors may result if the input DataReport's
             attributes fall out of this pattern.
-        time_limt: bool or float
+        time_limit: bool or float
             How far in time the flow profile will be considered
             in generating the model.
         '''
@@ -44,6 +46,7 @@ class ModelWriter:
         if network == None:
             pass
         else:
+            self.name = network.Name
             self.get_network_tokens()
 
         if experiment == None:
@@ -53,7 +56,8 @@ class ModelWriter:
 
     def get_network_tokens(self):
         '''
-
+        Get dictionaries of tokens for the compounds, reactions, inputs,
+        inflows, outflows
         '''
         network = self.network
         compounds = [network.NetworkCompounds[x] for x in network.NetworkCompounds]
@@ -73,7 +77,6 @@ class ModelWriter:
         flow_ins = {i:'I[{}]'.format(c) for c,i in enumerate(inflows)}
         flow_outs = {o:'sigma_flow' for o in outflows}
 
-        self.name = network.Name
         self.species = species
         self.rate_constants = rate_consts
         self.inputs = inputs
