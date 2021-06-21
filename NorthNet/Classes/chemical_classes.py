@@ -225,13 +225,12 @@ class ReactionOutput:
 
         self.ReactionTemplate = None
         self.Data = {}
-        
+
     def reactants_products_from_string(self, reaction_smiles):
         split_rxn_smiles = reaction_smiles.split('>>')
         reactants = [x for x in split_rxn_smiles[0].split('.') if x != '']
         products = [x for x in split_rxn_smiles[1].split('.') if x != '']
         return reactants, products
-
 
 class Network:
     def __init__(self, reactions, name, description):
@@ -263,33 +262,69 @@ class Network:
             self.add_reactions(reactions)
 
     def add_reactions(self,reactions):
+        '''
+        Parameters
+        ----------
+        reactions: list of NorthNet Reaction objects
+
+        Use the standardised strings information in the Reaction objects
+        to build them into the Network.
+        '''
         for r in reactions:
+            self.add_reaction(r)
 
-            if r.ReactionSMILES in self.NetworkReactions:
-                self.NetworkReactions[r.ReactionSMILES].add_reaction_entry(r)
+    def add_reaction(self, reaction):
+        '''
+        Adds a reaction and its associated reactants and products into the
+        Network.
 
-            else:
-                self.NetworkReactions[r.ReactionSMILES] = r
+        Parameters
+        ----------
+        reaction: NorthNet Reaction object
+        
+        '''
 
-                for a in r.Reactants:
-                    if a in self.NetworkCompounds:
-                        if r.ReactionSMILES in self.NetworkCompounds[a].Out:
-                            pass
-                        else:
-                            self.NetworkCompounds[a].Out.append(r.ReactionSMILES)
+        # check if the reaction is in NetworkReactions (avoid overwriting)
+        # shouldn't be an issue if all reaction data is encapsulated properly
+        # i.e. one reaction SMILES string to one set of data
+        if reaction.ReactionSMILES in self.NetworkReactions:
+            pass
+        else:
+            # add the reaction into NetworkReactions
+            self.NetworkReactions[reaction.ReactionSMILES] = reaction
+
+            for a in reaction.Reactants:
+                if a in self.NetworkCompounds:
+                    # if reaction is already connected to the reactant,
+                    # pass. This should not happen if all reaction data
+                    # is encapsulated properly
+                    if reaction.ReactionSMILES in self.NetworkCompounds[a].Out:
+                        pass
+                    # connect the reactant to the reaction
                     else:
-                        self.NetworkCompounds[a] = Classes.Compound(a)
-                        self.NetworkCompounds[a].Out.append(r.ReactionSMILES)
+                        self.NetworkCompounds[a].Out.append(
+                                                        reaction.ReactionSMILES)
+                # add the reactant into NetworkCompounds
+                # and connect the reactant to the reaction
+                else:
+                    self.NetworkCompounds[a] = Classes.Compound(a)
+                    self.NetworkCompounds[a].Out.append(reaction.ReactionSMILES)
 
-                for b in r.Products:
-                    if b in self.NetworkCompounds:
-                        if r.ReactionSMILES in self.NetworkCompounds[b].In:
-                            pass
-                        else:
-                            self.NetworkCompounds[b].In.append(r.ReactionSMILES)
+            for b in reaction.Products:
+                if b in self.NetworkCompounds:
+                    # if reaction is already connected to the product,
+                    # pass. This should not happen if all reaction data
+                    # is encapsulated properly
+                    if reaction.ReactionSMILES in self.NetworkCompounds[b].In:
+                        pass
+                    # connect the reaction to the product
                     else:
-                        self.NetworkCompounds[b] = Classes.Compound(b)
-                        self.NetworkCompounds[b].In.append(r.ReactionSMILES)
+                        self.NetworkCompounds[b].In.append(reaction.ReactionSMILES)
+                # add the product into NetworkCompounds
+                # and connect the reaction to the product
+                else:
+                    self.NetworkCompounds[b] = Classes.Compound(b)
+                    self.NetworkCompounds[b].In.append(reaction.ReactionSMILES)
 
     def add_inputs(self, inputs):
         for i in inputs:
