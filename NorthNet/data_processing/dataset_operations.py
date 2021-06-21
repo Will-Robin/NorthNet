@@ -97,7 +97,6 @@ def combine_datasets(datasets, time_dependent = False):
 
     return merged_dataset
 
-
 def get_mass_in_reactor(dataset, flow_profiles, inputs,
                         time_key = 'flow_time/ s'):
 
@@ -310,63 +309,6 @@ def data_to_amplitude_correlations(multiple_data_sets,info_dict):
                 amps_dict[ds]["residence_time"].append(nw_res_time)
 
     return amps_dict
-
-def get_input_profile(data_set):
-    return data_set.get_input_profile()
-
-
-
-def add_flow_segment(profile_time, profile, dataset):
-    profile_time = np.array(profile_time)
-    profile = np.array(profile)
-
-    clip = np.where((profile_time>dataset.time[0]) & (profile_time < dataset.time[-1]))
-
-    new_x, new_y = interpolations.interpolate_traces(profile_time[clip],profile[clip], length = 1000)
-
-    setattr(dataset, "drive", new_y)
-
-def split_data_into_sections(dataset, time_split = 1000):
-    '''
-    A function to split a dataset up into sections based on sections of the
-    data being separated by the time_split value.
-
-    Parameters
-    ----------
-    dataset: NetFit Dataset object
-        Dataset to be split into sections.
-    time_split: float
-        Time separating sections of dataset.
-
-    Returns
-    -------
-    store: list of dataset objects
-        The dataset split up into components as a list.
-    '''
-
-    store = []
-
-    dif  = np.diff(dataset.time)
-    inds = np.where(dif > time_split)[0]
-    time_brackets = dataset.time[inds]
-
-    time_brackets = np.hstack((0,time_brackets))
-    time_brackets = np.hstack((time_brackets, dataset.time[-1]))
-
-    for i in range(0,len(time_brackets)-1):
-
-        data_insert = {}
-        inds = np.where((dataset.time > time_brackets[i])&(dataset.time <= time_brackets[i+1]))[0]
-        data_insert["time/ s"] = dataset.time[inds]
-
-        for d in dataset.dependents:
-            data_insert[d]  = dataset.dependents[d][inds]
-
-        new_dset = Classes.Dataset(dataset.name + "_{}".format(i), dataset.conditions, data_insert)
-
-        store.append(new_dset)
-
-    return store
 
 def instantaneous_input(time,flow_profile,input_header):
 

@@ -70,7 +70,6 @@ def time_lag_corr_mat(dataset):
 
     deps = [*dataset.dependents]
 
-
     roll_vals = np.arange(-(len(time))+1,len(time))
     t_step = time[1]-time[0]
 
