@@ -322,3 +322,139 @@ class ModelWriter:
             text += l
 
         return text
+
+'''
+TO DO: merge functions below as ModelWriter methods
+'''
+# def write_model_matrix_text(network):
+#     '''
+#     Parameters
+#     ----------
+#     network: NorthNet ReactionNetwork object
+#         Network to be written.
+#
+#     Returns
+#     -------
+#     mat_text: str
+#         Rate equations in numpy matrix form.
+#     '''
+#     compounds = [x for x in network.NetworkCompounds]
+#     reactions = [*network.NetworkReactions]
+#
+#     species, rate_consts, inflows, flow_ins, flow_outs = model_export.network_indices(network)
+#
+#     ratemat = [['0' for x in species] for x in species]
+#
+#     for c in compounds:
+#
+#         ind1 = compounds.index(c)
+#
+#         '''outgoing reactions'''
+#         for i in network.NetworkCompounds[c].In:
+#             reacs = network.NetworkReactions[i].Reactants
+#             ki = rate_consts[i]
+#
+#             if len(reacs) == 0:
+#                 ratemat[ind1][ind1] +=  "(+{}*{})/{}".format(ki,inflows[c],species[c])
+#
+#             if len(reacs) == 1:
+#                 n2 = reacs[0]
+#                 ind2 = compounds.index(n2)
+#                 ratemat[ind1][ind2] +=  '+' + ki
+#
+#             if len(reacs) == 2:
+#                 n2 = reacs[0]
+#                 n3 = reacs[1]
+#                 ind2 = compounds.index(n3)
+#                 ratemat[ind1][ind2] +=  '+' + ki + '*' + species[n2]
+#
+#             if len(reacs) == 3:
+#                 n2 = reacs[0]
+#                 n3 = reacs[1]
+#                 n4 = reacs[2]
+#                 ind2 = compounds.index(n3)
+#                 ratemat[ind1][ind2] +=  '+' + ki + '*' + species[n2] + '*' + species[n4]
+#
+#         for out in network.NetworkCompounds[c].Out:
+#
+#             reacs = network.NetworkReactions[out].Reactants
+#
+#             ki = rate_consts[out]
+#             if len(reacs) == 1:
+#                 ratemat[ind1][ind1] +=  "-" + ki
+#
+#             if len(reacs) == 2:
+#                 z = reacs[:]
+#                 z.remove(c)
+#                 n2 = z[0]
+#                 ind2 = compounds.index(n2)
+#                 ratemat[ind1][ind2] +=  "-" + ki + '*' + species[c]
+#
+#             if len(reacs) == 3:
+#                 z = reacs[:]
+#                 z.remove(c)
+#                 n2 = z[0]
+#                 n3 = z[1]
+#                 ind2 = compounds.index(n2)
+#                 ratemat[ind1][ind2] +=  "-" + ki + '*' + species[c] + '*' + species[n3]
+#
+#     mat_text = "["
+#     for r in ratemat:
+#         mat_text += "[" + ",".join(r) + "],\n"
+#
+#     mat_text = mat_text.strip(",\n") + "]"
+#
+#     return mat_text
+#
+# def write_Jacobian_matrix_text(network):
+#     '''
+#     Parameters
+#     ----------
+#     network: NorthNet ReactionNetwork object
+#         Network to be written.
+#
+#     Returns
+#     -------
+#     jac_text: str
+#         Jacobian matrix as text.
+#     '''
+#     compounds = [x for x in network.NetworkCompounds]
+#     reactions = [*network.NetworkReactions]
+#
+#     species, rate_consts, inflows, flow_ins, flow_outs = model_export.network_indices(network)
+#
+#     jac_mat = [['0' for x in species] for x in species]
+#
+#     for c,comp1 in enumerate(compounds):
+#         for c2,comp2 in enumerate(compounds):
+#             element = ""
+#             for i in network.NetworkCompounds[comp1].In:
+#                 if '_#0' in i:
+#                     pass
+#                 elif comp2 in network.NetworkReactions[i].Reactants:
+#                     reacs = [species[x] for x in network.NetworkReactions[i].Reactants if x != comp2]
+#                     ki = "+{}".format(rate_consts[i])
+#                     element += "{}*{}".format(ki,"*".join(reacs))
+#                 else:
+#                     pass
+#
+#             for o in network.NetworkCompounds[comp1].Out:
+#                 if 'Sample' in o:
+#                     ki = '-{}'.format(flow_outs[o])
+#                     element += ki
+#                 elif comp2 in network.NetworkReactions[o].Reactants:
+#                     reacs = [species[x] for x in network.NetworkReactions[o].Reactants if x != comp2]
+#                     ki = "-{}".format(rate_consts[o])
+#                     element += "{}*{}".format(ki,"*".join(reacs))
+#                 else:
+#                     pass
+#
+#             jac_mat[c][c2] += element
+#
+#     jac_text = ""
+#     for r in jac_mat:
+#         jac_text += "[" + ",".join(r) + "],\n"
+#
+#     jac_text = jac_text.strip(",\n") + "]"
+#
+#     return jac_text
