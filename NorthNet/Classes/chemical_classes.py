@@ -47,7 +47,7 @@ class Compound:
 
         self.ReactiveSubstructures = None
 
-class Reaction_Template:
+class ReactionTemplate:
     '''
     Class for reaction templates.
     '''
@@ -86,10 +86,11 @@ class Reaction:
 
         Attributes
         ----------
-        self.Database_Entries: list
-            List of Reaction_Database_Entry objects
-        self.Generation_Details: list
-            list of Generated_Reaction objects
+        self.Reaction: rdkit reaction object
+            Reaction in RDKit format
+        self.ReactionSMILES: str
+            Reaction SMILES string
+        self.Reaction_Template: NorthNet ReactionTemplate
 
         '''
         self.Reaction = rdkit_reaction
@@ -379,7 +380,7 @@ class Network:
     def get_reaction_name(self, reaction):
         return self.get_reaction_template(reaction).Name
 
-class Substructure_Network:
+class SubstructureNetwork:
     '''
     A network designed to show the relationship between functional
     group transformations.
