@@ -1,22 +1,10 @@
-def calculate_weighted_vector(clusters, weights):
-    import numpy as np
-    sum = np.zeros(len(clusters[[*clusters][0]]))
-    for c,clust in enumerate(clusters):
-        sum += weights[c]*clusters[clust]
-    return sum
-
 def _error(data,x):
+    '''
+    Calculated squared difference between data and x
+    data, x: numpy arrays
+    '''
     import numpy as np
     return np.sum((data-x)*(data-x))
-
-def compare(weights, data, clusters):
-    from NorthNet.calculations import calculations
-    x = calculations.calculate_weighted_vector(clusters, weights)
-    return _error(data,x)
-
-def test_vector(newvec, data, reconst):
-    x = newvec + reconst
-    return _error(data,x)
 
 def sine_wave(time, period, amplitude, phase, offset):
     '''
@@ -45,37 +33,6 @@ def sine_wave(time, period, amplitude, phase, offset):
     wave = amplitude*np.sin(2*np.pi*time/period + phase) + offset
 
     return wave
-
-def compare_model_data(k, data, S, model):
-    '''
-    For determining the error between a calculated model and data. Kind of old
-    and not used in most things this module is used for.
-    Should be modified and documented later.
-    '''
-
-    time,calc = integrate_model(data.time, data.initial, k, model)
-
-    spec_inds = {v:k for k,v in zip([*model.species],model.species.values())}
-
-    error = np.zeros([len(calc[:,0])])
-
-    for c in range(0,len(calc[0])):
-        if spec_inds[c]+" M" in [*data.dependents]:
-            error += error + (calc[:,c] - data.dependents[spec_inds[c]+" M"])*(calc[:,c] - data.dependents[spec_inds[c]+" M"])/np.amax(data.dependents[spec_inds[c]+" M"])
-
-    return np.sum(error)
-
-def error_calculation(data, calc):
-    ''' Method for calculating the error between the data and calculated fits.
-    Kind of old and not used in most things this module is used for.
-    Should be modified and documented later.
-    '''
-
-    err = ((data - calc)/data)*((data - calc)/data)
-
-    error = np.sum(err)/len(data)
-
-    return error
 
 def polar_to_xy(magnitude, angle):
     import numpy as np
