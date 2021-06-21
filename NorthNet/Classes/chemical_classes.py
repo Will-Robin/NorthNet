@@ -192,12 +192,7 @@ class ReactionInput:
         self.InputID = self.Reactants[0]
 
         self.ReactionTemplate = None
-
-        self.MappedReaction = None
-        self.Database_Entries = []
-        self.Generation_Details = []
-        self.Classification = 'reaction_input'
-        self.Info = None
+        self.Data = {}
 
     def reactants_products_from_string(self, reaction_smiles):
         split_rxn_smiles = reaction_smiles.split('>>')
@@ -229,13 +224,8 @@ class ReactionOutput:
         self.CompoundOutput = self.Reactants[0]
 
         self.ReactionTemplate = None
-
-        self.MappedReaction = None
-        self.Database_Entries = []
-        self.Generation_Details = []
-        self.Classification = 'reaction_input'
-        self.Info = None
-
+        self.Data = {}
+        
     def reactants_products_from_string(self, reaction_smiles):
         split_rxn_smiles = reaction_smiles.split('>>')
         reactants = [x for x in split_rxn_smiles[0].split('.') if x != '']
