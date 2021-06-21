@@ -1,3 +1,5 @@
+from NorthNet import Classes
+
 def add_flow_terms(network, inputs):
     '''
     Add flow terms into network (inputs and outputs are
