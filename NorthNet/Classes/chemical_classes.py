@@ -90,14 +90,20 @@ class Reaction:
             Reaction in RDKit format
         self.ReactionSMILES: str
             Reaction SMILES string
-        self.Reaction_Template: NorthNet ReactionTemplate
-
+        self.Reaction_Template: NorthNet ReactionTemplate or None
+            Reaction template for the reaction. Defaults to None
+        self.Data: dict of dicts (default to empty dict)
+            Dictionaries of dictionaries of information (e.g. database entries)
+        self.Reactants: list of str
+            Reactant SMILES extracted from rdkit_reaction
+        self.Products: list of str
+            Product SMILES extracted from rdkit_reaction
         '''
+
         self.Reaction = rdkit_reaction
         self.ReactionSMILES = AllChem.ReactionToSmiles(rdkit_reaction)
-        self.Reaction_Template = reaction_template
-
-        self.Database_Entries = info
+        self.ReactionTemplate = reaction_template
+        self.Data = info
 
         self.Reactants = [Chem.MolToSmiles(x, canonical = True)
                                         for x in rdkit_reaction.GetReactants()]
