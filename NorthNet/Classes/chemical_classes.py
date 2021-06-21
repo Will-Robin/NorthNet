@@ -307,7 +307,7 @@ class Network:
         Parameters
         ----------
         reaction: NorthNet Reaction object
-
+            reaction to be added
         '''
 
         # check if the reaction is in NetworkReactions (avoid overwriting)
@@ -376,55 +376,99 @@ class Network:
         '''
 
         for r in remove_reactions:
-            for rc in self.NetworkReactions[r].Reactants:
-                self.NetworkCompounds[rc].Out.remove(r)
-            for p in self.NetworkReactions[r].Products:
-                self.NetworkCompounds[p].In.remove(r)
+            r_key = r.ReactionSMILES
+            for rc in self.NetworkReactions[r_key].Reactants:
+                self.NetworkCompounds[rc].Out.remove(r_key)
+            for p in self.NetworkReactions[r_key].Products:
+                self.NetworkCompounds[p].In.remove(r_key)
 
-            del self.NetworkReactions[r]
+            del self.NetworkReactions[r_key]
+
+    def add_input(self, input):
+        '''
+        Add a NetworkInput to the Network
+
+        Parameters
+        ----------
+        input: NorthNet NetworkInput object
+            Input to be added
+        '''
+        if input.InputID in self.NetworkInputs:
+            pass
+        else:
+            self.NetworkReactions[input.ReactionSMILES] = input
+
+            if input.CompoundInput in self.NetworkCompounds:
+                self.NetworkCompounds[input.CompoundInput].In.append(
+                                                        input.ReactionSMILES)
+            else:
+                self.NetworkCompounds[input.CompoundInput] = input
+                self.NetworkCompounds[a].In.append(input.ReactionSMILES)
+
+            if input.InputID in self.NetworkInputs:
+                self.NetworkInputs[input.InputID].Out.append(
+                                                        input.ReactionSMILES)
+            else:
+                self.NetworkInputs[input.InputID] = input
+                self.NetworkInputs[input.InputID].Out.append(
+                                                        input.ReactionSMILES)
 
     def add_inputs(self, inputs):
         '''
+        For adding NetworkInput to the network
+
+        Parameters
+        ----------
+        inputs: list of NortNet NetworkInput objects
+            Inputs to be added to the network
         '''
         for i in inputs:
-            if i in self.NetworkInputs:
-                pass
+            self.add_input(i)
+
+    def add_output(self, output):
+        '''
+        Add a NetworkOutput to the Network
+
+        Parameters
+        ----------
+        output NetworkOutput object
+            Output to be added
+        '''
+        if output.OutputID in self.NetworkOutputs:
+            pass
+        else:
+            if output.CompoundOutput in self.NetworkCompounds:
+                self.NetworkReactions[output.ReactionSMILES] = output
+                self.NetworkCompounds[output.CompoundOutput].Out.append(
+                                                        output.ReactionSMILES)
+
+                if output.OutputID in self.NetworkOutputs:
+                    self.NetworkOutputs[output.OutputID].In.append(
+                                                        output.ReactionSMILES)
+                else:
+                    self.NetworkOutputs[output.OutputID] = output
+                    self.NetworkOutputs[output.OutputID].In.append(
+                                                        output.ReactionSMILES)
             else:
-                self.NetworkReactions[i.ReactionSMILES] = i
-
-                if i.CompoundInput in self.NetworkCompounds:
-                    self.NetworkCompounds[i.CompoundInput].In.append(i.ReactionSMILES)
-                else:
-                    self.NetworkCompounds[i.CompoundInput] = Classes.NetworkInput(i.NetworkInput)
-                    self.NetworkCompounds[a].In.append(i.ReactionSMILES)
-
-                if i.InputID in self.NetworkInputs:
-                    self.NetworkInputs[i.InputID].Out.append(i.ReactionSMILES)
-                else:
-                    self.NetworkInputs[i.InputID] = Classes.NetworkInput(i.InputID)
-                    self.NetworkInputs[i.InputID].Out.append(i.ReactionSMILES)
+                # The compound is not in the network, so cannot
+                # be an output
+                pass
 
     def add_outputs(self, outputs):
-        for i in outputs:
-            if i in self.NetworkOutputs:
-                pass
-            else:
-                if i.CompoundOutput in self.NetworkCompounds:
-                    self.NetworkReactions[i.ReactionSMILES] = i
-                    self.NetworkCompounds[i.CompoundOutput].Out.append(i.ReactionSMILES)
-                else:
-                    # The compound is not currently in the network, so cannot
-                    # be an output
-                    pass
-                if i.OutputID in self.NetworkOutputs:
-                    self.NetworkOutputs[i.OutputID].In.append(i.ReactionSMILES)
-                else:
-                    self.NetworkOutputs[i.OutputID] = Classes.NetworkOutput(i.OutputID)
-                    self.NetworkOutputs[i.OutputID].In.append(i.ReactionSMILES)
+        '''
+        For adding NetworkOutput to the network
 
-
+        Parameters
+        ----------
+        outputs: list of NortNet NetworkOutput objects
+            Outputs to be added to the network
+        '''
+        for o in outputs:
+            self.add_output(o)
 
     def get_reaction(self, reaction):
+        '''
+        '''
         return self.NetworkReactions[reaction]
 
     def get_reactants(self, reaction):
