@@ -250,7 +250,7 @@ class ModelWriter:
 
         return eq_text
 
-    def write_to_module_text_A(self, numba_decoration = False):
+    def write_to_module_text(self, numba_decoration = False):
         get_index = lambda x: int(x[x.find("[")+1:x.find("]")])
 
         flow_profile_text = self.write_flow_profile_text()
