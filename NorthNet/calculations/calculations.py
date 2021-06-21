@@ -1,9 +1,10 @@
-def _error(data,x):
+import numpy as np
+
+def sum_squares_error(data,x):
     '''
-    Calculated squared difference between data and x
+    Calculated sum squared difference between data and x
     data, x: numpy arrays
     '''
-    import numpy as np
     return np.sum((data-x)*(data-x))
 
 def sine_wave(time, period, amplitude, phase, offset):
@@ -35,7 +36,15 @@ def sine_wave(time, period, amplitude, phase, offset):
     return wave
 
 def polar_to_xy(magnitude, angle):
-    import numpy as np
+    '''
+    Convert polar coordinates to cartesian
+    magnitude: float
+    angle: float (in degrees)
+
+    returns: 2-tuple of floats
+        x, y
+    '''
+
 
     x = magnitude*np.cos(np.deg2rad(angle))
     y = magnitude*np.sin(np.deg2rad(angle))
@@ -43,6 +52,15 @@ def polar_to_xy(magnitude, angle):
     return x,y
 
 def circle(r, origin):
+    '''
+    Calculate a circle of radius r and centre origin
+
+    r: float
+    origin: 2-tuple of floats
+
+    returns numpy arrays for x and y coordinates
+    '''
+
 
     theta = np.linspace(0, 2*np.pi, 100)
 
@@ -52,11 +70,21 @@ def circle(r, origin):
     return x1+origin[0],x2+origin[1]
 
 def rect(x1, y1, x2, y2):
+    '''
+    get rectangle bounds
+    '''
     a = (y1 - y2) / (x1 - x2)
     b = y1 - a * x1
     return (a, b)
 
 def curve_between_points(source,target,centre):
+    '''
+    create a curve between source and target, moving towards and then away
+    from centre
+
+    source,target,centre: 2-tuples of floats
+    returns: x_p, y_p list of x and y coordinates for the line
+    '''
     from NorthNet.calculations import calculations
 
     (x1, y1, x2, y2) = (source[0],source[1],centre[0],centre[1])
