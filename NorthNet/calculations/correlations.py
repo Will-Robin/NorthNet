@@ -18,7 +18,6 @@ def autocorrelation(time, trace):
     con = np.correlate(x_i,x_i, mode = "full")
     ccor = con/(len(time)*x_i.std()*x_i.std())
 
-
     return t_lags, ccor
 
 def correlation_matrix(arr):
@@ -260,7 +259,7 @@ def cluster_analysis(Euc_dist_mat, deps, graph_name):
     '''Cluster analysis'''
     from scipy.cluster.hierarchy import linkage
     import matplotlib.pyplot as plt
-    
+
     linkage_matrix = linkage(Euc_dist_mat, "single")
 
     la = []
