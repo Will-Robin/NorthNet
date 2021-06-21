@@ -468,22 +468,63 @@ class Network:
 
     def get_reaction(self, reaction):
         '''
+        Convenience class for getting a reaction using a key
+
+        Parameters
+        ----------
+        reaction: str
+            Key in self.NetworkReactions
         '''
         return self.NetworkReactions[reaction]
 
     def get_reactants(self, reaction):
+        '''
+        Conveniently get the reactants of a reaction
+        Parameters
+        ----------
+        reaction: str
+            Key in self.NetworkReactions
+        '''
         return self.get_reaction(reaction).Reactants
 
     def get_products(self, reaction):
+        '''
+        Conveniently get the products of a reaction
+        Parameters
+        ----------
+        reaction: str
+            Key in self.NetworkReactions
+        '''
         return self.get_reaction(reaction).Products
 
     def get_reaction_template(self, reaction):
+        '''
+        Conveniently get the ReactionTemplate of a reaction
+        Parameters
+        ----------
+        reaction: str
+            Key in self.NetworkReactions
+        '''
         return self.get_reaction(reaction).ReactionTemplate
 
     def get_reaction_SMARTS(self, reaction):
+        '''
+        Conveniently get the Reaction SMARTS of a reaction
+        Parameters
+        ----------
+        reaction: str
+            Key in self.NetworkReactions
+        '''
         return self.get_reaction_template(reaction).ReactionSMARTS
 
     def get_reaction_name(self, reaction):
+        '''
+        Conveniently get the Name of a reaction 
+        Parameters
+        ----------
+        reaction: str
+            Key in self.NetworkReactions
+        '''
         return self.get_reaction_template(reaction).Name
 
 class SubstructureNetwork:
