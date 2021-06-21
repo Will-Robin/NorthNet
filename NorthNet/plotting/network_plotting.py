@@ -1,7 +1,23 @@
 def plot_nodes(G, ax, color = '#000000', size = 2, alpha = 1, zorder = 1):
     '''
+    Draw nodes as a scatter for a network
+    
     Parameters
     ----------
+    G: networkx Graph or DiGraph
+        Graph containing nodes
+    ax: matplotlib axis object
+        axis in which nodes will be drawn.
+    color: str
+        if 'nodewise' colours nodes by 'color' attribute. Otherwise
+        this parameter sets the colour for all nodes.
+    size: float or 'nodewise'
+        Node sizes. if 'nodewise' sizes are set according to
+        the nodes' 'size' attribute. Otherwise uses single size.
+    alpha: float
+        Alpha values for points
+    zorder: int
+        Z-order of the points
 
     Returns
     -------
@@ -29,10 +45,21 @@ def plot_nodes(G, ax, color = '#000000', size = 2, alpha = 1, zorder = 1):
 def draw_arrow_connectors(G,ax, color = '#000000',linew = 'edgewise', alpha = 1,
                           zorder = 0, shrink_a = 0, shrink_b = 0):
     '''
+    Draw arrow connectors for a directed graph network
+
     Parameters
     ----------
     G: networkx DiGraph with position info in nodes
     ax: matplotlib axis in which to place arrows.
+    color: str or 'edgewise'
+        if 'edgewise' colour edges according to their 'color' attribute
+    linew: float or 'edgewise'
+        if 'edgewise', linewidths are set according to the edge 'weight'
+        attribute
+    alpha: float
+    zorder: int
+    shrink_a: float
+    shrink_b:float
 
     Returns
     -------
@@ -68,11 +95,12 @@ def draw_arrow_connectors(G,ax, color = '#000000',linew = 'edgewise', alpha = 1,
 
 def create_network_plot(G, ax = None, edge_color = 'k'):
     '''
-    For creating a network plot
+    For creating a simple network plot
 
     Parameters:
     G: networkx graph
     ax: matplotlib axis object.
+    edge_color: str
 
     Returns:
     fig,ax: matplotlib axis object.
