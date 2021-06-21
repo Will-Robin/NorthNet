@@ -132,61 +132,11 @@ def draw_radar(x_axis, y_axis,base = 0,ax = None, colour = 'k'):
 
     return ax
 
-def network_in_expr_circle(circ_data,circ_col_map, pie_rad, network, reactotypes,
-                            network_linew,  network_coords, base_network = [],
-                            base_net_alpha = 0.6, ax = None,
-                            chord_colour = '#000000'):
-
-    from NorthNet import conversions as conv
-    from NorthNet import network_view as n_v
-    n_removals = ["C=O","O","[OH-]"]
-
-    if ax == None:
-        fig,ax = plt.subplots()
-    if len(circ_col_map) != len(circ_data):
-        circ_col_map = ['w' for x in circ_data]
-
-    wedges,texts = ax.pie(circ_data, colors = circ_col_map, radius = pie_rad)
-    for p in wedges:
-        p.set_linewidth(0.25)
-        p.set_edgecolor('k')
-        p.set_width(pie_rad/3)
-
-    srt = sorted(network, key = lambda x:circ_data[[*reactotypes].index(x.Name)])
-    if len(base_network) != 0:
-        ax.plot(base_network[0], base_network[1], '--',c= '#000000', zorder = 0, alpha = base_net_alpha, linewidth = network_linew/2)
-
-    if len(network) != 0:
-        for c2,col in enumerate(srt):
-
-            if len(col.NetworkReactions) == 0.0:
-                continue
-
-            G = conv.convert_to_networkx(col)
-
-            for node in n_removals:
-                if node in G.nodes:
-                    G.remove_node(node)
-
-            for node in G.nodes:
-                G.nodes[node]['pos'] = network_coords[node]
-
-            xy = n_v.get_network_coordinates(G)
-
-            alph = circ_data[[*reactotypes].index(col.Name)]
-
-            ax.plot(xy[0], xy[1], c=chord_colour, zorder = c2+1, alpha = alph, linewidth = network_linew)
-
-    ax.set_axis_off()
-    ax.set_aspect('equal')
-
-    return ax
-
 def create_ellipse(mean, cov,
                   facecolor = 'k',edgecolor = 'k', **kwargs):
 
-    from matplotlib.patches import Ellipse
     import numpy as np
+    from matplotlib.patches import Ellipse
 
     pearson = cov[0, 1]/np.sqrt(cov[0, 0] * cov[1, 1])
     ell_radius_x = np.sqrt(1 + pearson)
@@ -225,14 +175,14 @@ def confidence_ellipse(x, y, ax = None, weights = None, n_std=3.0,
     from matplotlib.patches import Ellipse
     import matplotlib.transforms as transforms
     import numpy as np
-    from NorthNet.file_exports.plotting import data_plotting
+    from NorthNet.plotting import composite_plots
 
     if x.size != y.size:
         raise ValueError("x and y must be the same size")
 
     cov = np.cov(x, y, aweights = weights)
 
-    ellipse = data_plotting.create_ellipse((0, 0), cov,
+    ellipse = composite_plots.create_ellipse((0, 0), cov,
                               facecolor = facecolor,
                               edgecolor = edgecolor,
                               **kwargs)
