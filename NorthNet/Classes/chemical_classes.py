@@ -441,18 +441,18 @@ class Network:
                 self.NetworkReactions[output.ReactionSMILES] = output
                 self.NetworkCompounds[output.CompoundOutput].Out.append(
                                                         output.ReactionSMILES)
-
-                if output.OutputID in self.NetworkOutputs:
-                    self.NetworkOutputs[output.OutputID].In.append(
-                                                        output.ReactionSMILES)
-                else:
-                    self.NetworkOutputs[output.OutputID] = output
-                    self.NetworkOutputs[output.OutputID].In.append(
-                                                        output.ReactionSMILES)
             else:
-                # The compound is not in the network, so cannot
+                # The compound is not currently in the network, so cannot
                 # be an output
                 pass
+
+            if output.OutputID in self.NetworkOutputs:
+                self.NetworkOutputs[output.OutputID].In.append(
+                                                        output.ReactionSMILES)
+            else:
+                self.NetworkOutputs[output.OutputID] = output
+                self.NetworkOutputs[output.OutputID].In.append(
+                                                        output.ReactionSMILES)
 
     def add_outputs(self, outputs):
         '''
