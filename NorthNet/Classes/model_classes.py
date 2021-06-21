@@ -458,3 +458,90 @@ TO DO: merge functions below as ModelWriter methods
 #     jac_text = jac_text.strip(",\n") + "]"
 #
 #     return jac_text
+
+# def get_flow_rate(flow_profiles, time_limit = 1e100):
+#
+#     '''
+#     Parameters
+#     ----------
+#     flow_profiles: dict
+#         dictionary of flow profiles
+#
+#     time_limit: float
+#         Max time to include in the flow profile.
+#
+#     Returns
+#     -------
+#     total_flows: 1D numpy array
+#         Numpy arrays total flow over time
+#
+#     '''
+#
+#     conc_flow_key_pairs = []
+#     for fl in flow_profiles:
+#         if 'time' in fl:
+#             time_axis = flow_profiles[fl]
+#         elif '/ M' in fl:
+#             inp_name = fl.strip('/ M')
+#             for fl2 in [*flow_profiles]:
+#                 if inp_name in fl2 and fl2 != fl:
+#                     conc_flow_key_pairs.append((fl,fl2))
+#
+#     idx = np.where(time_axis < time_limit)[0]
+#     total_flows = np.zeros(len(time_axis))
+#     for fl in flow_profiles:
+#         if 'flow' in fl and not 'time' in fl:
+#             total_flows += flow_profiles[fl]
+#
+#     # ASSUMING THAT THE FLOW RATE IS IN UNITS OF uL/h
+#     # coverting to L/s
+#     total_flows /= 1e6
+#     total_flows /= 3600
+#     # convert to residence time
+#     total_flows = total_flows/(411*1e-6)
+#
+#     return time_axis[idx], total_flows[idx]
+#
+# def concentrations_from_flow_profile(flow_profiles, time_limit = 1e100):
+#
+#     '''
+#     Parameters
+#     ----------
+#     flow_profiles: dict
+#         dictionary of flow profiles
+#
+#     time_limit: float
+#         Max time to include in the flow profile.
+#
+#     Returns
+#     -------
+#     concentrations: dict
+#         Numpy arrays of concentration inputs over time.
+#     '''
+#
+#     conc_flow_key_pairs = []
+#     for fl in flow_profiles:
+#         if 'time' in fl:
+#             time_axis = flow_profiles[fl]
+#         elif '/ M' in fl:
+#             inp_name = fl.strip('/ M')
+#             for fl2 in [*flow_profiles]:
+#                 if inp_name in fl2 and fl2 != fl:
+#                     conc_flow_key_pairs.append((fl,fl2))
+#
+#     total_flows = np.zeros(len(time_axis))
+#     for fl in flow_profiles:
+#         if 'flow' in fl and not 'time' in fl:
+#             total_flows += flow_profiles[fl]
+#
+#     idx = np.where(time_axis < time_limit)[0]
+#     concentrations = {}
+#     for p in conc_flow_key_pairs:
+#         moles = flow_profiles[p[0]]*flow_profiles[p[1]]#/total_flows
+#         conc = moles/(411*1e-6)
+#         if 'NaOH' in p[0]:
+#             concentrations['[OH-]/ M'] = conc[idx]
+#         else:
+#             concentrations[p[0]] = conc[idx]
+#
+#     return time_axis[idx], concentrations
