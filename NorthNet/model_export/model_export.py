@@ -3,61 +3,6 @@ from NorthNet import info_params
 from NorthNet import Classes
 import numpy as np
 
-def write_model_equation_text(network):
-    '''
-    Parameters
-    ----------
-    network: NorthNet ReactionNetwork object
-        Network to be written.
-
-    Returns
-    -------
-    eq_text: str
-        Rate equations in text form.
-    '''
-
-    compounds = [x for x in network.NetworkCompounds]
-    reactions = [*network.NetworkReactions]
-
-    species, rate_consts, inflows, flow_ins, flow_outs = model_export.network_indices(network)
-
-    eq_text = ""
-
-    for count,c in enumerate(compounds):
-        eq_text += "P[{}] = ".format(count)
-        for i in network.NetworkCompounds[c].In:
-            if '_#0' in i:
-                in_compound = network.NetworkReactions[i].InputID
-                ki = '+{}*{}'.format(flow_ins[i], inflows[in_compound])
-                eq_text += ki
-            else:
-                reactants = network.NetworkReactions[i].Reactants
-                # remove water from reactants
-                reactants = [x for x in reactants if x != 'O']
-
-                ki = "+{}*".format(rate_consts[i])
-
-                if len(reactants) == 0:
-                    specs = ''#inflows[i]
-                else:
-                    specs = "*".join([species[x] for x in reactants])
-
-                eq_text += "{}{}".format(ki,specs)
-
-        for o in network.NetworkCompounds[c].Out:
-            if 'Sample' in o:
-                out_compound = network.NetworkReactions[o].CompoundOutput
-                ki = '-{}*{}'.format(flow_outs[o], species[out_compound])
-                eq_text += ki
-            else:
-                ki = "-{}*".format(rate_consts[o])
-                specs = "*".join([species[x] for x in network.NetworkReactions[o].Reactants])
-                eq_text += "{}{}".format(ki,specs)
-
-        eq_text += "\n"
-
-    return eq_text
-
 def write_model_matrix_text(network):
     '''
     Parameters
