@@ -2,7 +2,7 @@ from rdkit import Chem
 from NorthNet import Classes
 from NorthNet import network_generation as n_gen
 
-def extend_network_specific(network, reagents, reaction_template, exceptions):
+def extend_network_specific(network, reagents, reaction_template):
     '''
     Extend the network using a single reagent set.
 
@@ -14,28 +14,28 @@ def extend_network_specific(network, reagents, reaction_template, exceptions):
         Reagents to be applied to the network.
     reaction_template: NorthNet Reaction_Template object.
         Reaction template to be used on the network.
-    exceptions: list
-        List of forbidden substructures.
 
     Returns
     -------
     None
     '''
 
-    reactive_substructs = [Chem.MolFromSmarts(x) for x in reaction_template.ReactantSubstructures]
-    reactants = n_gen.reactive_species(list(network.NetworkCompounds.values()), reactive_substructs)
+    reactive_substructs = [Chem.MolFromSmarts(x)
+                            for x in reaction_template.ReactantSubstructures]
+
+    reactants = n_gen.reactive_species(list(network.NetworkCompounds.values()),
+                                                            reactive_substructs)
 
     for r in reactants:
         insert = [r] + reagents
         if n_gen.check_reaction_input(insert, reactive_substructs):
             deprot = n_gen.run_reaction(insert, reaction_template)
-            deprot = n_gen.remove_invalid_reactions(deprot, exceptions)
             insertion = [Classes.Reaction(r) for r in deprot]
-            network.add_reactions(insertion) # extend the reactions list with the new reactions
+            network.add_reactions(insertion)
         else:
             pass
 
-def extend_network_self(network, reaction_template, exceptions):
+def extend_network_self(network, reaction_template):
     '''
     Extend the network using any members of the network which can interact
     according to the reaction template provided.
@@ -50,8 +50,6 @@ def extend_network_self(network, reaction_template, exceptions):
         Reaction template to be used on the network.
     secondary_substructure: NorthNet/NetGen Substructure object
         Substructure of the second reaction component.
-    exceptions: list
-        List of forbidden substructures.
 
     Returns
     -------
@@ -66,11 +64,10 @@ def extend_network_self(network, reaction_template, exceptions):
         for r2 in reactants2:
             insert = [r1] + [r2]
             deprot = n_gen.run_reaction(insert, reaction_template)
-            deprot = n_gen.remove_invalid_reactions(deprot, exceptions)
             insertion = [Classes.Reaction(r) for r in deprot]
             network.add_reactions(insertion)
 
-def extend_network_task(network, reaction_template, exceptions):
+def extend_network_task(network, reaction_template):
     '''
     Extend the network using any members of the network which can interact
     according to the reaction template provided.
@@ -85,9 +82,7 @@ def extend_network_task(network, reaction_template, exceptions):
         Reaction template to be used on the network.
     secondary_substructure: NorthNet Substructure object
         Substructure of the second reaction component.
-    exceptions: list
-        List of forbidden substructures.
-
+        
     Returns
     -------
     None
@@ -106,6 +101,5 @@ def extend_network_task(network, reaction_template, exceptions):
     inputs = list(itertools.product(*reactants))
     for i in inputs:
         deprot = n_gen.run_reaction(i, reaction_template)
-        deprot = n_gen.remove_invalid_reactions(deprot, exceptions)
         insertion = [Classes.Reaction(r) for r in deprot]
         network.add_reactions(insertion)
