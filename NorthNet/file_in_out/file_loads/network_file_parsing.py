@@ -1,20 +1,4 @@
-def load_pickle_network_data(fname):
-    '''
-    For loading pickled network data. Effectively a wrapper for pickle.
-    Parameters
-    ----------
-    fname: str
-        File to extract object from
-    Returns
-    -------
-    net: object
-        Object from pickle file.
-    '''
 
-    with open(fname, "rb") as f:
-        net = pickle.load(f)
-
-    return net
 
 def read_gdf_file(file):
     '''
