@@ -8,7 +8,7 @@ def extend_network_specific(network, reagents, reaction_template):
 
     Parameters
     ----------
-    network: NorthNet network object
+    network: NorthNet Network object
         Network to be extrapolated from. Modified in place.
     reagents: NorthNet Compound objects
         Reagents to be applied to the network.
@@ -41,7 +41,7 @@ def extend_network_self(network, reaction_template):
 
     Parameters
     ----------
-    network: NorthNet network object
+    network: NorthNet Network object
         Network to be extrapolated from. Modified in place.
     reagents: NorthNet Compound objects
         Reagents to be applied to the network.
@@ -54,10 +54,16 @@ def extend_network_self(network, reaction_template):
     -------
     None
     '''
-    substructures = [Chem.MolFromSmarts(x) for x in reaction_template.ReactantSubstructures]
+    substructures = [Chem.MolFromSmarts(x)
+                            for x in reaction_template.ReactantSubstructures]
 
-    reactants1 = n_gen.reactive_species(list(network.NetworkCompounds.values()), [substructures[0]]) # cruder way of getting the SMARTS back
-    reactants2 = n_gen.reactive_species(list(network.NetworkCompounds.values()), [substructures[1]])
+    reactants1 = n_gen.reactive_species(
+                    list(network.NetworkCompounds.values()), [substructures[0]]
+                    )
+
+    reactants2 = n_gen.reactive_species(
+                    list(network.NetworkCompounds.values()), [substructures[1]]
+                    )
 
     for r1 in reactants1:
         for r2 in reactants2:
@@ -72,7 +78,7 @@ def extend_network_task(network, reaction_template):
 
     Parameters
     ----------
-    network: NorthNet network object
+    network: NorthNet Network object
         Network to be extrapolated from. Modified in place.
     reagents: NorthNet Compound objects
         Reagents to be applied to the network.
@@ -95,8 +101,9 @@ def extend_network_task(network, reaction_template):
     reactants = []
     for s in substructures:
         reactants.append(
-            n_gen.reactive_species(list(network.NetworkCompounds.values()), [s])
-            )
+            n_gen.reactive_species(
+                                list(network.NetworkCompounds.values()), [s])
+                                )
 
     # Build reactant combinations
     inputs = list(itertools.product(*reactants))
