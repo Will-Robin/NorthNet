@@ -8,11 +8,11 @@ def extend_network_specific(network, reagents, reaction_template, exceptions):
 
     Parameters
     ----------
-    network: NorthNet/NetGen network object
-        Network to be extrapolated from.
-    reagents: NorthNet/NetGen Compound objects
+    network: NorthNet network object
+        Network to be extrapolated from. Modified in place.
+    reagents: NorthNet Compound objects
         Reagents to be applied to the network.
-    reaction_template: NetGen Reaction_Template object.
+    reaction_template: NorthNet Reaction_Template object.
         Reaction template to be used on the network.
     exceptions: list
         List of forbidden substructures.
@@ -41,11 +41,11 @@ def intra_network_reactions(network,  reagents, reaction_template, exceptions):
 
     Parameters
     ----------
-    network: NorthNet/NetGen network object
-        Network to be extrapolated from.
-    reagents: NorthNet/NetGen Compound objects
+    network: NorthNet network object
+        Network to be extrapolated from. Modified in place.
+    reagents: NorthNet Compound objects
         Reagents to be applied to the network.
-    reaction_template: NetGen Reaction_Template object.
+    reaction_template: NorthNet Reaction_Template object.
         Reaction template to be used on the network.
     exceptions: list
         List of forbidden substructures.
@@ -77,11 +77,11 @@ def extend_network_self(network, reaction_template, exceptions):
 
     Parameters
     ----------
-    network: NorthNet/NetGen network object
-        Network to be extrapolated from.
-    reagents: NorthNet/NetGen Compound objects
+    network: NorthNet network object
+        Network to be extrapolated from. Modified in place.
+    reagents: NorthNet Compound objects
         Reagents to be applied to the network.
-    reaction_template: NetGen/NorthNet Reaction_Template object.
+    reaction_template: NorthNet Reaction_Template object.
         Reaction template to be used on the network.
     secondary_substructure: NorthNet/NetGen Substructure object
         Substructure of the second reaction component.
@@ -112,13 +112,13 @@ def extend_network_self_with_constraint(network, reaction_template, exceptions):
 
     Parameters
     ----------
-    network: NorthNet/NetGen network object
-        Network to be extrapolated from.
-    reagents: NorthNet/NetGen Compound objects
+    network: NorthNet network object
+        Network to be extrapolated from. Modified in place.
+    reagents: NorthNet Compound objects
         Reagents to be applied to the network.
-    reaction_template: NetGen/NorthNet Reaction_Template object.
+    reaction_template: NorthNet Reaction_Template object.
         Reaction template to be used on the network.
-    secondary_substructure: NorthNet/NetGen Substructure object
+    secondary_substructure: NetGen Substructure object
         Substructure of the second reaction component.
     exceptions: list
         List of forbidden substructures.
@@ -151,13 +151,13 @@ def extend_network_task(network, reaction_template, exceptions):
 
     Parameters
     ----------
-    network: NorthNet/NetGen network object
-        Network to be extrapolated from.
-    reagents: NorthNet/NetGen Compound objects
+    network: NorthNet network object
+        Network to be extrapolated from. Modified in place.
+    reagents: NorthNet Compound objects
         Reagents to be applied to the network.
-    reaction_template: NetGen/NorthNet Reaction_Template object.
+    reaction_template: NorthNet Reaction_Template object.
         Reaction template to be used on the network.
-    secondary_substructure: NorthNet/NetGen Substructure object
+    secondary_substructure: NorthNet Substructure object
         Substructure of the second reaction component.
     exceptions: list
         List of forbidden substructures.
