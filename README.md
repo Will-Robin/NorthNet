@@ -11,3 +11,10 @@ A Python package which aims to provide tools in understanding chemical reactions
 - Conversion of networks into mathematical models
 - Experimental reaction data integration with reaction networks
 - *Future* data manipulation guided by reaction networks.
+
+## To do
+
+- [ ] Complete check of the network generation code (refactor, remove old code, improve where relevant)
+- [ ] Test network generation code
+- [ ] Go through the other modules
+- [ ] Write example scripts
