@@ -1,8 +1,12 @@
-
-
-def read_gdf_file(file):
+def node_edge_list_from_gdf(file):
     '''
     Get network edges and coordinates from .gdf file
+
+    file: str or pathlib Path
+        Path to file
+
+    node_list, edge_list: list of dicts
+
     '''
     with open(file, "r") as f:
         coordinates = []
