@@ -1,16 +1,5 @@
 from pathlib import Path
 
-def readTwoColInfo(file, col_idx_a, col_idx_b):
-    assignments = {}
-    with open(file, 'r') as f:
-        for c, line in enumerate(f):
-            if c > 0:
-                spl = line.strip('\n').split(',')
-                assignments[spl[col_idx_a]] = spl[col_idx_b]
-            else:
-                pass
-    return assignments
-
 path = Path(__file__)
 script_dir = path.parent
 
