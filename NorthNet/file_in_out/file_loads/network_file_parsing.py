@@ -1,3 +1,21 @@
+def load_network_from_reaction_list(reaction_list, name = '', description = ''):
+    '''
+    Create a NorthNet Network from a list of reactions
+
+    reaction_list: list of reaction SMILES strings
+        Format: e.g. C=O.OC=C(O)CO>>O=C([C@@H](CO)O)CO
+
+    network: NorthNet Network object
+    '''
+
+    rxns = []
+    for r in reaction_list:
+        rxns.append(Classes.Reaction(r))
+
+    network = Classes.Network(rxns, name, description)
+
+    return network
+
 def node_edge_list_from_gdf(file):
     '''
     Get network edges and coordinates from .gdf file
