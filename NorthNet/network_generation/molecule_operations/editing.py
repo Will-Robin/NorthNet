@@ -25,9 +25,10 @@ def mirror_smiles(smiles):
     m1 = smiles.replace("@@","ZY")
     m1 = m1.replace("@","@@")
     m1 = m1.replace("ZY","@")
+    m1 = canonicalise(m1)
 
     return m1
-    
+
 def mirror(compound):
     '''
     Reverses the chirality of a NorthNet Compound object.
