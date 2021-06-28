@@ -17,6 +17,8 @@ def load_compounds_from_csv(fname, name_col = 0, SMILES_col = 1):
         Dictionary containing extracted compounds.
         {SMILES string: NorthNet Compound object}
     '''
+    from NorthNet import Classes
+
     reagents = {}
     with open(fname, "r") as f:
         for c,line in enumerate(f):
@@ -53,6 +55,9 @@ def load_reaction_templates_from_csv(fname, delimiter  = '\t'):
         Dictionary of reaction templates.
         {reaction class name: NorthNet Reaction_Template}
     '''
+
+    from NorthNet import Classes
+
     reaction_templates = {}
     with open(fname, "r") as f:
         for c,line in enumerate(f):
@@ -64,5 +69,4 @@ def load_reaction_templates_from_csv(fname, delimiter  = '\t'):
                                                             ins[3],
                                                             ins[1].split("."),
                                                             ins[2].split("."))
-
     return reaction_templates
