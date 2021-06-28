@@ -45,7 +45,6 @@ def polar_to_xy(magnitude, angle):
         x, y
     '''
 
-
     x = magnitude*np.cos(np.deg2rad(angle))
     y = magnitude*np.sin(np.deg2rad(angle))
 
@@ -68,42 +67,3 @@ def circle(r, origin):
     x2 = r*np.sin(theta)
 
     return x1+origin[0],x2+origin[1]
-
-def rect(x1, y1, x2, y2):
-    '''
-    get rectangle bounds
-    '''
-    a = (y1 - y2) / (x1 - x2)
-    b = y1 - a * x1
-    return (a, b)
-
-def curve_between_points(source,target,centre):
-    '''
-    create a curve between source and target, moving towards and then away
-    from centre
-
-    source,target,centre: 2-tuples of floats
-    returns: x_p, y_p list of x and y coordinates for the line
-    '''
-    from NorthNet.calculations import calculations
-
-    (x1, y1, x2, y2) = (source[0],source[1],centre[0],centre[1])
-    (a1, b1) = calculations.rect(source[0],source[1], centre[0],centre[1])
-    (a2, b2) = calculations.rect(target[0],target[1], centre[0],centre[1])
-    x_p = []
-    y_p = []
-    for i in range(0, 1000):
-        if x1 == x2:
-            continue
-        else:
-            (a, b) = calculations.rect(x1, y1, x2, y2)
-        x = i*(x2 - x1)/1000 + x1
-        y = a*x + b
-        x_p.append(x)
-        y_p.append(y)
-        x1 += (centre[0] - source[0])/1000
-        y1 = a1*x1 + b1
-        x2 += (target[0] - centre[0])/1000
-        y2 = a2*x2 + b2
-
-    return x_p, y_p
