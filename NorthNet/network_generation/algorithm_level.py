@@ -93,17 +93,13 @@ def extend_network_task(network, reaction_template):
     '''
     import itertools
 
-    substructures = [Chem.MolFromSmarts(x)
-                            for x in reaction_template.ReactantSubstructures]
-
-    reactant_num = len(substructures)
-
     reactants = []
-    for s in substructures:
+    for x in reaction_template.ReactantSubstructures:
+        substructure = Chem.MolFromSmarts(x)
         reactants.append(
             n_gen.reactive_species(
-                                list(network.NetworkCompounds.values()), [s])
-                                )
+                        list(network.NetworkCompounds.values()), [substructure])
+                        )
 
     # Build reactant combinations
     inputs = list(itertools.product(*reactants))
