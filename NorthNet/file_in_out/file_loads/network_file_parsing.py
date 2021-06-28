@@ -69,15 +69,6 @@ def network_from_edge_list_csv(edges_file):
         Path to file containing edges
         (format: Source,Target,Type,Id,Label,timeset,Weight,4,5,6 newline)
 
-    default_node_size: float
-
-    default_node_color: float
-
-    default_edge_width: int (float)
-        default edge width
-    default_edge_color: str
-        Default edge color.
-
     Returns
     -------
     G: networkx.DiGraph object
