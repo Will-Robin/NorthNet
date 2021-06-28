@@ -27,16 +27,3 @@ legend_font = float(plot_params['legend_font'])
 min_font = float(plot_params['min_font'])
 ticklength = float(plot_params['ticklength'])
 tickpad = float(plot_params['tickpad'])
-
-Nat_format = readTwoColInfo(script_dir/'Nature_formatting.csv', 1)
-
-col_width = float(Nat_format['col_width'])
-two_col_width = float(Nat_format['two_col_width'])
-full_page =float(Nat_format['full_page'])
-modest_display_item = float(Nat_format['modest_display_item'])
-composite_figure = float(Nat_format['composite_figure'])
-
-cluster_grayscale = readTwoColInfo(script_dir/'cluster_colourmap.csv', 2)
-cluster_grayscale = [cluster_grayscale[c] for c in cluster_grayscale]
-cluster_colour_map = readTwoColInfo(script_dir/'cluster_colourmap.csv', 1)
-cluster_colour_map = [cluster_colour_map[c] for c in cluster_colour_map]
