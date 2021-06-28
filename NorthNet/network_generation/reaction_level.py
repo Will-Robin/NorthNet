@@ -1,7 +1,6 @@
 from rdkit import Chem
-from rdkit.Chem import AllChem
 from NorthNet import Classes
-from NorthNet import _network_generation as n_gen
+from rdkit.Chem import AllChem
 from NorthNet.molecule_operations import editing
 
 def run_reaction(reactant_compounds, reaction_template):
@@ -23,7 +22,7 @@ def run_reaction(reactant_compounds, reaction_template):
     Returns
     -------
     reactions: list
-        A list of NetGen Generated_Reaction objects.
+        A list of NorthNet Reaction objects.
     '''
     reactions = []
     reactants = tuple(r.Mol for r in reactant_compounds)
@@ -31,7 +30,7 @@ def run_reaction(reactant_compounds, reaction_template):
     reactant_map_numbers = []
     for r in reactants:
         reactant_map_numbers.append([atom.GetAtomMapNum() for atom in r.GetAtoms()])
-    
+
     ps = reaction_template.Reaction.RunReactants(reactants) # Run the reaction to give a list of products sets
     for u in ps:
         for p in u:
@@ -41,7 +40,7 @@ def run_reaction(reactant_compounds, reaction_template):
         rxn = AllChem.ChemicalReaction() # Create an empty chemical reaction
         [rxn.AddReactantTemplate(r) for r in reactants]
         [rxn.AddProductTemplate(p) for p in u]
-
-        reactions.append( Classes.Generated_Reaction(rxn, reaction_template) )
+        
+        reactions.append( Classes.Reaction(rxn, reaction_template = reaction_template) )
 
     return reactions
