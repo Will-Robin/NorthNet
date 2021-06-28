@@ -87,18 +87,6 @@ def network_from_gdf(file):
 
     return G
 
-def get_species_coordinates(file):
-
-    coords_dict = {}
-
-    with open(file) as f:
-        for line in f:
-            ln = line.strip("\n")
-            ln  = [x for x in ln.split(",") if x != ""]
-            coords_dict[ln[0]+" M"] = [float(ln[1]),float(ln[2])]
-
-    return coords_dict
-
 def network_from_edge_list_csv(edges_file):
     '''
     Create a networkx DiGraph object using a list of edges from a .csv file.
