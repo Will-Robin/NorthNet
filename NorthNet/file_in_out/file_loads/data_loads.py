@@ -1,20 +1,3 @@
-
-
-def load_flow_profiles(fname):
-    import numpy as np
-
-    flow_info = {}
-    proc_line = lambda x:[z for z in x.strip("\n").split(",") if z != ""]
-    with open(fname, "r") as f:
-        for line in f:
-            ins = proc_line(line)
-            if ins[0] in flow_info:
-                flow_info[ins[0]][ins[1]] = np.array([float(z) for z in ins[2:]])
-            else:
-                flow_info[ins[0]] = {}
-                flow_info[ins[0]][ins[1]] = np.array([float(z) for z in ins[2:]])
-    return flow_info
-
 def load_exp_compound_file(fname, header):
 
     '''
