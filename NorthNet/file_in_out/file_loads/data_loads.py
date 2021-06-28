@@ -1,29 +1,3 @@
-def loadDataSetsFromFolder(path):
-    '''
-    Paramters
-    ---------
-    path: pathlib Path or str
-        Path to directory containing files
-        (expecting two .csv files per directory).
-    Returns
-    -------
-        datasets: NorthNet DataSet object
-            Data sets in files combined into one.
-    '''
-    if type(path) == str:
-        from pathlib import Path
-        folder = Path(path)
-    else:
-        folder = path
-
-    for f in os.listdir(folder):
-        Classes.DataReport(file = folder/f)
-
-    return d_ops.combine_datasets(d_sets, d_sets[0].conditions, time_independent = t_inep,
-                                  interpolation_length = len(d_sets[0].time),
-                                  x_axis_key = d_sets[0].independent_name)
-    return 0
-
 def get_data(file, flow_data = True, x_axis_key = ''):
     '''
     From data_fitting_functions.py
