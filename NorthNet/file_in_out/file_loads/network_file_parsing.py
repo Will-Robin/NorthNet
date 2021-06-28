@@ -7,6 +7,7 @@ def load_network_from_reaction_list(reaction_list, name = '', description = ''):
 
     network: NorthNet Network object
     '''
+    from NorthNet import Classes
 
     rxns = []
     for r in reaction_list:
