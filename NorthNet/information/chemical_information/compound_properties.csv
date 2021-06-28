@@ -1,8 +1,8 @@
 compound_name,@ SMILES,@@ SMILES,Class,colour,Mr_gmol-1,Other_names
-formaldehyde,C=O,C=O,C1_Class_I,#0917e5,30.03,form;H2C=O;formaldehyde_concentration;Formaldehyde;HCHO
+formaldehyde,C=O,C=O,C1_Class_I,#0917e5,30.03,form;H2C=O;formaldehyde;Formaldehyde;HCHO
 formic_acid,O=CO,O=CO,Carboxylic_acid,#040404,46,;
 glycolaldehyde,O=CCO,O=CCO,C2_Class_I,#6d1df1,60.05,;
-dihydroxyacetone,O=C(CO)CO,O=C(CO)CO,C3_Class_II,#e7a529,90.08,DHA;Dihydroxyacetone
+dihydroxyacetone,O=C(CO)CO,O=C(CO)CO,C3_Class_II,#e7a529,90.08,DHA;Dihydroxyacetone;dihydroxyacetone
 glyceraldehyde,O=C[C@H](O)CO,O=C[C@@H](O)CO,C3_Class_I,#d3b237,90.08,GA;
 glycerol,OCC(O)CO,OCC(O)CO,C3_alcohol,#f79a15,92.09,;
 erythritol,OC[C@H](O)[C@H](O)CO,OC[C@@H](O)[C@@H](O)CO,C4_alcohol,#e0e3e1,112.12,;
@@ -20,7 +20,7 @@ aldotetrose_alpha_branch_syn,O=C[C@](O)(CO)[C@H](O)CO,O=C[C@@](O)(CO)[C@@H](O)CO
 aldotetrose_beta_branch,O=C[C@H](O)C(O)(CO)CO,O=C[C@@H](O)C(O)(CO)CO,C5_Class_V,#f53f06,150.13,;
 arabinose,O=C[C@@H](O)[C@H](O)[C@H](O)CO,O=C[C@H](O)[C@@H](O)[C@@H](O)CO,C5_Class_I,#DD7790,150.13,;
 lyxose,O=C[C@@H](O)[C@@H](O)[C@H](O)CO,O=C[C@H](O)[C@H](O)[C@@H](O)CO,C5_Class_I,#771124,150.13,;
-ribose,O=C[C@H](O)[C@H](O)[C@H](O)CO,O=C[C@@H](O)[C@@H](O)[C@@H](O)CO,C5_Class_I,#AA4457,150.13,Ribose;ribose_concentration;
+ribose,O=C[C@H](O)[C@H](O)[C@H](O)CO,O=C[C@@H](O)[C@@H](O)[C@@H](O)CO,C5_Class_I,#AA4457,150.13,Ribose;ribose;
 ribulose,O=C(CO)[C@H](O)[C@H](O)CO,O=C(CO)[C@@H](O)[C@@H](O)CO,C5_Class_II,#eeb29f,150.13,;
 xylose,O=C[C@H](O)[C@@H](O)[C@H](O)CO,O=C[C@@H](O)[C@H](O)[C@@H](O)CO,C5_Class_I,#cd0d3c,150.13,;
 xylulose,O=C(CO)[C@@H](O)[C@H](O)CO,O=C(CO)[C@H](O)[C@@H](O)CO,C5_Class_II,#eeb29f,150.13,;
@@ -114,6 +114,6 @@ polyolZ,OC[C@H](O)[C@@H](O)[C@H](O)CO,OC[C@@H](O)[C@H](O)[C@@H](O)CO,polyol,#d0d
 6_enolate_16,OCC(O)=C(O)[C@H](O)[C@@H](O)CO,OCC(O)=C(O)[C@@H](O)[C@H](O)CO,enolate,#d0d1df,180.06,;
 6_enolate_17,OCC(O)=C(O)[C@H](O)[C@H](O)CO,OCC(O)=C(O)[C@@H](O)[C@@H](O)CO,enolate,#d0d1df,180.06,;
 6_enolate_18,OCC(O)=C(O)C(O)(CO)CO,OCC(O)=C(O)C(O)(CO)CO,enolate,#d0d1df,180.06,;
-hydroxide,[OH-],[OH-],base,#9f9ec7,17,sodium_hydroxide;sodium hydroxide;NaOH;sodium_hydroxide_concentration;NaOH_concentration
-calcium_chloride,CaCl2,CaCl2,reagent,#3be3b3,147.01,CaCl2;calcium chloride;CaCl2_concentration
+hydroxide,[OH-],[OH-],base,#9f9ec7,17,sodium_hydroxide;sodium hydroxide;NaOH;sodium_hydroxide
+calcium_chloride,CaCl2,CaCl2,reagent,#3be3b3,147.01,CaCl2;calcium chloride;CaCl2
 water,O,O,solvent,#000000,18,H2O;
