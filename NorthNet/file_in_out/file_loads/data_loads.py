@@ -1,39 +1,3 @@
-def load_exp_compound_file(fname, header):
-
-    '''
-    For loading compositional arrays in a dictionary from a
-    formatted file.
-
-    Parameters
-    ----------
-    fname: str or pathlib Path object
-        Path to file.
-    header: list
-        Standardised list of compounds of similar format
-        to the column header of the file
-
-    Returns:
-    output: dict of numpy arrays
-
-    '''
-    import numpy as np
-    output = {}
-    with open(fname, 'r') as f:
-        for c,line in enumerate(f):
-            if c == 0:
-                ins  = line.strip('\n').split(',')
-                f_head = [x for x in ins[1:] if x != '']
-            else:
-                ins = line.strip('\n').split(',')
-                data = [float(x) for x in ins[1:] if x != '']
-                fill_line = [0.0]*len(header)
-                for x in range(0,len(f_head)):
-                    idx = header.index(f_head[x])
-                    fill_line[idx] = data[x]
-
-                output[ins[0]] = np.array(fill_line)
-    return output
-
 def load_cluster_locations(fname):
     output = {}
     proc_line = lambda x:[z for z in x.strip("\n").split(",") if z != ""]
