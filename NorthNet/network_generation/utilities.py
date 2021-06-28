@@ -2,15 +2,17 @@ def cleanup(reactions):
     from rdkit import Chem
 
     '''Used to clear up the output of rdkit reaction function, parsing multiple
-    reaction outcomes. Not perfect.'''
+    reaction outcomes. Not perfect.
+    reactions: list of reaction SMILES strings
+
+    reactions_out: list of cleaned reaction SMILES strings
+    '''
 
     reactions = [r.replace('[H+][O-]','O')    for r in reactions]
     reactions = [r.replace('[O-][H+]','O')    for r in reactions]
-    #reactions = [r.replace('=[C@H]'   ,'=C')  for r in reactions]
-    #reactions = [r.replace('=[C@@H]'   ,'=C') for r in reactions]
     reactions = [r.replace("/"   ,"") for r in reactions]
     reactions = [r.replace( r"\\"  ,"") for r in reactions]
-    #reactions = [r.replace('@'   ,'') for r in reactions]
+
 
     reactions_out = []
     for c in range(0,len(reactions)):
@@ -41,8 +43,11 @@ def remove_network_symmetry(network):
     if the stereocentre furthest from the carbonyl is S, delete the species and
     its associated reactions from the network. Furthest from the carbonyl is
     defined for now as the last carbon in the canonicalised structure.
+
     Parameters
     ----------
+    network: NorthNet Network object
+
     Returns
     -------
     None
@@ -56,7 +61,7 @@ def remove_network_symmetry(network):
 
         if len(ch_centres) > 0 and ch_centres[-1][-1] == "S":
             node_remove.append(n)
-            #print(ch_centres)
+
             for r in network.NetworkCompounds[n].In:
                 edge_remove.append(r)
 
