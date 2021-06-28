@@ -22,7 +22,6 @@ def extend_network_specific(network, reagents, reaction_template, exceptions):
     None
     '''
 
-    #principle_substruct = max(reaction_template.ReactantSubstructures, key=len) # Crude way of getting the main reactant substructure
     reactive_substructs = [Chem.MolFromSmarts(x) for x in reaction_template.ReactantSubstructures]
     reactants = n_gen.reactive_species(list(network.NetworkCompounds.values()), reactive_substructs)
 
@@ -56,7 +55,6 @@ def intra_network_reactions(network,  reagents, reaction_template, exceptions):
     None
     '''
 
-    #principle_substruct = max(reaction_template.ReactantSubstructures, key=len) # Crude way of getting the main reactant substructure
     reactive_substructs = [Chem.MolFromSmarts(x) for x in reaction_template.ReactantSubstructures]
     reactants = n_gen.reactive_species(list(network.NetworkCompounds.values()), reactive_substructs)
 
@@ -70,7 +68,7 @@ def intra_network_reactions(network,  reagents, reaction_template, exceptions):
         else:
             pass
 
-    return reactions_to_add # extend the reactions list with the new reactions
+    return reactions_to_add
 
 def extend_network_self(network, reaction_template, exceptions):
     '''
@@ -105,7 +103,7 @@ def extend_network_self(network, reaction_template, exceptions):
             deprot = n_gen.run_reaction(insert, reaction_template)
             deprot = n_gen.remove_invalid_reactions(deprot, exceptions)
             insertion = [Classes.Reaction(r) for r in deprot]
-            network.add_reactions(insertion) # extend the reactions list with the new reactions
+            network.add_reactions(insertion)
 
 def extend_network_self_with_constraint(network, reaction_template, exceptions):
     '''
@@ -144,7 +142,7 @@ def extend_network_self_with_constraint(network, reaction_template, exceptions):
             deprot = n_gen.run_reaction(insert, reaction_template)
             deprot = n_gen.remove_invalid_reactions(deprot, exceptions)
             insertion = [Classes.Reaction(r) for r in deprot]
-            network.add_reactions(insertion) # extend the reactions list with the new reactions
+            network.add_reactions(insertion)
 
 def extend_network_task(network, reaction_template, exceptions):
     '''
@@ -184,4 +182,4 @@ def extend_network_task(network, reaction_template, exceptions):
         deprot = n_gen.run_reaction(i, reaction_template)
         deprot = n_gen.remove_invalid_reactions(deprot, exceptions)
         insertion = [Classes.Reaction(r) for r in deprot]
-        network.add_reactions(insertion) # extend the reactions list with the new reactions
+        network.add_reactions(insertion)
