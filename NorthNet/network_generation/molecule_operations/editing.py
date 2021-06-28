@@ -3,19 +3,19 @@ from rdkit.Chem import AllChem
 
 def canonicalise(smiles):
     '''
-    Canonicalises a SMILES molecular structure.
+    Canonicalises a SMILES string
     '''
     mol = Chem.MolFromSmiles(smiles)
     return Chem.MolToSmiles(mol, isomericSmiles = True)
 
 def mirror(compound):
     '''
-    Reverses enantiomers
+    Reverses the chirality of a NorthNet Compound object.
 
     Parameters
     ----------
-    compound: NorthNet/ NetGen compound object
-        Compound to be mirrored.
+    compound: NorthNet compound object
+        Compound to be mirrored. Modifed in place.
     Returns
     -------
     None
@@ -30,7 +30,7 @@ def mirror(compound):
 
 def mirror_smiles(smiles):
     '''
-    Reverses enantiomers
+    Reverses enantiomers via string replacement in SMILES
 
     Parameters
     ----------
@@ -50,19 +50,24 @@ def mirror_smiles(smiles):
 
 def incorrect_chiral_H_solve(mol):
     '''
-    Removes explicit hydrogens left over from deprotonation of a stereogenic carbon.
-    Checks for carbon centres which exceed a total valence of 4 and those with
-    explicit
+    Checks for carbon centres which exceed a total valence of 4, sets
+    their chirality to unspecified and removes explicit hydrogens.
+
     Parameters
     ----------
     mol: rdkit mol object
         Molecule to be corrected.
     Returns
     -------
-    None
+    mol: rdkit mol object
+        Cleaned molecule
     '''
     mol.UpdatePropertyCache(strict = False)
-    Chem.AssignStereochemistry(mol,cleanIt=True,force=True,flagPossibleStereoCenters=True)
+    Chem.AssignStereochemistry(mol,
+                            cleanIt=True,
+                            force=True,
+                            flagPossibleStereoCenters=True
+                            )
 
     for atom in mol.GetAtoms():
         if atom.GetSymbol() == "C" and atom.GetTotalValence() > 4:
