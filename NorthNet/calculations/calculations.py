@@ -60,7 +60,6 @@ def circle(r, origin):
     returns numpy arrays for x and y coordinates
     '''
 
-
     theta = np.linspace(0, 2*np.pi, 100)
 
     x1 = r*np.cos(theta)
