@@ -1,10 +1,10 @@
-def get_compounds(fname):
+def load_compounds_from_csv(fname):
     '''
     Reads compounds from a .csv file.
 
     Parameters
     ----------
-    fname: str
+    fname: str or pathlib Path
         Path to the file containing nformation.
     Returns
     -------
@@ -20,30 +20,8 @@ def get_compounds(fname):
                 ins = line.strip("\n").split(",")
 
                 reagents[ ins[0] ] = Classes.Compound(ins[1])
+
     return reagents
-
-def get_substructures(fname):
-    '''
-    Get substructures from a file.
-    Parameters
-    ----------
-    fname: str
-        Path to the file containing nformation.
-    Returns
-    -------
-    substructures: dict
-        Dictionary containing extracted substructures. SMARTS: NorthNet Substructure object
-    '''
-
-    substructures = {}
-    with open(fname, "r") as f:
-        for c,line in enumerate(f):
-            if c == 0:
-                pass
-            else:
-                ins = line.strip("\n").split(",")
-                substructures[ ins[0] ] = [Classes.Substructure(x) for x in ins[1:] if x != ""]
-    return substructures
 
 def get_reaction_templates(fname, delimiter  = '\t'):
     '''
