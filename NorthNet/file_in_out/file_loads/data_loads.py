@@ -1,27 +1,3 @@
-def load_data_set(path):
-    from NorthNet import dataset_operations as d_ops
-    from NorthNet import file_in_out as f_io
-
-    home = os.getcwd()
-    t_inep = False
-    os.chdir(path)
-    lst = os.listdir()
-    d_sets = []
-    for f in lst:
-        if f.endswith(".csv"):
-            try:
-                dset = f_io.get_data(f)
-                d_sets.append(dset)
-
-            except:
-                t_inep = True
-                dset = f_io.get_data(f, x_axis_key = "sample number/ n", flow_data = False)
-                d_sets.append(dset)
-
-    os.chdir(home)
-    return d_ops.combine_datasets(d_sets, d_sets[0].conditions, time_independent = t_inep,
-                                  interpolation_length = len(d_sets[0].time),
-                                  x_axis_key = d_sets[0].independent_name)
 
 def data_from_directory(directory):
     '''
