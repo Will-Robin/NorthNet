@@ -58,15 +58,18 @@ def load_reaction_templates_from_csv(fname, delimiter  = '\t'):
 
     from NorthNet import Classes
 
-    reaction_templates = {}
     with open(fname, "r") as f:
         for c,line in enumerate(f):
-            if c == 0:
-                pass
-            else:
-                ins = line.strip("\n").split(delimiter)
-                reaction_templates[ ins[0] ] = Classes.Reaction_Template(ins[0],
-                                                            ins[3],
-                                                            ins[1].split("."),
-                                                            ins[2].split("."))
+            lines = f.readlines()
+            
+    reaction_templates = {}
+    for c,line in enumerate(lines):
+        if c == 0:
+            pass
+        else:
+            ins = line.strip("\n").split(delimiter)
+            reaction_templates[ ins[0] ] = Classes.Reaction_Template(ins[0],
+                                                        ins[3],
+                                                        ins[1].split("."),
+                                                        ins[2].split("."))
     return reaction_templates
