@@ -1,37 +1,4 @@
 
-def data_from_directory(directory):
-    '''
-    For importing multiple datasets from a directory into a dictionary indexed
-    by file names.
-
-    Parameters
-    ----------
-    directory: str
-        Path to the directory holding the data files.
-
-    Returns
-    -------
-    data_dict: dict
-        A dictionary of dataset objects indexed by the first 8 characters of
-        their filenames
-    '''
-
-    cwd = os.getcwd()
-
-    os.chdir(directory)
-
-    f_list = [x for x in os.listdir() if x.endswith(".csv")]
-    data_dict = {}
-    for f in f_list:
-        if f[:8] in data_dict:
-            data_dict[f[:8]].append(get_data(f))
-        else:
-            data_dict[f[:8]] = []
-            data_dict[f[:8]].append(get_data(f))
-
-    os.chdir(cwd)
-
-    return data_dict
 
 def load_flow_profiles(fname):
     import numpy as np
