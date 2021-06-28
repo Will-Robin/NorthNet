@@ -35,41 +35,6 @@ def extend_network_specific(network, reagents, reaction_template, exceptions):
         else:
             pass
 
-def intra_network_reactions(network,  reagents, reaction_template, exceptions):
-    '''
-    Extend the network using a single reagent set.
-
-    Parameters
-    ----------
-    network: NorthNet network object
-        Network to be extrapolated from. Modified in place.
-    reagents: NorthNet Compound objects
-        Reagents to be applied to the network.
-    reaction_template: NorthNet Reaction_Template object.
-        Reaction template to be used on the network.
-    exceptions: list
-        List of forbidden substructures.
-
-    Returns
-    -------
-    None
-    '''
-
-    reactive_substructs = [Chem.MolFromSmarts(x) for x in reaction_template.ReactantSubstructures]
-    reactants = n_gen.reactive_species(list(network.NetworkCompounds.values()), reactive_substructs)
-
-    reactions_to_add = []
-    for r in reactants:
-        insert = [r] + reagents
-        if n_gen.check_reaction_input(insert, reactive_substructs):
-            deprot = n_gen.run_reaction(insert, reaction_template)
-            deprot = n_gen.remove_invalid_reactions(deprot, exceptions)
-            reactions_to_add.extend([Classes.Reaction(r) for r in deprot])
-        else:
-            pass
-
-    return reactions_to_add
-
 def extend_network_self(network, reaction_template, exceptions):
     '''
     Extend the network using any members of the network which can interact
