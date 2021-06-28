@@ -29,9 +29,8 @@ def extend_network_specific(network, reagents, reaction_template):
     for r in reactants:
         insert = [r] + reagents
         if n_gen.check_reaction_input(insert, reactive_substructs):
-            deprot = n_gen.run_reaction(insert, reaction_template)
-            insertion = [Classes.Reaction(r) for r in deprot]
-            network.add_reactions(insertion)
+            resulting_reactions = n_gen.run_reaction(insert, reaction_template)
+            network.add_reactions(resulting_reactions)
         else:
             pass
 
@@ -63,9 +62,8 @@ def extend_network_self(network, reaction_template):
     for r1 in reactants1:
         for r2 in reactants2:
             insert = [r1] + [r2]
-            deprot = n_gen.run_reaction(insert, reaction_template)
-            insertion = [Classes.Reaction(r) for r in deprot]
-            network.add_reactions(insertion)
+            resulting_reactions = n_gen.run_reaction(insert, reaction_template)
+            network.add_reactions(resulting_reactions)
 
 def extend_network_task(network, reaction_template):
     '''
@@ -82,24 +80,26 @@ def extend_network_task(network, reaction_template):
         Reaction template to be used on the network.
     secondary_substructure: NorthNet Substructure object
         Substructure of the second reaction component.
-        
+
     Returns
     -------
     None
     '''
     import itertools
 
-    substructures = [Chem.MolFromSmarts(x) for x in reaction_template.ReactantSubstructures]
+    substructures = [Chem.MolFromSmarts(x)
+                            for x in reaction_template.ReactantSubstructures]
 
     reactant_num = len(substructures)
 
     reactants = []
     for s in substructures:
-        reactants.append(n_gen.reactive_species(list(network.NetworkCompounds.values()), [s]))
+        reactants.append(
+            n_gen.reactive_species(list(network.NetworkCompounds.values()), [s])
+            )
 
     # Build reactant combinations
     inputs = list(itertools.product(*reactants))
     for i in inputs:
-        deprot = n_gen.run_reaction(i, reaction_template)
-        insertion = [Classes.Reaction(r) for r in deprot]
-        network.add_reactions(insertion)
+        resulting_reactions = n_gen.run_reaction(i, reaction_template)
+        network.add_reactions(resulting_reactions)
