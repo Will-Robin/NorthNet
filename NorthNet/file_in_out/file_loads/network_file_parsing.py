@@ -40,39 +40,7 @@ def node_edge_list_from_gdf(file):
 
 def network_from_gdf(file):
 
-    with open(file, "r") as f:
-        node_list = []
-
-        for c,line in enumerate(f):
-            if c == 0:
-                spl = line.strip("\n").split(",")
-                node_list_header = [x.split(" ")[-2] for x in spl]
-            elif "edgedef" in line:
-                break
-            else:
-                spl = line.strip("\n").split(",")
-                node_list.append({k:v for k,v in zip(node_list_header, spl)})
-
-    pos = {}
-    for n in node_list:
-        pos[n["name"]] = (float(n["x"]), float(n["y"]))
-
-    with open(file, "r") as f:
-        edge_list = []
-        readstate = False
-        for c,line in enumerate(f):
-            if "edgedef" in line:
-                spl = line.strip("\n").strip(">edgedef").split(",")
-                edge_list_header = [x for x in spl]
-
-                readstate = True
-            elif readstate:
-                spl = line.strip("\n").split(",")
-                edge_list.append({k:v for k,v  in zip(edge_list_header, spl)})
-
-    edges = []
-    for e in edge_list:
-        edges.append((e[" node1"].strip("'"), e["node2"].strip("'")))
+    nodes, edges = node_edge_list_from_gdf(file)
 
     # Create networkx graph
     G = nx.DiGraph()
