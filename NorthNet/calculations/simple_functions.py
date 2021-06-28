@@ -28,13 +28,3 @@ def isfloat(thing):
         return True
     except ValueError:
         return False
-
-def get_rt_from_header(element):
-    from NorthNet.misc import simple_functions as s_f
-
-    if s_f.isfloat(element):
-        position = float(element)
-    else:
-        spl = element.split('(')[-1].strip(')')
-        position = float(spl[0:-1])
-    return position
