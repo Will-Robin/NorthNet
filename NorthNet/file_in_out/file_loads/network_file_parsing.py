@@ -1,7 +1,3 @@
-def get_network_data(fname):
-    print("Old function_name. Returning load_pickle_network_data()")
-    return f_io.load_pickle_network_data(fname)
-
 def load_pickle_network_data(fname):
     '''
     For loading pickled network data. Effectively a wrapper for pickle.
