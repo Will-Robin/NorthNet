@@ -180,28 +180,3 @@ def create_network_from_csv_files(coords_file, edges_file):
     G = network_view.set_network_coordinates(G, coords_file)
 
     return G
-
-def coordinates_from_file(coords_file):
-    '''
-    Adds coordinates to node attributes from a .csv file.
-
-    Parameters
-    ----------
-    G: networkx DiGraph
-        Network
-    coords_file: str
-        Path to file containing node coordinates (format: compound, x, y newline)
-
-    '''
-    # Build coordinates list
-    spec_coords = {}
-    with open(coords_file, "r") as f:
-        for line in f:
-            ln = line.strip("\n")
-            ln = ln.split(",")
-            if ln[0].strip('"') in spec_coords:
-                pass
-            else:
-                spec_coords[ln[0].strip('"')] = tuple([float(x) for x in ln[1:]])
-
-    return spec_coords
