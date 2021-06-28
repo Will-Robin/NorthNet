@@ -67,42 +67,6 @@ def load_reaction_templates_from_csv(fname, delimiter  = '\t'):
 
     return reaction_templates
 
-def get_reaction_list_from_database(file, limit = 2e200):
-    '''
-    Creates reaction_list of Reaction objects from a data file.
-    The limit is in place so that the whole file does not have to be imported
-    Parameters
-    ----------
-    file: str
-        Path to the file with reaction information.
-    limit: int
-        Maximum number of lines to be read.
-
-    Returns
-    -------
-    reaction_list: list
-        A list of NorthNet_functions Reaction objects derived from file.
-    '''
-    arr = []
-    n=0
-    with open(file,'r') as f:
-        for line in f:
-            z = line.strip('\n')
-            arr.append(z.split('\t'))
-            n+=1
-            if n == limit:
-                break
-
-    header = arr[0]
-    data = arr[1:]
-
-    database_entries = []
-    for d in data:
-        x = Classes.Reaction_Database_Entry(header,d)
-        database_entries.append(x)
-
-    return header, database_entries
-
 def read_mapped_reactions_file(fname):
     mapped_reactions = {}
 
