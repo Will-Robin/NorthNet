@@ -121,33 +121,109 @@ class DataReport:
         for a in analysis:
             self.analysis_details[a[0]] = [x for x in a[1:]]
 
-    def write_conditions_header(self, outfile):
+    def rows_from_dict(self, dict_container):
         '''
+        Converts the keys and values in a dict_container
+        into rows of a .csv file, organised in a list.
+
+        The values of dict_container are expected to be either iterable
+        (e.g. list of numpy array) or float/string variables.
+
+        Output is a list of strings
+
         Parameters
         ----------
-        outfile: Python file object
+        dict_container: dict
+        Returns
+        -------
+        output_lines: list
         '''
-        # writing experiment conditions to file
-        outfile.write("Dataset,{}\n".format(self.experiment_code))
-        outfile.write("start_conditions\n")
-        for c in self.conditions:
-            outfile.write("{},".format(c))
-            if type(self.conditions[c]) == float:
-                outfile.write("{},".format(self.conditions[c]))
+
+        output_lines = []
+        for c in dict_container:
+            line_str = '{},'.format(c)
+            if type(dict_container[c]) == float:
+                line_str += "{}".format(dict_container[c])
             else:
-                [outfile.write("{},".format(x)) for x in self.conditions[c]]
-            outfile.write("\n")
-        outfile.write("end_conditions\n")
-        # writing analysis details
-        outfile.write("start_analysis_details\n")
-        for ad in self.analysis_details:
-            outfile.write('{},'.format(ad))
-            if type(self.analysis_details[ad]) == str:
-                outfile.write('{},'.format(self.analysis_details[ad]))
-            else:
-                [outfile.write('{},'.format(x)) for x in self.analysis_details[ad]]
-            outfile.write('\n')
-        outfile.write("end_analysis_details\n")
+                for x in dict_container[c]:
+                    line_str += "{},".format(x)
+
+            line_str = line_str.strip(',')
+            output_lines.append(line_str)
+
+        return output_lines
+
+    def columns_from_dict(self, dict_container):
+        '''
+        Converts the keys and values in a dict_container
+        into columns of a .csv file, organised in a list.
+
+        The values of dict_container are expected to be iterable
+        (e.g. list of numpy array).
+
+        Output is a list of strings
+
+        Parameters
+        ----------
+        dict_container: dict
+        Returns
+        -------
+        output_lines: list
+        '''
+
+        output_lines = []
+        header = [*dict_container]
+
+        output_lines.append(','.join(header))
+
+        for c, v in enumerate(dict_container[header[0]]):
+            line_str = ''
+            for h in header:
+                line_str += "{},".format(dict_container[h][c])
+
+            line_str = line_str.strip(',')
+            output_lines.append(line_str)
+
+        return output_lines
+
+    def to_string(self):
+        import numpy as np
+
+        if 'Chromatography_method' in self.analysis_details:
+            an_type = self.analysis_details['Chromatography_method'][0]
+        else:
+            an_type = 'not specified'
+
+        sorted_keys = sorted([*self.data], key = lambda x:x.count('C'))
+        p_header = [self.series_unit]
+        data_section = {self.series_unit: self.series_values}
+        for d in self.data:
+            data_section[d] = self.data[d]
+
+        error_section = {self.series_unit: self.series_values}
+        for e in self.errors:
+            error_section[d] = self.errors[d]
+
+        output_lines = []
+        output_lines.append("Dataset,{}".format(self.experiment_code))
+        output_lines.append("start_conditions")
+        output_lines.extend(self.rows_from_dict(self.conditions))
+        output_lines.append("end_conditions")
+        output_lines.append("start_analysis_details")
+        output_lines.extend(self.rows_from_dict(self.analysis_details))
+        output_lines.append("end_analysis_details")
+
+        output_lines.append("start_data")
+        output_lines.extend(self.columns_from_dict(data_section))
+        output_lines.append("end_data")
+        output_lines.append("start_errors")
+        output_lines.extend(self.columns_from_dict(error_section))
+        output_lines.append("end_errors")
+
+        print(output_lines)
+        text = '\n'.join(output_lines)
+
+        return text
 
     def write_to_file(self, filename = '', path = None):
         '''
@@ -159,12 +235,6 @@ class DataReport:
             Path to folder for file storage.
         '''
 
-        import numpy as np
-        if 'Chromatography_method' in self.analysis_details:
-            an_type = self.analysis_details['Chromatography_method'][0]
-        else:
-            an_type = 'not specified'
-
         if filename == '':
             filename = self.filename
         elif not filename.endswith('.csv'):
@@ -175,48 +245,7 @@ class DataReport:
             fname = path/filename
 
         with open(fname, 'w') as outfile:
-            # writing experiment conditions to file
-            self.write_conditions_header(outfile)
-            # writing data
-            sorted_keys = sorted([*self.data], key = lambda x:x.count('C'))
-
-            outfile.write("start_data\n")
-
-            p_header = [self.series_unit]
-            out = np.array([self.series_values])
-
-            for s in sorted_keys:
-                p_header.append(s)
-                out = np.vstack((out,self.data[s]))
-
-            out = out.T
-            [outfile.write("{},".format(x)) for x in p_header]
-
-            outfile.write("\n")
-
-            for x in range(0,len(out)):
-                for y in range(0,len(out[x])):
-                    outfile.write("{},".format(out[x,y]))
-                outfile.write("\n")
-
-            outfile.write("end_data\n")
-
-            outfile.write('start_errors\n')
-            if len(self.errors)> 0:
-                err_out = np.array([self.series_values])
-
-                for s in sorted_keys:
-                    err_out = np.vstack((err_out,self.errors[s]))
-
-                err_out = err_out.T
-                [outfile.write("{},".format(x)) for x in p_header]
-                outfile.write("\n")
-                for x in range(0,len(err_out)):
-                    for y in range(0,len(err_out[x])):
-                        outfile.write("{},".format(err_out[x,y]))
-                    outfile.write("\n")
-
-            outfile.write('end_errors\n')
+            f.write(self.to_string())
 
     def find_repeat_data_entries(self):
         '''
