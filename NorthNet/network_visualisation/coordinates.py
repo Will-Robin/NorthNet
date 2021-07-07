@@ -72,7 +72,7 @@ def normalise_network_coordinates(G):
     None
     '''
     import numpy as np
-    from NorthNet.network_manipulations.networkx_ops import coordinates
+    from NorthNet.network_visualisation import coordinates
     coords = coordinates.get_network_lineplot(G)
 
     net_width = (np.nanmax(coords[0])-np.nanmin(coords[0]))
