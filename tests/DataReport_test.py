@@ -155,5 +155,5 @@ for e in expected_report.errors:
                                 atol = 1e-8
                         )
 
-for c in checks:
-    print(c, checks[c])
+
+print(all(list(checks.values())))
