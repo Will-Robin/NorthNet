@@ -57,6 +57,12 @@ class ReactionTemplate:
             name for reaction.
         reaction_SMARTS: list
             List of reaction SMARTS strings.
+
+        reactant_substructs: string
+            reacting substructures
+
+        product_substructs: string
+            substructures to which reactant substructures are converted.
         '''
 
         self.Name = name
@@ -584,68 +590,84 @@ class SubstructureNetwork:
         else:
             self.add_reactions(reactions)
 
+    def add_reaction(self, reaction):
+        '''
+        reactions: NorthNet Reaction object
+        '''
+        # if reaction.ReactionTemplate != None:
+
+        r_key = reaction.ReactionTemplate.ReactionSMARTS
+        self.SNetworkTemplates[r_key] = reaction
+
+        for r_subst in reaction.ReactionTemplate.ReactantSubstructures:
+            # connect to reaction
+            if r_subst in self.SNetworkSubstructs:
+                pass
+            else:
+                self.SNetworkSubstructs[r_subst] = Classes.Substructure(r_subst)
+
+            self.SNetworkSubstructs[r_subst].Out.append(r_key)
+
+            working_substruct = self.SNetworkSubstructs[r_substruct].Mol
+            # connect to compound
+            for reac in reactant.Reactants:
+
+                if reac in self.SNetworkCompounds:
+                    pass
+                else:
+                    self.SNetworkCompounds[reac] = Classes.Compound(reac)
+
+                compound = self.SNetworkCompounds[reac].Mol
+
+                if compound.HasSubstructMatch(working_substruct):
+                    compound.Out.append(r_substruct)
+                    self.SNetworkSubstructs[r_substruct].In.append(reac)
+                else:
+                    pass
+
+        for p_substruct in r.ReactionTemplate.ProductSubstructures:
+
+            # connect to reaction
+            if p_substruct in self.SNetworkSubstructs:
+                pass
+            else:
+                self.SNetworkSubstructs[p_substruct] = Classes.Substructure(p_substruct)
+
+            self.SNetworkSubstructs[p_substruct].In.append(r_key)
+
+            working_substruct = self.SNetworkSubstructs[p_substruct].Mol
+            # connect to compound
+            for prod in r.Products:
+
+                if prod in self.SNetworkCompounds:
+                    pass
+                else:
+                    self.SNetworkCompounds[prod] = Classes.Compound(prod)
+
+                compound = self.SNetworkCompounds[prod].Mol
+
+                if compound.HasSubstructMatch(working_substruct):
+                    self.SNetworkCompounds[prod].In.append(p_substruct)
+                    self.SNetworkSubstructs[p_substruct].Out.append(prod)
+                else:
+                    pass
+
     def add_reactions(self, reactions):
+        '''
+        Parameters
+        ----------
+        reactions: list of NorthNet Reaction objects
+        '''
 
         for r in reactions:
 
-            r_key = r.ReactionTemplate.ReactionSMARTS
-
-            if r_key in self.SNetworkTemplates:
+            if r.ReactionTemplate == None:
+                pass
+            elif r.ReactionTemplate.ReactionSMARTS in self.SNetworkTemplates:
                 pass
             else:
-                self.SNetworkTemplates[r_key] = r
+                self.add_reaction(r)
 
-            for r_substruct in r.ReactionTemplate.ReactantSubstructures:
-                # connect to reaction
-                if r_substruct in self.SNetworkSubstructs:
-                    self.SNetworkSubstructs[r_substruct].Out.append(r_key)
-                else:
-                    self.SNetworkSubstructs[r_substruct] = Classes.Substructure(r_substruct)
-                    self.SNetworkSubstructs[r_substruct].Out.append(r_key)
-
-                # connect to compound
-                for reac in r.Reactants:
-                    if reac in self.SNetworkCompounds:
-                        if self.SNetworkCompounds[reac].Mol.HasSubstructMatch(self.SNetworkSubstructs[r_substruct].Mol):
-                            self.SNetworkCompounds[reac].Out.append(r_substruct)
-                            self.SNetworkSubstructs[r_substruct].In.append(reac)
-                        else:
-                            pass
-                    else:
-                        self.SNetworkCompounds[reac] = Classes.Compound(reac)
-
-                        if self.SNetworkCompounds[reac].Mol.HasSubstructMatch(self.SNetworkSubstructs[r_substruct].Mol):
-                            self.SNetworkCompounds[reac].Out.append(r_substruct)
-                            self.SNetworkSubstructs[r_substruct].In.append(reac)
-                        else:
-                            pass
-
-            for p_substruct in r.ReactionTemplate.ProductSubstructures:
-                # connect to reaction
-                if p_substruct in self.SNetworkSubstructs:
-                    self.SNetworkSubstructs[p_substruct].In.append(r_key)
-                else:
-                    self.SNetworkSubstructs[p_substruct] = Classes.Substructure(p_substruct)
-                    self.SNetworkSubstructs[p_substruct].In.append(r_key)
-
-                # connect to compound
-                for prod in r.Products:
-                    if p_substruct == "[Ch:3][O:4]" and prod in self.SNetworkCompounds:
-                        pass
-                        #print(prod,p_substruct,self.SNetworkCompounds[prod].Mol.HasSubstructMatch(self.SNetworkSubstructs[p_substruct].Mol))
-                    if prod in self.SNetworkCompounds:
-                        if self.SNetworkCompounds[prod].Mol.HasSubstructMatch(self.SNetworkSubstructs[p_substruct].Mol):
-                            self.SNetworkCompounds[prod].In.append(p_substruct)
-                            self.SNetworkSubstructs[p_substruct].Out.append(prod)
-                        else:
-                            pass
-                    else:
-                        self.SNetworkCompounds[prod] = Classes.Compound(prod)
-                        if self.SNetworkCompounds[prod].Mol.HasSubstructMatch(self.SNetworkSubstructs[p_substruct].Mol):
-                            self.SNetworkCompounds[prod].In.append(p_substruct)
-                            self.SNetworkSubstructs[p_substruct].Out.append(prod)
-                        else:
-                            pass
     def convert_to_networkx(self):
         '''
         Converts NorthNet network object to networkx object.
