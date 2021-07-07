@@ -403,19 +403,19 @@ class Network:
             self.NetworkReactions[input.ReactionSMILES] = input
 
             if input.CompoundInput in self.NetworkCompounds:
-                self.NetworkCompounds[input.CompoundInput].In.append(
-                                                        input.ReactionSMILES)
+                pass
             else:
                 self.NetworkCompounds[input.CompoundInput] = input
-                self.NetworkCompounds[a].In.append(input.ReactionSMILES)
+
+            self.NetworkCompounds[input.CompoundInput].In.append(
+                                                        input.ReactionSMILES)
 
             if input.InputID in self.NetworkInputs:
-                self.NetworkInputs[input.InputID].Out.append(
-                                                        input.ReactionSMILES)
+                pass
             else:
                 self.NetworkInputs[input.InputID] = input
-                self.NetworkInputs[input.InputID].Out.append(
-                                                        input.ReactionSMILES)
+
+            self.NetworkInputs[input.InputID].Out.append(input.ReactionSMILES)
 
     def add_inputs(self, inputs):
         '''
