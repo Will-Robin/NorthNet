@@ -346,13 +346,12 @@ class ModelWriter:
 
         for c in compounds:
 
-            ind1 = compounds.index(c)
-
             '''outgoing reactions'''
             for i in self.NetworkCompounds[c].In:
+
                 reacs = self.NetworkReactions[i].Reactants
                 ki = rate_consts[i]
-
+                ind1 = compounds.index(c)
                 if len(reacs) == 0:
                     token = "(+{}*{})/{}".format(ki,inflows[c],species[c])
                     ind2 = ind1
@@ -380,7 +379,7 @@ class ModelWriter:
             for out in self.NetworkCompounds[c].Out:
 
                 reacs = self.NetworkReactions[out].Reactants
-
+                ind1 = compounds.index(c)
                 ki = rate_consts[out]
                 if len(reacs) == 1:
                     token = "-" + ki
