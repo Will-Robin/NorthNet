@@ -49,7 +49,8 @@ class ReactionTemplate:
     '''
     Class for reaction templates.
     '''
-    def __init__(self,name,reaction_SMARTS, reactant_substructs, product_substructs):
+    def __init__(self, name, reaction_SMARTS,
+                        reactant_substructs, product_substructs):
         '''
         Parameters
         ----------
@@ -190,7 +191,8 @@ class ReactionInput:
         '''
         self.Reaction = None
         self.ReactionSMILES = reaction_input_string
-        self.Reactants, self.Products = self.reactants_products_from_string(reaction_input_string)
+        self.Reactants, self.Products = self.reactants_products_from_string(
+                                                        reaction_input_string)
 
         self.CompoundInput = self.Products[0]
         self.InputID = self.Reactants[0]
@@ -222,7 +224,8 @@ class ReactionOutput:
         '''
         self.Reaction = None
         self.ReactionSMILES = reaction_input_string
-        self.Reactants, self.Products = self.reactants_products_from_string(reaction_input_string)
+        self.Reactants, self.Products = self.reactants_products_from_string(
+                                                        reaction_input_string)
 
         self.OutputID = self.Products[0]
         self.CompoundOutput = self.Reactants[0]
@@ -298,7 +301,8 @@ class Network:
 
         remove_reactions = list(set(remove_reactions))
 
-        self.remove_reactions([self.NetworkReactions[r] for r in remove_reactions])
+        self.remove_reactions([self.NetworkReactions[r]
+                                                    for r in remove_reactions])
 
         for c in compounds:
             del self.NetworkCompounds[c.SMILES]
@@ -349,7 +353,8 @@ class Network:
                         pass
                     # connect the reaction to the product
                     else:
-                        self.NetworkCompounds[b].In.append(reaction.ReactionSMILES)
+                        self.NetworkCompounds[b].In.append(
+                                                        reaction.ReactionSMILES)
                 # add the product into NetworkCompounds
                 # and connect the reaction to the product
                 else:
@@ -563,7 +568,8 @@ class SubstructureNetwork:
     def __init__(self,reactions,name,description):
         '''
         reactions: list
-            List of reaction objects with extracted functional group transformations.
+            List of reaction objects with extracted functional group
+            transformations.
         name: str
             A name for the network.
         description: str
@@ -572,8 +578,9 @@ class SubstructureNetwork:
 
         '''
         Basic idea:
-            Nodes will be individual reaction centres and functional group transformations
-            Edges will connect the reaction centres to functional group transformations.
+            Nodes will be individual reaction centres and functional group
+            transformations. Edges will connect the reaction centres to
+            functional group transformations.
         '''
 
         self.Name = name
@@ -631,7 +638,8 @@ class SubstructureNetwork:
             if p_substruct in self.SNetworkSubstructs:
                 pass
             else:
-                self.SNetworkSubstructs[p_substruct] = Classes.Substructure(p_substruct)
+                self.SNetworkSubstructs[p_substruct] = Classes.Substructure(
+                                                                    p_substruct)
 
             self.SNetworkSubstructs[p_substruct].In.append(r_key)
 
@@ -660,7 +668,6 @@ class SubstructureNetwork:
         '''
 
         for r in reactions:
-
             if r.ReactionTemplate == None:
                 pass
             elif r.ReactionTemplate.ReactionSMARTS in self.SNetworkTemplates:
@@ -674,14 +681,10 @@ class SubstructureNetwork:
 
         Parameters
         ----------
-        network: NorthNet Network object
-            NorthNet Network to be converted to networkx network.
-        save_images: Bool
-            Whether to create images or not.
         Returns
         -------
         G: networkx DiGraph object
-            Networkx version of the NorthNet network.
+            Networkx version of the NorthNet SNetwork.
         '''
 
         G = nx.DiGraph()
@@ -703,13 +706,15 @@ class SubstructureNetwork:
                 G.add_edge(compound_alias, substructure_aliases[o])
 
         for r in self.SNetworkTemplates:
-            transform_alias = self.SNetworkTemplates[r].ReactionTemplate.Name
+            template = self.SNetworkTemplates[r].ReactionTemplate
+            transform_alias = template.Name
+
             G.add_node(transform_alias)
 
-            for reac in self.SNetworkTemplates[r].ReactionTemplate.ReactantSubstructures:
+            for reac in template.ReactantSubstructures:
                 G.add_edge(substructure_aliases[reac], transform_alias)
 
-            for prod in self.SNetworkTemplates[r].ReactionTemplate.ProductSubstructures:
+            for prod in template.ProductSubstructures:
                 G.add_edge(transform_alias, substructure_aliases[prod])
 
         return G
