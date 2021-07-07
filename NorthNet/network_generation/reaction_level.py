@@ -1,7 +1,7 @@
 from rdkit import Chem
 from NorthNet import Classes
 from rdkit.Chem import AllChem
-from NorthNet.molecule_operations import editing
+from NorthNet.network_generation.molecule_operations import editing
 
 def run_reaction(reactant_compounds, reaction_template):
     '''
@@ -40,7 +40,7 @@ def run_reaction(reactant_compounds, reaction_template):
         rxn = AllChem.ChemicalReaction() # Create an empty chemical reaction
         [rxn.AddReactantTemplate(r) for r in reactants]
         [rxn.AddProductTemplate(p) for p in u]
-        
+
         reactions.append( Classes.Reaction(rxn, reaction_template = reaction_template) )
 
     return reactions
