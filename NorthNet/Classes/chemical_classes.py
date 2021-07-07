@@ -451,12 +451,12 @@ class Network:
                 pass
 
             if output.OutputID in self.NetworkOutputs:
-                self.NetworkOutputs[output.OutputID].In.append(
-                                                        output.ReactionSMILES)
+                pass
             else:
                 self.NetworkOutputs[output.OutputID] = output
-                self.NetworkOutputs[output.OutputID].In.append(
-                                                        output.ReactionSMILES)
+
+            self.NetworkOutputs[output.OutputID].In.append(
+                                                    output.ReactionSMILES)
 
     def add_outputs(self, outputs):
         '''
