@@ -60,7 +60,7 @@ class ModelWriter:
         inflows, outflows
         '''
         network = self.network
-        compounds = [network.NetworkCompounds[x] for x in network.NetworkCompounds]
+        compounds = list(network.NetworkCompounds.values())
         network_inputs = [*network.NetworkInputs]
         inflows = [r for r in network.NetworkReactions if self.input_token in r]
         outflows = [r for r in network.NetworkReactions if self.output_token in r]
@@ -323,225 +323,231 @@ class ModelWriter:
 
         return text
 
-'''
-TO DO: merge functions below as ModelWriter methods
-'''
-# def write_model_matrix_text(network):
-#     '''
-#     Parameters
-#     ----------
-#     network: NorthNet ReactionNetwork object
-#         Network to be written.
-#
-#     Returns
-#     -------
-#     mat_text: str
-#         Rate equations in numpy matrix form.
-#     '''
-#     compounds = [x for x in network.NetworkCompounds]
-#     reactions = [*network.NetworkReactions]
-#
-#     species, rate_consts, inflows, flow_ins, flow_outs = model_export.network_indices(network)
-#
-#     ratemat = [['0' for x in species] for x in species]
-#
-#     for c in compounds:
-#
-#         ind1 = compounds.index(c)
-#
-#         '''outgoing reactions'''
-#         for i in network.NetworkCompounds[c].In:
-#             reacs = network.NetworkReactions[i].Reactants
-#             ki = rate_consts[i]
-#
-#             if len(reacs) == 0:
-#                 ratemat[ind1][ind1] +=  "(+{}*{})/{}".format(ki,inflows[c],species[c])
-#
-#             if len(reacs) == 1:
-#                 n2 = reacs[0]
-#                 ind2 = compounds.index(n2)
-#                 ratemat[ind1][ind2] +=  '+' + ki
-#
-#             if len(reacs) == 2:
-#                 n2 = reacs[0]
-#                 n3 = reacs[1]
-#                 ind2 = compounds.index(n3)
-#                 ratemat[ind1][ind2] +=  '+' + ki + '*' + species[n2]
-#
-#             if len(reacs) == 3:
-#                 n2 = reacs[0]
-#                 n3 = reacs[1]
-#                 n4 = reacs[2]
-#                 ind2 = compounds.index(n3)
-#                 ratemat[ind1][ind2] +=  '+' + ki + '*' + species[n2] + '*' + species[n4]
-#
-#         for out in network.NetworkCompounds[c].Out:
-#
-#             reacs = network.NetworkReactions[out].Reactants
-#
-#             ki = rate_consts[out]
-#             if len(reacs) == 1:
-#                 ratemat[ind1][ind1] +=  "-" + ki
-#
-#             if len(reacs) == 2:
-#                 z = reacs[:]
-#                 z.remove(c)
-#                 n2 = z[0]
-#                 ind2 = compounds.index(n2)
-#                 ratemat[ind1][ind2] +=  "-" + ki + '*' + species[c]
-#
-#             if len(reacs) == 3:
-#                 z = reacs[:]
-#                 z.remove(c)
-#                 n2 = z[0]
-#                 n3 = z[1]
-#                 ind2 = compounds.index(n2)
-#                 ratemat[ind1][ind2] +=  "-" + ki + '*' + species[c] + '*' + species[n3]
-#
-#     mat_text = "["
-#     for r in ratemat:
-#         mat_text += "[" + ",".join(r) + "],\n"
-#
-#     mat_text = mat_text.strip(",\n") + "]"
-#
-#     return mat_text
-#
-# def write_Jacobian_matrix_text(network):
-#     '''
-#     Parameters
-#     ----------
-#     network: NorthNet ReactionNetwork object
-#         Network to be written.
-#
-#     Returns
-#     -------
-#     jac_text: str
-#         Jacobian matrix as text.
-#     '''
-#     compounds = [x for x in network.NetworkCompounds]
-#     reactions = [*network.NetworkReactions]
-#
-#     species, rate_consts, inflows, flow_ins, flow_outs = model_export.network_indices(network)
-#
-#     jac_mat = [['0' for x in species] for x in species]
-#
-#     for c,comp1 in enumerate(compounds):
-#         for c2,comp2 in enumerate(compounds):
-#             element = ""
-#             for i in network.NetworkCompounds[comp1].In:
-#                 if '_#0' in i:
-#                     pass
-#                 elif comp2 in network.NetworkReactions[i].Reactants:
-#                     reacs = [species[x] for x in network.NetworkReactions[i].Reactants if x != comp2]
-#                     ki = "+{}".format(rate_consts[i])
-#                     element += "{}*{}".format(ki,"*".join(reacs))
-#                 else:
-#                     pass
-#
-#             for o in network.NetworkCompounds[comp1].Out:
-#                 if 'Sample' in o:
-#                     ki = '-{}'.format(flow_outs[o])
-#                     element += ki
-#                 elif comp2 in network.NetworkReactions[o].Reactants:
-#                     reacs = [species[x] for x in network.NetworkReactions[o].Reactants if x != comp2]
-#                     ki = "-{}".format(rate_consts[o])
-#                     element += "{}*{}".format(ki,"*".join(reacs))
-#                 else:
-#                     pass
-#
-#             jac_mat[c][c2] += element
-#
-#     jac_text = ""
-#     for r in jac_mat:
-#         jac_text += "[" + ",".join(r) + "],\n"
-#
-#     jac_text = jac_text.strip(",\n") + "]"
-#
-#     return jac_text
+    def write_model_matrix_text(self):
+        '''
+        Parameters
+        ----------
 
-# def get_flow_rate(flow_profiles, time_limit = 1e100):
-#
-#     '''
-#     Parameters
-#     ----------
-#     flow_profiles: dict
-#         dictionary of flow profiles
-#
-#     time_limit: float
-#         Max time to include in the flow profile.
-#
-#     Returns
-#     -------
-#     total_flows: 1D numpy array
-#         Numpy arrays total flow over time
-#
-#     '''
-#
-#     conc_flow_key_pairs = []
-#     for fl in flow_profiles:
-#         if 'time' in fl:
-#             time_axis = flow_profiles[fl]
-#         elif '/ M' in fl:
-#             inp_name = fl.strip('/ M')
-#             for fl2 in [*flow_profiles]:
-#                 if inp_name in fl2 and fl2 != fl:
-#                     conc_flow_key_pairs.append((fl,fl2))
-#
-#     idx = np.where(time_axis < time_limit)[0]
-#     total_flows = np.zeros(len(time_axis))
-#     for fl in flow_profiles:
-#         if 'flow' in fl and not 'time' in fl:
-#             total_flows += flow_profiles[fl]
-#
-#     # ASSUMING THAT THE FLOW RATE IS IN UNITS OF uL/h
-#     # coverting to L/s
-#     total_flows /= 1e6
-#     total_flows /= 3600
-#     # convert to residence time
-#     total_flows = total_flows/(411*1e-6)
-#
-#     return time_axis[idx], total_flows[idx]
-#
-# def concentrations_from_flow_profile(flow_profiles, time_limit = 1e100):
-#
-#     '''
-#     Parameters
-#     ----------
-#     flow_profiles: dict
-#         dictionary of flow profiles
-#
-#     time_limit: float
-#         Max time to include in the flow profile.
-#
-#     Returns
-#     -------
-#     concentrations: dict
-#         Numpy arrays of concentration inputs over time.
-#     '''
-#
-#     conc_flow_key_pairs = []
-#     for fl in flow_profiles:
-#         if 'time' in fl:
-#             time_axis = flow_profiles[fl]
-#         elif '/ M' in fl:
-#             inp_name = fl.strip('/ M')
-#             for fl2 in [*flow_profiles]:
-#                 if inp_name in fl2 and fl2 != fl:
-#                     conc_flow_key_pairs.append((fl,fl2))
-#
-#     total_flows = np.zeros(len(time_axis))
-#     for fl in flow_profiles:
-#         if 'flow' in fl and not 'time' in fl:
-#             total_flows += flow_profiles[fl]
-#
-#     idx = np.where(time_axis < time_limit)[0]
-#     concentrations = {}
-#     for p in conc_flow_key_pairs:
-#         moles = flow_profiles[p[0]]*flow_profiles[p[1]]#/total_flows
-#         conc = moles/(411*1e-6)
-#         if 'NaOH' in p[0]:
-#             concentrations['[OH-]/ M'] = conc[idx]
-#         else:
-#             concentrations[p[0]] = conc[idx]
-#
-#     return time_axis[idx], concentrations
+        Returns
+        -------
+        mat_text: str
+            Rate equations in numpy matrix form.
+        '''
+        compounds = [*self.NetworkCompounds]
+        reactions = [*self.NetworkReactions]
+
+        species = self.species
+        rate_consts = self.rate_constants
+        inflows = self.inputs
+        flow_ins = self.inflows
+        flow_outs = self.outflows
+
+        ratemat = [['0' for x in species] for x in species]
+
+        for c in compounds:
+
+            ind1 = compounds.index(c)
+
+            '''outgoing reactions'''
+            for i in self.NetworkCompounds[c].In:
+                reacs = self.NetworkReactions[i].Reactants
+                ki = rate_consts[i]
+
+                if len(reacs) == 0:
+                    token = "(+{}*{})/{}".format(ki,inflows[c],species[c])
+                    ind2 = ind1
+
+                if len(reacs) == 1:
+                    n2 = reacs[0]
+                    ind2 = compounds.index(n2)
+                    token = '+' + ki
+
+                if len(reacs) == 2:
+                    n2 = reacs[0]
+                    n3 = reacs[1]
+                    ind2 = compounds.index(n3)
+                    token = '+' + ki + '*' + species[n2]
+
+                if len(reacs) == 3:
+                    n2 = reacs[0]
+                    n3 = reacs[1]
+                    n4 = reacs[2]
+                    ind2 = compounds.index(n3)
+                    token = '+' + ki + '*' + species[n2] + '*' + species[n4]
+
+                ratemat[ind1][ind2] += token
+
+            for out in self.NetworkCompounds[c].Out:
+
+                reacs = self.NetworkReactions[out].Reactants
+
+                ki = rate_consts[out]
+                if len(reacs) == 1:
+                    token = "-" + ki
+                    ind2 = ind1
+
+                if len(reacs) == 2:
+                    z = reacs[:]
+                    z.remove(c)
+                    n2 = z[0]
+                    ind2 = compounds.index(n2)
+                    token = "-" + ki + '*' + species[c]
+
+
+                if len(reacs) == 3:
+                    z = reacs[:]
+                    z.remove(c)
+                    n2 = z[0]
+                    n3 = z[1]
+                    ind2 = compounds.index(n2)
+                    token = "-" + ki + '*' + species[c] + '*' + species[n3]
+
+                ratemat[ind1][ind2] += token
+
+        mat_text = "["
+        for r in ratemat:
+            mat_text += "[" + ",".join(r) + "],\n"
+
+        mat_text = mat_text.strip(",\n") + "]"
+
+        return mat_text
+
+def write_Jacobian_matrix_text(network):
+    '''
+    Parameters
+    ----------
+    network: NorthNet ReactionNetwork object
+        Network to be written.
+
+    Returns
+    -------
+    jac_text: str
+        Jacobian matrix as text.
+    '''
+    compounds = [x for x in network.NetworkCompounds]
+    reactions = [*network.NetworkReactions]
+
+    species, rate_consts, inflows, flow_ins, flow_outs = model_export.network_indices(network)
+
+    jac_mat = [['0' for x in species] for x in species]
+
+    for c,comp1 in enumerate(compounds):
+        for c2,comp2 in enumerate(compounds):
+            element = ""
+            for i in network.NetworkCompounds[comp1].In:
+                if '_#0' in i:
+                    pass
+                elif comp2 in network.NetworkReactions[i].Reactants:
+                    reacs = [species[x] for x in network.NetworkReactions[i].Reactants if x != comp2]
+                    ki = "+{}".format(rate_consts[i])
+                    element += "{}*{}".format(ki,"*".join(reacs))
+                else:
+                    pass
+
+            for o in network.NetworkCompounds[comp1].Out:
+                if 'Sample' in o:
+                    ki = '-{}'.format(flow_outs[o])
+                    element += ki
+                elif comp2 in network.NetworkReactions[o].Reactants:
+                    reacs = [species[x] for x in network.NetworkReactions[o].Reactants if x != comp2]
+                    ki = "-{}".format(rate_consts[o])
+                    element += "{}*{}".format(ki,"*".join(reacs))
+                else:
+                    pass
+
+            jac_mat[c][c2] += element
+
+    jac_text = ""
+    for r in jac_mat:
+        jac_text += "[" + ",".join(r) + "],\n"
+
+    jac_text = jac_text.strip(",\n") + "]"
+
+    return jac_text
+
+def get_flow_rate(flow_profiles, time_limit = 1e100):
+
+    '''
+    Parameters
+    ----------
+    flow_profiles: dict
+        dictionary of flow profiles
+
+    time_limit: float
+        Max time to include in the flow profile.
+
+    Returns
+    -------
+    total_flows: 1D numpy array
+        Numpy arrays total flow over time
+
+    '''
+
+    conc_flow_key_pairs = []
+    for fl in flow_profiles:
+        if 'time' in fl:
+            time_axis = flow_profiles[fl]
+        elif '/ M' in fl:
+            inp_name = fl.strip('/ M')
+            for fl2 in [*flow_profiles]:
+                if inp_name in fl2 and fl2 != fl:
+                    conc_flow_key_pairs.append((fl,fl2))
+
+    idx = np.where(time_axis < time_limit)[0]
+    total_flows = np.zeros(len(time_axis))
+    for fl in flow_profiles:
+        if 'flow' in fl and not 'time' in fl:
+            total_flows += flow_profiles[fl]
+
+    # ASSUMING THAT THE FLOW RATE IS IN UNITS OF uL/h
+    # coverting to L/s
+    total_flows /= 1e6
+    total_flows /= 3600
+    # convert to residence time
+    total_flows = total_flows/(411*1e-6)
+
+    return time_axis[idx], total_flows[idx]
+
+def concentrations_from_flow_profile(flow_profiles, time_limit = 1e100):
+
+    '''
+    Parameters
+    ----------
+    flow_profiles: dict
+        dictionary of flow profiles
+
+    time_limit: float
+        Max time to include in the flow profile.
+
+    Returns
+    -------
+    concentrations: dict
+        Numpy arrays of concentration inputs over time.
+    '''
+
+    conc_flow_key_pairs = []
+    for fl in flow_profiles:
+        if 'time' in fl:
+            time_axis = flow_profiles[fl]
+        elif '/ M' in fl:
+            inp_name = fl.strip('/ M')
+            for fl2 in [*flow_profiles]:
+                if inp_name in fl2 and fl2 != fl:
+                    conc_flow_key_pairs.append((fl,fl2))
+
+    total_flows = np.zeros(len(time_axis))
+    for fl in flow_profiles:
+        if 'flow' in fl and not 'time' in fl:
+            total_flows += flow_profiles[fl]
+
+    idx = np.where(time_axis < time_limit)[0]
+    concentrations = {}
+    for p in conc_flow_key_pairs:
+        moles = flow_profiles[p[0]]*flow_profiles[p[1]]#/total_flows
+        conc = moles/(411*1e-6)
+        if 'NaOH' in p[0]:
+            concentrations['[OH-]/ M'] = conc[idx]
+        else:
+            concentrations[p[0]] = conc[idx]
+
+    return time_axis[idx], concentrations
