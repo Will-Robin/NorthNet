@@ -292,7 +292,7 @@ class Network:
 
         remove_reactions = list(set(remove_reactions))
 
-        self.remove_reactions(remove_reactions)
+        self.remove_reactions([self.NetworkReactions[r] for r in remove_reactions])
 
         for c in compounds:
             del self.NetworkCompounds[c.SMILES]
