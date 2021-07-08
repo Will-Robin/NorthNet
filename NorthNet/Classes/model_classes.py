@@ -17,9 +17,13 @@ class ModelWriter:
         lighten the load in performing calculations.
 
         network: NorthNet Network
-        experiment: NorthNet DataReport,
+            
+        experiment: NorthNet DataReport
+
         input_token: str
+
         output_token: str
+
         flowrate_time_conversion: float
             Conversion for the time component:
 
