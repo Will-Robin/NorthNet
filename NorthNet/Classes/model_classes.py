@@ -29,12 +29,12 @@ class ModelWriter:
             attributes fall out of this pattern.
 
         time_limit: bool or float
-            How far in time the flow profile will be considered
-            in generating the model.
+            Time cutoff for the model calculation. The values of input flow
+            profiles will be included below the time limit.
 
         lead_time: 1000
-            How much time calculate the model for before the
-            experimental data start.
+            Governs the time from which the model will begin calculation
+            before the first data time point. (start time = t0 - lead_time)
         '''
 
         self.network = network
@@ -107,20 +107,19 @@ class ModelWriter:
         for c in experiment.conditions:
             if 'reactor_volume' in c:
                 self.reactor_volume = experiment.conditions[c]
-            elif ' M' in c:
-                standardised_key = c.split('_')[0].split('/')[0]
-                clef = info_params.canonical_SMILES[standardised_key]
+            elif '/ M' in c:
+                smiles = c.split('/')[0]
+                clef = smiles
                 for f in self.inputs:
                     stand_flow_key = f.split('_')[0]
-                    if clef == stand_flow_key:
+                    if smiles == stand_flow_key:
                         self.inputs[f] = experiment.conditions[c]
             elif 'time' in c and 'flow' in c:
                 self.flow_profile_time = experiment.conditions[c].copy()
 
             elif 'flow' in c and not 'time' in c:
-                standardised_key = c.split(' ')
-                clef = info_params.canonical_SMILES[standardised_key[0].split('_')[0]]
-                self.flow_profiles[clef] = experiment.conditions[c].copy()
+                smiles = c.split('_')[0]
+                self.flow_profiles[smiles] = experiment.conditions[c].copy()
 
         if self.time_limit:
             t_lim_max = min(np.amax(self.time), self.time_limit)
@@ -268,6 +267,7 @@ class ModelWriter:
         '''
         Write model variables as strings stored in a list
         '''
+        get_index = lambda x: int(x[x.find("[")+1:x.find("]")])
         lines = []
 
         lines.append("species = {")
@@ -304,7 +304,6 @@ class ModelWriter:
         return lines
 
     def write_to_module_text(self, numba_decoration = False):
-        get_index = lambda x: int(x[x.find("[")+1:x.find("]")])
 
         flow_profile_text = self.write_flow_profile_text()
         model_text = self.write_model_equation_text()
