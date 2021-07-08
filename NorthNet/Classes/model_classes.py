@@ -75,10 +75,10 @@ class ModelWriter:
         '''
         network = self.network
         compounds = [*network.NetworkCompounds]
-        network_inputs = [*network.NetworkInputs]
-        inflows = [r for r in network.NetworkReactions if self.input_token in r]
-        outflows = [r for r in network.NetworkReactions if self.output_token in r]
         reactions = [*network.NetworkReactions]
+        network_inputs = [*network.NetworkInputs]
+        inflows = [r for r in reactions if self.input_token in r]
+        outflows = [r for r in reactions if self.output_token in r]
 
         for i in inflows:
             reactions.remove(i)
