@@ -195,7 +195,7 @@ class ModelWriter:
 
         return eq_text
 
-    def write_flow_profile_text(self):
+    def write_flow_profile_text(self, suffix = ""):
         collection_array = np.zeros((len(self.flow_profiles)+2,
                                      len(self.flow_profile_time)))
 
@@ -205,10 +205,11 @@ class ModelWriter:
 
         collection_array[-1] = self.sigma_flow
 
-        text = 'F = np.array('
+        text = 'F = np.array(\n'
+        text += suffix
         text += np.array2string(collection_array,
                                      formatter={'float_kind':lambda x: "%.9f" % x},
-                                     separator=',',threshold=np.inf)
+                                     separator=',',threshold=np.inf).replace("\n","\n{}".format(suffix))
         text += ')'
 
         return text
@@ -305,9 +306,11 @@ class ModelWriter:
 
     def write_to_module_text(self, numba_decoration = False):
 
-        flow_profile_text = self.write_flow_profile_text()
+        flow_profile_text = self.write_flow_profile_text(suffix = "\t\t")
         model_text = self.write_model_equation_text()
 
+        print(flow_profile_text)
+        print()
         lines = ["import numpy as np"]
         if numba_decoration:
             lines.append("import numba\n")
@@ -319,7 +322,7 @@ class ModelWriter:
         lines.append("\tP = np.zeros(len(S))")
         lines.append("")
         lines.append("\t")
-        lines.append(flow_profile_text)
+        lines.append("\t"+flow_profile_text)
         lines.append("")
         lines.append("")
         lines.append("\tidx = np.abs(F[0] - time).argmin()")
