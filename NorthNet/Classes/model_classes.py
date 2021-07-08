@@ -8,19 +8,32 @@ class ModelWriter:
                        time_limit = False,
                        lead_time = 1000):
         '''
+
+        A class designed to generate modelling apparatus by combining a Network
+        structure and experimental conditions.
+
+        All of the input variables will be compiled into the model (including
+        flow profile information). This may make a large object, but it should
+        lighten the load in performing calculations.
+
         network: NorthNet Network
         experiment: NorthNet DataReport,
         input_token: str
         output_token: str
         flowrate_time_conversion: float
             Conversion for the time component:
+
             CAUTION: this class currently expects flow rates to be given
             in units of uL/h and reactor volumes to be given in uL,
             so conversion errors may result if the input DataReport's
             attributes fall out of this pattern.
+
         time_limit: bool or float
             How far in time the flow profile will be considered
             in generating the model.
+
+        lead_time: 1000
+            Time elapsed before the model should begin calculations.
         '''
 
         self.network = network
