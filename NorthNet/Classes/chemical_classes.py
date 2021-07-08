@@ -260,7 +260,7 @@ class Network:
         '''3. Create dictionary to store network inputs'''
         self.NetworkInputs = {}
 
-        '''4. Create dictionary of n twork outputs'''
+        '''4. Create dictionary of network outputs'''
         self.NetworkOutputs = {}
 
         if len(reactions) == 0:
