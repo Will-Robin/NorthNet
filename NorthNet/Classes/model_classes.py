@@ -435,7 +435,9 @@ def write_Jacobian_matrix_text(network):
                 if '_#0' in i:
                     pass
                 elif comp2 in self.NetworkReactions[i].Reactants:
-                    reacs = [species[x] for x in self.NetworkReactions[i].Reactants if x != comp2]
+                    reacs = [species[x]
+                                    for x in self.NetworkReactions[i].Reactants
+                                        if x != comp2]
                     ki = f"+{rate_consts[i]}"
                     rctnt_elems = "*".join(reacs)
                     element += f"{ki}*{rctnt_elems}"
@@ -447,7 +449,9 @@ def write_Jacobian_matrix_text(network):
                     ki = f'-{flow_outs[o]}'
                     element += ki
                 elif comp2 in self.NetworkReactions[o].Reactants:
-                    reacs = [species[x] for x in self.NetworkReactions[o].Reactants if x != comp2]
+                    reacs = [species[x]
+                                    for x in self.NetworkReactions[o].Reactants
+                                        if x != comp2]
                     ki = f"-{rate_consts[o]}"
                     rctnt_elems = "*".join(reacs)
                     element += f"{ki}*{rctnt_elems}"
