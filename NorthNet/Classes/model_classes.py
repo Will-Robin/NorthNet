@@ -73,18 +73,18 @@ class ModelWriter:
         inflows, outflows
         '''
         network = self.network
-        compounds = list(network.NetworkCompounds.values())
+        compounds = [*network.NetworkCompounds]
         network_inputs = [*network.NetworkInputs]
         inflows = [r for r in network.NetworkReactions if self.input_token in r]
         outflows = [r for r in network.NetworkReactions if self.output_token in r]
-        reactions = [r for r in network.NetworkReactions]
+        reactions = [*network.NetworkReactions]
 
         for i in inflows:
             reactions.remove(i)
         for o in outflows:
             reactions.remove(o)
 
-        species = {s.SMILES:"S[{}]".format(c) for c,s in enumerate(compounds) if s != ''}
+        species = {s:"S[{}]".format(c) for c,s in enumerate(compounds) if s != ''}
         rate_consts = {k:"k[{}]".format(c) for c,k in enumerate(reactions)}
         inputs = {i:0.0 for c,i in enumerate(network_inputs)}
         flow_ins = {i:'I[{}]'.format(c) for c,i in enumerate(inflows)}
@@ -155,7 +155,7 @@ class ModelWriter:
         '''
 
         network = self.network
-        compounds = [x for x in network.NetworkCompounds]
+        compounds = [*network.NetworkCompounds]
         reactions = [*network.NetworkReactions]
 
         eq_text = ""
