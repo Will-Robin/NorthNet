@@ -146,6 +146,10 @@ class ModelWriter:
             self.sigma_flow += self.flow_profiles[f]
 
     def write_flow_profile_text(self, suffix = ""):
+        '''
+        Write flow profiles as a text numpy array.
+        '''
+
         collection_array = np.zeros((len(self.flow_profiles)+2,
                                      len(self.flow_profile_time)))
 
@@ -274,12 +278,25 @@ class ModelWriter:
         return lines
 
     def write_to_module_text(self, numba_decoration = False):
+        '''
+        Writing a Python script based on the object attributes
+        This method creates an importable set of functions and varaibles
+        which can be using in model calculations.
+
+        Parameters
+        ----------
+        numba_decoration: bool
+            Whether to include numbda compilation in the function.
+
+        Returns
+        -------
+        text: str
+            The module text. 
+        '''
 
         flow_profile_text = self.write_flow_profile_text(suffix = "\t\t")
         model_text = self.write_model_equation_text()
 
-        print(flow_profile_text)
-        print()
         lines = ["import numpy as np"]
         if numba_decoration:
             lines.append("import numba\n")
