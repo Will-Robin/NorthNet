@@ -1,7 +1,7 @@
 Dataset,test_data
 start_conditions
 reactor_volume/ uL,411.0
-flow_profile_time/ s,0.0,2.0,4.0
+flow_profile_time/ s,0.0,9000,12000
 Residence time/ s,120.0,120.0,120.0
 O=C(CO)CO/ M,0.4
 C=O/ M,1.6
