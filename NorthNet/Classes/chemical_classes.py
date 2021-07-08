@@ -690,7 +690,7 @@ class SubstructureNetwork:
         G = nx.DiGraph()
         # create some aliases for the substructures (they cannot be) used as
         # node names
-        substructure_aliases = {s:c self.SNetworkSubstructs
+        substructure_aliases = {s:c
                                 for c,s in enumerate(self.SNetworkSubstructs)}
 
         for s in self.SNetworkSubstructs:
