@@ -85,10 +85,10 @@ class ModelWriter:
         for o in outflows:
             reactions.remove(o)
 
-        species = {s:"S[{}]".format(c) for c,s in enumerate(compounds) if s != ''}
-        rate_consts = {k:"k[{}]".format(c) for c,k in enumerate(reactions)}
+        species = {s:f"S[{c}]" for c,s in enumerate(compounds) if s != ''}
+        rate_consts = {k:f"k[{c}]" for c,k in enumerate(reactions)}
         inputs = {i:0.0 for c,i in enumerate(network_inputs)}
-        flow_ins = {i:'I[{}]'.format(c) for c,i in enumerate(inflows)}
+        flow_ins = {i:f'I[{c}]' for c,i in enumerate(inflows)}
         flow_outs = {o:'sigma_flow' for o in outflows}
 
         self.species = species
@@ -158,8 +158,10 @@ class ModelWriter:
         text = 'F = np.array(\n'
         text += suffix
         text += np.array2string(collection_array,
-                                     formatter={'float_kind':lambda x: "%.9f" % x},
-                                     separator=',',threshold=np.inf).replace("\n","\n{}".format(suffix))
+                             formatter={'float_kind':lambda x: "%.9f" % x},
+                             separator=',',
+                             threshold=np.inf
+                             ).replace("\n",f"\n{suffix}")
         text += ')'
 
         return text
@@ -195,35 +197,37 @@ class ModelWriter:
         eq_lines = []
 
         for count,c in enumerate(compounds):
-            line_text = "P[{}] = ".format(count)
+            line_text = f"P[{count}] = "
             for i in network.NetworkCompounds[c].In:
                 if '_#0' in i:
                     in_compound = network.NetworkReactions[i].InputID
-                    ki = '+{}*{}'.format(self.inflows[i], self.inputs[in_compound])
+                    ki = f'+{self.inflows[i]}*{self.inputs[in_compound]}'
                     line_text += ki
                 else:
                     reactants = network.NetworkReactions[i].Reactants
                     # remove water from reactants
                     reactants = [x for x in reactants if x != 'O']
 
-                    ki = "+{}*".format(self.rate_constants[i])
+                    ki = f"+{self.rate_constants[i]}*"
 
                     if len(reactants) == 0:
                         specs = ''#inflows[i]
                     else:
                         specs = "*".join([self.species[x] for x in reactants])
 
-                    line_text += "{}{}".format(ki,specs)
+                    line_text += f"{ki}{specs}"
 
             for o in network.NetworkCompounds[c].Out:
                 if 'Sample' in o:
                     out_compound = network.NetworkReactions[o].CompoundOutput
-                    ki = '-{}*{}'.format(self.outflows[o], self.species[out_compound])
+                    ki = f'-{self.outflows[o]}*{self.species[out_compound]}'
                     line_text += ki
                 else:
-                    ki = "-{}*".format(self.rate_constants[o])
-                    specs = "*".join([self.species[x] for x in network.NetworkReactions[o].Reactants])
-                    line_text += "{}{}".format(ki,specs)
+                    ki = f"-{self.rate_constants[o]}*"
+                    reactants = [self.species[x]
+                                for x in network.NetworkReactions[o].Reactants]
+                    specs = "*".join(reactants)
+                    line_text += f"{ki}{specs}"
 
             eq_lines.append(line_text)
 
@@ -239,21 +243,21 @@ class ModelWriter:
         lines.append("species = {")
         for k in self.species:
             idx = get_index(self.species[k])
-            lines.append("'{}':{},".format(k,idx))
+            lines.append(f"'{k}':{idx},")
         lines.append("}")
 
         lines.append("")
         lines.append("reactions = {")
         for k in self.rate_constants:
             idx = get_index(self.rate_constants[k])
-            lines.append("'{}':{},".format(k,idx))
+            lines.append(f"'{k}':{idx},")
         lines.append("}")
 
         lines.append("")
         lines.append("inputs = {")
         for k in self.inputs:
             idx = self.inputs[k]
-            lines.append("'{}':{},".format(k,idx))
+            lines.append(f"'{k}':{idx},")
         lines.append("}")
         lines.append("")
 
@@ -264,8 +268,8 @@ class ModelWriter:
 
         lines.append("C = np.zeros(len(inputs)) # input concentrations")
         lines.append("")
-        lines.append("time_offset = {}".format(self.time_offset))
-        lines.append("lead_in_time = {}".format(self.lead_time))
+        lines.append(f"time_offset = {self.time_offset}")
+        lines.append(f"lead_in_time = {self.lead_time}")
 
         return lines
 
@@ -299,7 +303,7 @@ class ModelWriter:
         lines.append("")
 
         for m in model_text:
-            lines.append("\t{}".format(m))
+            lines.append(f"\t{m}")
 
         lines.append("\treturn P")
         lines.append("")
@@ -343,7 +347,7 @@ class ModelWriter:
                 ki = rate_consts[i]
                 ind1 = compounds.index(c)
                 if len(reacs) == 0:
-                    token = "(+{}*{})/{}".format(ki,inflows[c],species[c])
+                    token = f"(+{ki}*{inflows[c]})/{species[c]}"
                     ind2 = ind1
 
                 if len(reacs) == 1:
@@ -432,19 +436,21 @@ def write_Jacobian_matrix_text(network):
                     pass
                 elif comp2 in self.NetworkReactions[i].Reactants:
                     reacs = [species[x] for x in self.NetworkReactions[i].Reactants if x != comp2]
-                    ki = "+{}".format(rate_consts[i])
-                    element += "{}*{}".format(ki,"*".join(reacs))
+                    ki = f"+{rate_consts[i]}"
+                    rctnt_elems = "*".join(reacs)
+                    element += f"{ki}*{rctnt_elems}"
                 else:
                     pass
 
             for o in self.NetworkCompounds[comp1].Out:
                 if 'Sample' in o:
-                    ki = '-{}'.format(flow_outs[o])
+                    ki = f'-{flow_outs[o]}'
                     element += ki
                 elif comp2 in self.NetworkReactions[o].Reactants:
                     reacs = [species[x] for x in self.NetworkReactions[o].Reactants if x != comp2]
-                    ki = "-{}".format(rate_consts[o])
-                    element += "{}*{}".format(ki,"*".join(reacs))
+                    ki = f"-{rate_consts[o]}"
+                    rctnt_elems = "*".join(reacs)
+                    element += f"{ki}*{rctnt_elems}"
                 else:
                     pass
 
