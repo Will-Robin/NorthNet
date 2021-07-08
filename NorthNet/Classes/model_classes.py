@@ -33,7 +33,8 @@ class ModelWriter:
             in generating the model.
 
         lead_time: 1000
-            Time elapsed before the model should begin calculations.
+            How much time calculate the model for before the
+            experimental data start.
         '''
 
         self.network = network
