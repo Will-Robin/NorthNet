@@ -291,7 +291,7 @@ class ModelWriter:
         Returns
         -------
         text: str
-            The module text. 
+            The module text.
         '''
 
         flow_profile_text = self.write_flow_profile_text(suffix = "\t\t")
@@ -336,6 +336,9 @@ class ModelWriter:
 
     def write_model_matrix_text(self):
         '''
+
+        Prototype for writing the model as an array.
+
         Parameters
         ----------
 
@@ -424,6 +427,7 @@ class ModelWriter:
 
 def write_Jacobian_matrix_text(network):
     '''
+    Prototype for writing the Jacobian matrix as text for the model.
     Parameters
     ----------
     network: NorthNet ReactionNetwork object
