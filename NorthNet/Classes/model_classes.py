@@ -98,6 +98,9 @@ class ModelWriter:
         self.outflows = flow_outs
 
     def load_experiment_details(self, experiment):
+        '''
+        Load experiment details into the class attributes
+        '''
         if experiment.series_unit == 'time/ s':
             self.time = experiment.series_values.copy()
 
@@ -141,59 +144,6 @@ class ModelWriter:
             self.flow_profiles[f] = self.flow_profiles[f][idx]/self.reactor_volume
             self.flow_profiles[f] /= self.flowrate_time_conversion
             self.sigma_flow += self.flow_profiles[f]
-
-    def write_equation_text(self):
-
-        '''
-        Parameters
-        ----------
-
-        Returns
-        -------
-        eq_text: str
-            Rate equations in text form.
-        '''
-
-        network = self.network
-        compounds = [*network.NetworkCompounds]
-        reactions = [*network.NetworkReactions]
-
-        eq_text = ""
-
-        for count,c in enumerate(compounds):
-            eq_text += "P[{}] = ".format(count)
-            for i in network.NetworkCompounds[c].In:
-                if '_#0' in i:
-                    in_compound = network.NetworkReactions[i].InputID
-                    ki = '+{}*{}'.format(self.inflows[i], self.inputs[in_compound])
-                    eq_text += ki
-                else:
-                    reactants = network.NetworkReactions[i].Reactants
-                    # remove water from reactants
-                    reactants = [x for x in reactants if x != 'O']
-
-                    ki = "+{}*".format(self.rate_constants[i])
-
-                    if len(reactants) == 0:
-                        specs = ''#inflows[i]
-                    else:
-                        specs = "*".join([self.species[x] for x in reactants])
-
-                    eq_text += "{}{}".format(ki,specs)
-
-            for o in network.NetworkCompounds[c].Out:
-                if 'Sample' in o:
-                    out_compound = network.NetworkReactions[o].CompoundOutput
-                    ki = '-{}*{}'.format(self.outflows[o], self.species[out_compound])
-                    eq_text += ki
-                else:
-                    ki = "-{}*".format(self.rate_constants[o])
-                    specs = "*".join([self.species[x] for x in network.NetworkReactions[o].Reactants])
-                    eq_text += "{}{}".format(ki,specs)
-
-            eq_text += "\n"
-
-        return eq_text
 
     def write_flow_profile_text(self, suffix = ""):
         collection_array = np.zeros((len(self.flow_profiles)+2,
