@@ -166,6 +166,22 @@ class ModelWriter:
 
     def write_model_equation_text(self):
         '''
+        Writes models as equations with variables which refer to indices of
+        arrays:
+
+        P: 1D array of len(self.network.NetworkCompounds)
+            Stores the product state if the system following calculation
+        S: 1D array of len(self.network.NetworkCompounds)
+            Stores the initial state of the system following calculation
+            (see self.get_network_tokens())
+        k: 1D array of len(self.network.NetworkReactions)
+            rate constants arranged in standardised order.
+            (see self.get_network_tokens())
+        I: 1D array of len(self.network.NetworkInputs)
+            Inputs into the system (see self.get_network_tokens())
+
+        Includes output flow terms for all compounds.
+
         Returns
         -------
         eq_lines: list
@@ -175,7 +191,6 @@ class ModelWriter:
 
         compounds = [x for x in network.NetworkCompounds]
         reactions = [*network.NetworkReactions]
-
 
         eq_lines = []
 
