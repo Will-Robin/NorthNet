@@ -141,12 +141,12 @@ class DataReport:
 
         output_lines = []
         for c in dict_container:
-            line_str = '{},'.format(c)
+            line_str = f'{c},'
             if type(dict_container[c]) == float:
-                line_str += "{}".format(dict_container[c])
+                line_str += f"{dict_container[c]}"
             else:
                 for x in dict_container[c]:
-                    line_str += "{},".format(x)
+                    line_str += f"{x},"
 
             line_str = line_str.strip(',')
             output_lines.append(line_str)
@@ -179,7 +179,7 @@ class DataReport:
         for c, v in enumerate(dict_container[header[0]]):
             line_str = ''
             for h in header:
-                line_str += "{},".format(dict_container[h][c])
+                line_str += f"{dict_container[h][c]},"
 
             line_str = line_str.strip(',')
             output_lines.append(line_str)
@@ -205,7 +205,7 @@ class DataReport:
             error_section[d] = self.errors[d]
 
         output_lines = []
-        output_lines.append("Dataset,{}".format(self.experiment_code))
+        output_lines.append(f"Dataset,{self.experiment_code}")
         output_lines.append("start_conditions")
         output_lines.extend(self.rows_from_dict(self.conditions))
         output_lines.append("end_conditions")
@@ -220,7 +220,6 @@ class DataReport:
         output_lines.extend(self.columns_from_dict(error_section))
         output_lines.append("end_errors")
 
-        print(output_lines)
         text = '\n'.join(output_lines)
 
         return text
