@@ -217,8 +217,8 @@ class ModelWriter:
         '''
         Returns
         -------
-        eq_text: str
-            Rate equations in text form.
+        eq_lines: list
+            List of rate equations in text form.
         '''
         network = self.network
 
@@ -226,15 +226,15 @@ class ModelWriter:
         reactions = [*network.NetworkReactions]
 
 
-        eq_text = ""
+        eq_lines = []
 
         for count,c in enumerate(compounds):
-            eq_text += "P[{}] = ".format(count)
+            line_text = "P[{}] = ".format(count)
             for i in network.NetworkCompounds[c].In:
                 if '_#0' in i:
                     in_compound = network.NetworkReactions[i].InputID
                     ki = '+{}*{}'.format(self.inflows[i], self.inputs[in_compound])
-                    eq_text += ki
+                    line_text += ki
                 else:
                     reactants = network.NetworkReactions[i].Reactants
                     # remove water from reactants
@@ -247,92 +247,101 @@ class ModelWriter:
                     else:
                         specs = "*".join([self.species[x] for x in reactants])
 
-                    eq_text += "{}{}".format(ki,specs)
+                    line_text += "{}{}".format(ki,specs)
 
             for o in network.NetworkCompounds[c].Out:
                 if 'Sample' in o:
                     out_compound = network.NetworkReactions[o].CompoundOutput
                     ki = '-{}*{}'.format(self.outflows[o], self.species[out_compound])
-                    eq_text += ki
+                    line_text += ki
                 else:
                     ki = "-{}*".format(self.rate_constants[o])
                     specs = "*".join([self.species[x] for x in network.NetworkReactions[o].Reactants])
-                    eq_text += "{}{}".format(ki,specs)
+                    line_text += "{}{}".format(ki,specs)
 
-            eq_text += "\n"
+            eq_lines.append(line_text)
 
-        return eq_text
+        return eq_lines
+
+    def write_variables_text(self):
+        '''
+        Write model variables as strings stored in a list
+        '''
+        lines = []
+
+        lines.append("species = {")
+        for k in self.species:
+            idx = get_index(self.species[k])
+            lines.append("'{}':{},".format(k,idx))
+        lines.append("}")
+
+        lines.append("")
+        lines.append("reactions = {")
+        for k in self.rate_constants:
+            idx = get_index(self.rate_constants[k])
+            lines.append("'{}':{},".format(k,idx))
+        lines.append("}")
+
+        lines.append("")
+        lines.append("inputs = {")
+        for k in self.inputs:
+            idx = self.inputs[k]
+            lines.append("'{}':{},".format(k,idx))
+        lines.append("}")
+        lines.append("")
+
+        lines.append("k = np.zeros(max(reactions.values())+1) # rate constants")
+        lines.append("")
+        lines.append("S = np.zeros(len(species)) # initial concentrations")
+        lines.append("")
+
+        lines.append("C = np.zeros(len(inputs)) # input concentrations")
+        lines.append("")
+        lines.append("time_offset = {}".format(self.time_offset))
+        lines.append("lead_in_time = {}".format(self.lead_time))
+
+        return lines
 
     def write_to_module_text(self, numba_decoration = False):
         get_index = lambda x: int(x[x.find("[")+1:x.find("]")])
 
         flow_profile_text = self.write_flow_profile_text()
-        model_text = self.write_model_equation_text().split('\n')
+        model_text = self.write_model_equation_text()
 
-        lines = ["import numpy as np\n"]
+        lines = ["import numpy as np"]
         if numba_decoration:
-            lines.append("import numba\n\n")
+            lines.append("import numba\n")
+            lines.append("")
             lines.append("@numba.jit(numba.float64[:](numba.float64,numba.float64[:],numba.float64[:]),\n"
-                       "\tlocals={'P': numba.float64[:],'F': numba.float64[:,:],'I':numba.float64[:]},nopython=True)\n")
-        lines.append("def model_function(time, S, k):\n\n")
-        lines.append("\tP = np.zeros(len(S))\n\n")
+                       "\tlocals={'P': numba.float64[:],'F': numba.float64[:,:],'I':numba.float64[:]},nopython=True)")
+        lines.append("def model_function(time, S, k):")
+        lines.append("")
+        lines.append("\tP = np.zeros(len(S))")
+        lines.append("")
         lines.append("\t")
         lines.append(flow_profile_text)
-        lines.append("\n")
-        lines.append("\n")
-        lines.append("\tidx = np.abs(F[0] - time).argmin()\n")
-        lines.append("\n")
-        lines.append("\tI = F[1:-1,idx]\n")
-        lines.append("\n")
-        lines.append('\tsigma_flow = F[-1,idx]\n')
-        lines.append("\n")
-        lines.append("\n")
+        lines.append("")
+        lines.append("")
+        lines.append("\tidx = np.abs(F[0] - time).argmin()")
+        lines.append("")
+        lines.append("\tI = F[1:-1,idx]")
+        lines.append("")
+        lines.append('\tsigma_flow = F[-1,idx]')
+        lines.append("")
+        lines.append("")
 
         for m in model_text:
-            lines.append("\t{}\n".format(m))
+            lines.append("\t{}".format(m))
 
-        lines.append("\treturn P\n")
-        lines.append("\n")
-        lines.append("def wrapper_function(time, S, k):\n")
-        lines.append("\treturn model_function(time, S, k)\n")
-        lines.append("\n")
+        lines.append("\treturn P")
+        lines.append("")
+        lines.append("def wrapper_function(time, S, k):")
+        lines.append("\treturn model_function(time, S, k)")
+        lines.append("")
 
-        lines.append("\n")
-        lines.append("species = {")
-        for k in self.species:
-            idx = get_index(self.species[k])
-            lines.append("'{}':{},".format(k,idx))
-        lines.append("}\n")
+        lines.extend(self.write_variables_text())
 
-        lines.append("\n")
-        lines.append("reactions = {")
-        for k in self.rate_constants:
-            idx = get_index(self.rate_constants[k])
-            lines.append("'{}':{},".format(k,idx))
-        lines.append("}\n")
-
-        lines.append("\n")
-        lines.append("inputs = {")
-        for k in self.inputs:
-            idx = self.inputs[k]
-            lines.append("'{}':{},".format(k,idx))
-
-        lines.append("}\n")
-        lines.append("\n")
-
-        lines.append("k = np.zeros(max(reactions.values())+1) # rate constants\n")
-        lines.append("\n")
-        lines.append("S = np.zeros(len(species)) # initial concentrations\n")
-        lines.append("\n")
-
-        lines.append("C = np.zeros(len(inputs)) # input concentrations\n")
-        lines.append("\n")
-        lines.append("time_offset = {}\n".format(self.time_offset))
-        lines.append("lead_in_time = {}\n".format(self.lead_time))
-
-        text = ''
-        for l in lines:
-            text += l
+        text = '\n'.join(lines)
 
         return text
 
