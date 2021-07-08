@@ -423,32 +423,36 @@ def write_Jacobian_matrix_text(network):
     jac_text: str
         Jacobian matrix as text.
     '''
-    compounds = [x for x in network.NetworkCompounds]
-    reactions = [*network.NetworkReactions]
+    compounds = [x for x in self.NetworkCompounds]
+    reactions = [*self.NetworkReactions]
 
-    species, rate_consts, inflows, flow_ins, flow_outs = model_export.network_indices(network)
+    species = self.species
+    rate_consts = self.rate_constants
+    inflows = self.inputs
+    flow_ins = self.inflows
+    flow_outs = self.outflows
 
     jac_mat = [['0' for x in species] for x in species]
 
     for c,comp1 in enumerate(compounds):
         for c2,comp2 in enumerate(compounds):
             element = ""
-            for i in network.NetworkCompounds[comp1].In:
+            for i in self.NetworkCompounds[comp1].In:
                 if '_#0' in i:
                     pass
-                elif comp2 in network.NetworkReactions[i].Reactants:
-                    reacs = [species[x] for x in network.NetworkReactions[i].Reactants if x != comp2]
+                elif comp2 in self.NetworkReactions[i].Reactants:
+                    reacs = [species[x] for x in self.NetworkReactions[i].Reactants if x != comp2]
                     ki = "+{}".format(rate_consts[i])
                     element += "{}*{}".format(ki,"*".join(reacs))
                 else:
                     pass
 
-            for o in network.NetworkCompounds[comp1].Out:
+            for o in self.NetworkCompounds[comp1].Out:
                 if 'Sample' in o:
                     ki = '-{}'.format(flow_outs[o])
                     element += ki
-                elif comp2 in network.NetworkReactions[o].Reactants:
-                    reacs = [species[x] for x in network.NetworkReactions[o].Reactants if x != comp2]
+                elif comp2 in self.NetworkReactions[o].Reactants:
+                    reacs = [species[x] for x in self.NetworkReactions[o].Reactants if x != comp2]
                     ki = "-{}".format(rate_consts[o])
                     element += "{}*{}".format(ki,"*".join(reacs))
                 else:
