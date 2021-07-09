@@ -18,3 +18,4 @@ A Python package which aims to provide tools in understanding chemical reactions
 - [x] Test network generation code
 - [x] Go through the other modules
 - [ ] Write example scripts
+- [ ] Complete adding assertions 
