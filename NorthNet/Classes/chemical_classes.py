@@ -1,3 +1,4 @@
+import sys
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from NorthNet import Classes
@@ -13,6 +14,10 @@ class Substructure:
         SMARTS: str
             SMARTS corresponding to substructure.
         '''
+
+        if isinstance(SMARTS, str):
+            sys.exit('class Substructure: argument should be a SMARTS string.')
+
         self.Mol = Chem.MolFromSmarts(SMARTS)
 
         if Chem.MolToSmarts(self.Mol) == None:
@@ -34,6 +39,10 @@ class Compound:
         mol: str
             SMILES corresponding to compound.
         '''
+
+        if not isinstance(SMILES, str):
+            sys.exit('class Compound: argument should be a SMILES string.')
+
         self.Mol = Chem.MolFromSmiles(SMILES)
         if self.Mol == None:
             self.SMILES = SMILES
@@ -56,8 +65,8 @@ class ReactionTemplate:
         ----------
         name: str
             name for reaction.
-        reaction_SMARTS: list
-            List of reaction SMARTS strings.
+        reaction_SMARTS: str
+            reaction SMARTS string.
 
         reactant_substructs: string
             reacting substructures
@@ -65,6 +74,19 @@ class ReactionTemplate:
         product_substructs: string
             substructures to which reactant substructures are converted.
         '''
+
+        if not isinstance(name, str):
+            sys.exit('''class ReactionTemplate:
+        the name arg should be a name for the ReactionTemplate as a string.''')
+        if not isinstance(reaction_SMARTS, str):
+            sys.exit('''class ReactionTemplate:
+            the reaction_SMARTS arg should be a reaction SMARTS string.''')
+        if not isinstance(reactant_substructs, str):
+            sys.exit('''class ReactionTemplate:
+                    the reactant_substructs arg should be a SMARTS string.''')
+        if not isinstance(product_substructs, str):
+            sys.exit('''class ReactionTemplate:
+                    the product_substructs arg should be a SMARTS string.''')
 
         self.Name = name
         self.Reaction = AllChem.ReactionFromSmarts(reaction_SMARTS)
@@ -105,6 +127,16 @@ class Reaction:
             Product SMILES extracted from rdkit_reaction
         '''
 
+        if not isinstance(rdkit_reaction, Chem.rdChemReactions.ChemicalReaction):
+            sys.exit('''class Reaction:
+            rdkit_reaction arg should be a rdkit.Chem.rdChemReactions.ChemicalReaction.''')
+        if not isinstance(reaction_template, ReactionTemplate):
+            sys.exit('''class Reaction:
+            reaction_template arg must be a NortNet ReactionTemplate object.''')
+        if not isinstance(info, dict):
+            sys.exit('''class Reaction:
+            info kwarg must be dict (empty or containing reaction information).''')
+
         self.Reaction = rdkit_reaction
         self.ReactionSMILES = AllChem.ReactionToSmiles(rdkit_reaction)
         self.ReactionTemplate = reaction_template
@@ -132,6 +164,11 @@ class NetworkInput:
             should follow the convention
             SMILES_#0
         '''
+
+        if not isinstance(id, str):
+            sys.exit('''class NetworkInput:
+                        id arg must be str like SMILES_#0.''')
+
         self.Mol = Chem.MolFromSmiles(id.split('_')[0])
 
         # Note that the self.SMILES does not
@@ -161,6 +198,11 @@ class NetworkOutput:
             should follow the convention
             SMILES_#0
         '''
+
+        if not isinstance(id, str):
+            sys.exit('''class NetworkOutput:
+                    id arg must be str like SMILES_#0.''')
+
         self.Mol = None
 
         # Note that the self.SMILES does not
@@ -175,7 +217,7 @@ class NetworkOutput:
 
 class ReactionInput:
     '''
-    Class to store reaction inputs as into reaction network
+    Class to store inputs as reactions into reaction network
     '''
     def __init__(self, reaction_input_string):
         '''
@@ -189,6 +231,11 @@ class ReactionInput:
             should follow the convention
             SMILES_#0>>SMILES
         '''
+
+        if not isinstance(id, str):
+            sys.exit('''class ReactionInput:
+                    reaction_input_string arg must be str like SMILES_#0>>SMILES.''')
+
         self.Reaction = None
         self.ReactionSMILES = reaction_input_string
         self.Reactants, self.Products = self.reactants_products_from_string(
@@ -208,9 +255,9 @@ class ReactionInput:
 
 class ReactionOutput:
     '''
-    Class to store reaction inputs as into reaction network
+    Class to store outputs as reactions into reaction network
     '''
-    def __init__(self, reaction_input_string):
+    def __init__(self, reaction_output_string):
         '''
         Designed to behave like a Reaction object
         self.SMILES does not actually hold a valid SMILES string,
@@ -222,10 +269,13 @@ class ReactionOutput:
             should follow the convention
             SMILES_#0>>SMILES
         '''
+        if not isinstance(reaction_output_string, str):
+            sys.exit('''class ReactionOutput:
+                    reaction_output_string must be string like SMILES>>#0''')
         self.Reaction = None
-        self.ReactionSMILES = reaction_input_string
+        self.ReactionSMILES = reaction_output_string
         self.Reactants, self.Products = self.reactants_products_from_string(
-                                                        reaction_input_string)
+                                                        reaction_output_string)
 
         self.OutputID = self.Products[0]
         self.CompoundOutput = self.Reactants[0]
@@ -246,6 +296,7 @@ class Network:
         The Network object is initialised with a list of Reaction objects. If
         the list is empty, then the network is initialised as an empty network.
         '''
+
         self.Name = name
         self.Description = description
 
