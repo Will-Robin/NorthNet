@@ -14,7 +14,7 @@ A Python package which aims to provide tools in understanding chemical reactions
 
 ## To do
 
-- [ ] Complete check of the network generation code (refactor, remove old code, improve where relevant)
-- [ ] Test network generation code
-- [ ] Go through the other modules
+- [x] Complete check of the network generation code (refactor, remove old code, improve where relevant)
+- [x] Test network generation code
+- [x] Go through the other modules
 - [ ] Write example scripts
