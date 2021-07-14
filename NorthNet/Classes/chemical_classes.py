@@ -89,8 +89,13 @@ class ReactionTemplate:
                     the product_substructs arg should be a SMARTS string.''')
 
         self.Name = name
-        self.Reaction = AllChem.ReactionFromSmarts(reaction_SMARTS)
-        self.ReactionSMARTS = AllChem.ReactionToSmarts(self.Reaction)
+        if reaction_SMARTS != '':
+            self.Reaction = AllChem.ReactionFromSmarts(reaction_SMARTS)
+            self.ReactionSMARTS = AllChem.ReactionToSmarts(self.Reaction)
+        else:
+            self.Reaction = None
+            self.ReactionSMARTS = ''
+
         self.ReactantSubstructures = reactant_substructs
         self.ProductSubstructures  = product_substructs
 
@@ -127,19 +132,12 @@ class Reaction:
             Product SMILES extracted from rdkit_reaction
         '''
 
-        if not isinstance(rdkit_reaction, Chem.rdChemReactions.ChemicalReaction):
-            sys.exit('''class Reaction:
-            rdkit_reaction arg should be a rdkit.Chem.rdChemReactions.ChemicalReaction.''')
-        if not isinstance(reaction_template, ReactionTemplate):
-            sys.exit('''class Reaction:
-            reaction_template arg must be a NortNet ReactionTemplate object.''')
-        if not isinstance(info, dict):
-            sys.exit('''class Reaction:
-            info kwarg must be dict (empty or containing reaction information).''')
-
         self.Reaction = rdkit_reaction
         self.ReactionSMILES = AllChem.ReactionToSmiles(rdkit_reaction)
-        self.ReactionTemplate = reaction_template
+        if reaction_template == None:
+            self.ReactionTemplate = Classes.ReactionTemplate('none', '', [], [])
+        else:
+            self.ReactionTemplate = reaction_template
         self.Data = info
 
         self.Reactants = [Chem.MolToSmiles(x, canonical = True)
