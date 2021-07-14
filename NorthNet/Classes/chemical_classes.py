@@ -68,12 +68,14 @@ class ReactionTemplate:
         reaction_SMARTS: str
             reaction SMARTS string.
 
-        reactant_substructs: string
+        reactant_substructs: list of strings
             reacting substructures
 
-        product_substructs: string
+        product_substructs: list of strings
             substructures to which reactant substructures are converted.
         '''
+
+        print(reactant_substructs, product_substructs)
 
         if not isinstance(name, str):
             sys.exit('''class ReactionTemplate:
@@ -81,10 +83,10 @@ class ReactionTemplate:
         if not isinstance(reaction_SMARTS, str):
             sys.exit('''class ReactionTemplate:
             the reaction_SMARTS arg should be a reaction SMARTS string.''')
-        if not isinstance(reactant_substructs, str):
+        if not isinstance(reactant_substructs, list):
             sys.exit('''class ReactionTemplate:
                     the reactant_substructs arg should be a SMARTS string.''')
-        if not isinstance(product_substructs, str):
+        if not isinstance(product_substructs, list):
             sys.exit('''class ReactionTemplate:
                     the product_substructs arg should be a SMARTS string.''')
 
