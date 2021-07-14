@@ -75,8 +75,6 @@ class ReactionTemplate:
             substructures to which reactant substructures are converted.
         '''
 
-        print(reactant_substructs, product_substructs)
-
         if not isinstance(name, str):
             sys.exit('''class ReactionTemplate:
         the name arg should be a name for the ReactionTemplate as a string.''')
