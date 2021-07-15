@@ -1,5 +1,0 @@
-Reaction name, Substructure,,
-enol_formation,[C]=[C]([O])[O],[C]=[C]=[C][O],[C]=[C]=O
-aldol_addition,[C]([O])[O],[C]([O])[O-],
-retroaldol,[C]=[C]([O])[O],[C]=[C]([O])[O-],
-hydration,[O]C([O])[O],C([O])([O])[O],
