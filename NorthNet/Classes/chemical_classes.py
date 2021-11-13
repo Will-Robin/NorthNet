@@ -598,12 +598,12 @@ class Network:
 
         G = nx.DiGraph()
 
-        for node in network.NetworkCompounds:
+        for node in self.NetworkCompounds:
             G.add_node(node)
 
-        for r in network.NetworkReactions:
-            for sr in network.NetworkReactions[r].Reactants:
-                for sp in network.NetworkReactions[r].Products:
+        for r in self.NetworkReactions:
+            for sr in self.NetworkReactions[r].Reactants:
+                for sp in self.NetworkReactions[r].Products:
                     G.add_edge(sr,r)
                     G.add_edge(r,sp)
 
