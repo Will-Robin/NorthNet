@@ -1,4 +1,8 @@
-def load_compounds_from_csv(fname, name_col = 0, SMILES_col = 1):
+def load_compounds_from_file(fname,
+                            name_col = 0,
+                            SMILES_col = 1,
+                            delimiter = ','
+                            ):
     '''
     Reads compounds from a .csv file.
 
@@ -25,13 +29,13 @@ def load_compounds_from_csv(fname, name_col = 0, SMILES_col = 1):
             if c == 0:
                 pass
             else:
-                ins = line.strip("\n").split(",")
+                ins = line.strip("\n").split(delimiter)
 
                 reagents[ ins[name_col] ] = Classes.Compound(ins[SMILES_col])
 
     return reagents
 
-def load_reaction_templates_from_csv(fname, delimiter  = '\t'):
+def load_reaction_templates_from_file(fname, delimiter  = '\t'):
     '''
     Reads reaction templates from a .csv file.
 
