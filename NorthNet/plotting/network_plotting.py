@@ -23,7 +23,7 @@ def plot_nodes(G, ax, color = '#000000', size = 2, alpha = 1, zorder = 1):
     -------
     None
     '''
-    from NorthNet.network_manipulations.networkx_ops import coordinates
+    from NorthNet.network_visualisation import coordinates
 
     if color == 'nodewise':
         colors = [G.nodes[n]['color'] for n in G.nodes]
