@@ -1,6 +1,32 @@
 '''
 Useful functions for manipulating networkx DiGraphs
 '''
+def set_network_coords(G, pos):
+    '''
+    Add coordinate information into a networkx DiGraph.
+
+    Parameters
+    ----------
+    G: networkx DiGraph
+        Graph to extract nodes from.
+
+    Returns
+    -------
+    net_lines: numpy 2D array
+        Coordinates for plotting a line plot of the network.
+    '''
+
+    import numpy as np
+
+    xmin = np.mean([pos[p][0] for p in pos])
+    ymin = np.mean([pos[p][1] for p in pos])
+    for n in G.nodes:
+        if n in pos:
+            G.nodes[n]['pos'] = pos[n]
+        else:
+            G.nodes[n]['pos'] = (xmin, ymin)
+
+    return G
 
 def get_network_lineplot(G):
     '''
