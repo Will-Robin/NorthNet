@@ -18,6 +18,7 @@ def graphviz_layout_NorthNet(network, render_engine = 'fdp'):
         NorthNet Network to be represented.
     render_engine: str
         Layout render engine for graphviz.
+
     Returns
     -------
     pos: dict
