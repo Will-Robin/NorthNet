@@ -14,7 +14,7 @@ def run_reaction(reactant_compounds, reaction_template):
 
     Parameters
     ----------
-    reactants: tuple
+    reactant_compounds: tuple
         tuple of NorthNet Compound objects which take part in the reaction.
     reaction_template: list
         NorthNet Reaction_Template object.

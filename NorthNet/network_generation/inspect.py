@@ -2,6 +2,8 @@ from itertools import compress
 
 def reactive_species(species_list, substructures):
     '''
+    TODO: rename 
+
     Find species with the given subtructure.
     Returns a list of matching compounds
 

@@ -1,12 +1,19 @@
 def cleanup(reactions):
-    from rdkit import Chem
-
-    '''Used to clear up the output of rdkit reaction function, parsing multiple
-    reaction outcomes. Not perfect.
-    reactions: list of reaction SMILES strings
-
-    reactions_out: list of cleaned reaction SMILES strings
     '''
+    Used to clear up the output of rdkit reaction function, parsing multiple
+    reaction outcomes. Not perfect.
+
+    Parameters
+    ----------
+    reactions: list
+        list of reaction SMILES strings
+
+    Returns
+    -------
+    reactions_out: list 
+        list of cleaned reaction SMILES strings
+    '''
+    from rdkit import Chem
 
     reactions = [r.replace('[H+][O-]','O')    for r in reactions]
     reactions = [r.replace('[O-][H+]','O')    for r in reactions]
@@ -38,7 +45,7 @@ def cleanup(reactions):
     return reactions_out
 
 def remove_network_symmetry(network):
-    """
+    '''
     Removes left handed sugars from the network based on the rule:
     if the stereocentre furthest from the carbonyl is S, delete the species and
     its associated reactions from the network. Furthest from the carbonyl is
@@ -51,7 +58,9 @@ def remove_network_symmetry(network):
     Returns
     -------
     None
-    """
+    '''
+    from rdkit import Chem
+
     node_remove = []
     edge_remove = []
 
