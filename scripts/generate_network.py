@@ -1,8 +1,8 @@
 import sys
 from rdkit import Chem
 from NorthNet import Classes
+from NorthNet import text_parsing as text_p
 from NorthNet import network_generation as n_gen
-from NorthNet.information.chemical_information import chem_info as info_params
 
 '''Get reaction components'''
 # there may be an error such as:
@@ -10,15 +10,10 @@ from NorthNet.information.chemical_information import chem_info as info_params
 # unmapped numbers are: 5'
 # the error is attributable to the Cannizzaro reaction SMARTS, in which
 # O:5 is not mapped to the products
-reactions = {}
-for r in info_params.reaction_SMARTS:
-    SMARTS = info_params.reaction_SMARTS[r]
-    split_rxn_SMARTS = SMARTS.split('>>')
-    reactant_SMARTS = split_rxn_SMARTS[0].split('.')
-    product_SMARTS = split_rxn_SMARTS[1].split('.')
-    reactions[r] = Classes.ReactionTemplate(r, SMARTS,
-                                            reactant_SMARTS,
-                                            product_SMARTS)
+
+reaction_SMARTS_file = 'reaction_SMARTS_templates.tsv'
+
+reactions = text_p.load_reaction_templates_from_file(reaction_SMARTS_file)
 
 C_patt = Chem.MolFromSmarts("[C]")
 count_carbons = lambda x: x.GetSubstructMatches(C_patt)
