@@ -437,8 +437,10 @@ class Network:
         if reaction_entry == None:
             print('Reaction not found in Network')
             return None
+        elif reaction_entry.ReactionTemplate != None:
+            return reaction_entry.ReactionTemplate.ReactionSMARTS
         else:
-            return reaction_entry.ReactionSMARTS
+            return None
 
     def get_reaction_name(self, reaction):
         '''
@@ -457,8 +459,10 @@ class Network:
         if reaction_entry == None:
             print('Reaction not found in Network')
             return None
+        elif reaction_entry.ReactionTemplate != None:
+            return reaction_entry.ReactionTemplate.Name
         else:
-            return reaction_entry.Name
+            return None
 
     def convert_to_networkx(self):
         '''
