@@ -10,7 +10,9 @@ def run_reaction(reactant_compounds, reaction_template):
     Mapping can be added:
         Set atom map numbers of reactants before performing the reaction.
         Atom mappings can be removed:
-        rdkit.Chem.rdChemReactions.RemoveMappingNumbersFromReactions((ChemicalReaction)reaction) → None
+        rdkit.Chem.rdChemReactions.RemoveMappingNumbersFromReactions(
+                                                 (ChemicalReaction)reaction
+                                                 ) → None
 
     Parameters
     ----------
@@ -24,23 +26,26 @@ def run_reaction(reactant_compounds, reaction_template):
     reactions: list
         A list of NorthNet Reaction objects.
     '''
+
     reactions = []
     reactants = tuple(r.Mol for r in reactant_compounds)
 
-    reactant_map_numbers = []
-    for r in reactants:
-        reactant_map_numbers.append([atom.GetAtomMapNum() for atom in r.GetAtoms()])
-
-    ps = reaction_template.Reaction.RunReactants(reactants) # Run the reaction to give a list of products sets
-    for u in ps:
-        for p in u:
-            p = editing.incorrect_chiral_H_solve(p)
-            Chem.SanitizeMol(p)
+    # Run the reaction to give a list of products sets
+    product_sets = reaction_template.Reaction.RunReactants(reactants) 
+    for u in product_sets:
+        for product in u:
+            product = editing.incorrect_chiral_H_solve(product)
+            Chem.SanitizeMol(product)
 
         rxn = AllChem.ChemicalReaction() # Create an empty chemical reaction
         [rxn.AddReactantTemplate(r) for r in reactants]
         [rxn.AddProductTemplate(p) for p in u]
 
-        reactions.append( Classes.Reaction(rxn, reaction_template = reaction_template) )
+        reactions.append(
+                         Classes.Reaction(
+                                          rxn, 
+                                          reaction_template = reaction_template
+                                          ) 
+                        )
 
     return reactions
