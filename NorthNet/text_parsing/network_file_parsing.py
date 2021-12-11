@@ -29,12 +29,15 @@ def node_edge_list_from_gdf(file):
     '''
     with open(file, "r") as f:
         coordinates = []
+        node_list_header = []
 
         for c,line in enumerate(f):
             if c == 0:
                 spl = line.strip("\n").split(",")
                 node_list_header = [x.split(" ")[-2] for x in spl]
-            elif "edgedef" in line:
+                continue
+                
+            if "edgedef" in line:
                 break
             else:
                 spl = line.strip("\n").split(",")
@@ -44,13 +47,14 @@ def node_edge_list_from_gdf(file):
 
     with open(file, "r") as f:
         edge_list = []
+        edge_list_header = []
+
         readstate = False
         for c,line in enumerate(f):
             if "edgedef" in line:
                 spl = line.strip("\n").strip(">edgedef").split(",")
                 edge_list_header = [x for x in spl]
 
-                readstate = True
             elif readstate:
                 spl = line.strip("\n").split(",")
                 edge_list.append({k:v for k,v  in zip(edge_list_header, spl)})
@@ -59,7 +63,10 @@ def node_edge_list_from_gdf(file):
 
 def network_from_gdf(file):
 
-    nodes, edges = node_edge_list_from_gdf(file)
+    import networkx as nx
+
+    _, edges = node_edge_list_from_gdf(file)
+
 
     # Create networkx graph
     G = nx.DiGraph()

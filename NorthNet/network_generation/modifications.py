@@ -1,3 +1,4 @@
+from rdkit import Chem
 from NorthNet import Classes
 
 def add_flow_terms(network, inputs):

@@ -132,6 +132,7 @@ def rotate_network(G, radians):
     G2: networkx DiGraph
     '''
 
+    import copy
     import numpy as np
 
     xy = get_network_scatter(G)
@@ -149,3 +150,4 @@ def rotate_network(G, radians):
         G2.nodes[n]['pos'] = (qx, qy)
 
     return G2
+

@@ -1,9 +1,3 @@
-import sys
-from rdkit import Chem
-from rdkit.Chem import AllChem
-
-from NorthNet import Classes
-
 from NorthNet.Classes.Substructure import Substructure
 from NorthNet.Classes.Compound import Compound
 from NorthNet.Classes.ReactionTemplate import ReactionTemplate

@@ -78,9 +78,10 @@ class SubstructureNetwork:
 
             self.SNetworkSubstructs[r_subst].Out.append(r_key)
 
-            working_substruct = self.SNetworkSubstructs[r_substruct].Mol
+            working_substruct = self.SNetworkSubstructs[r_subst].Mol
+
             # connect to compound
-            for reac in reactant.Reactants:
+            for reac in reaction.Reactants:
 
                 if reac in self.SNetworkCompounds:
                     pass
@@ -90,12 +91,12 @@ class SubstructureNetwork:
                 compound = self.SNetworkCompounds[reac].Mol
 
                 if compound.HasSubstructMatch(working_substruct):
-                    compound.Out.append(r_substruct)
-                    self.SNetworkSubstructs[r_substruct].In.append(reac)
+                    compound.Out.append(r_subst)
+                    self.SNetworkSubstructs[r_subst].In.append(reac)
                 else:
                     pass
 
-        for p_substruct in r.ReactionTemplate.ProductSubstructures:
+        for p_substruct in reaction.ReactionTemplate.ProductSubstructures:
 
             # connect to reaction
             if p_substruct in self.SNetworkSubstructs:
@@ -108,7 +109,7 @@ class SubstructureNetwork:
 
             working_substruct = self.SNetworkSubstructs[p_substruct].Mol
             # connect to compound
-            for prod in r.Products:
+            for prod in reaction.Products:
 
                 if prod in self.SNetworkCompounds:
                     pass
@@ -161,6 +162,8 @@ class SubstructureNetwork:
             Networkx version of the NorthNet SNetwork.
         '''
 
+        import networkx as nx
+
         G = nx.DiGraph()
         # create some aliases for the substructures
         # (they cannot be SMARTS strings) used as node names
@@ -172,11 +175,13 @@ class SubstructureNetwork:
 
         for c in self.SNetworkCompounds:
             compound_alias = self.SNetworkCompounds[c].SMILES
+                
             G.add_node(compound_alias)
 
-            for i in snetwork.SNetworkCompounds[n].In:
+            for i in self.SNetworkCompounds[c].In:
                 G.add_edge(substructure_aliases[i], compound_alias)
-            for o in snetwork.SNetworkCompounds[n].Out:
+
+            for o in self.SNetworkCompounds[c].Out:
                 G.add_edge(compound_alias, substructure_aliases[o])
 
         for r in self.SNetworkTemplates:

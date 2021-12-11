@@ -231,10 +231,11 @@ class Network:
 
         Parameters
         ----------
-        input: NorthNet NetworkInput object
+        input: NorthNet ReactionInput object
             Input to be added
         '''
-        if not isinstance(input, Classes.NetworkInput):
+
+        if not isinstance(input, Classes.ReactionInput):
             sys.exit('''Network.add_input(): input arg must be a NorthNet
             NetworkInput object''')
         
@@ -373,11 +374,13 @@ class Network:
             sys.exit('''Network.get_reaction(): reaction arg must be a valid
             SMILES string.''')
 
-        if reaction in self.NetworkReactions:
-            return self.get_reaction(reaction).Reactants
-        else:
+
+        reaction_entry = self.get_reaction(reaction)
+        if reaction_entry == None:
             print('Reaction not found in Network')
             return None
+        else:
+            return reaction_entry.Reactants
 
     def get_products(self, reaction):
         '''
@@ -391,11 +394,12 @@ class Network:
             sys.exit('''Network.get_reaction(): reaction arg must be a valid
             SMILES string.''')
 
-        if reaction in self.NetworkReactions:
-            return self.get_reaction(reaction).Products
-        else:
+        reaction_entry = self.get_reaction(reaction)
+        if reaction_entry == None:
             print('Reaction not found in Network')
             return None
+        else:
+            return reaction_entry.Products
 
     def get_reaction_template(self, reaction):
         '''
@@ -409,11 +413,12 @@ class Network:
             sys.exit('''Network.get_reaction(): reaction arg must be a valid
             SMILES string.''')
 
-        if reaction in self.NetworkReactions:
-            return self.get_reaction(reaction).ReactionTemplate
-        else:
+        reaction_entry = self.get_reaction(reaction)
+        if reaction_entry == None:
             print('Reaction not found in Network')
             return None
+        else:
+            return reaction_entry.ReactionTemplate
 
     def get_reaction_SMARTS(self, reaction):
         '''
@@ -427,11 +432,13 @@ class Network:
             sys.exit('''Network.get_reaction(): reaction arg must be a valid
             SMILES string.''')
 
-        if reaction in self.NetworkReactions:
-            return self.get_reaction_template(reaction).ReactionSMARTS
-        else:
+        reaction_entry = self.get_reaction(reaction)
+        
+        if reaction_entry == None:
             print('Reaction not found in Network')
             return None
+        else:
+            return reaction_entry.ReactionSMARTS
 
     def get_reaction_name(self, reaction):
         '''
@@ -445,12 +452,13 @@ class Network:
             sys.exit('''Network.get_reaction(): reaction arg must be a valid
             SMILES string.''')
 
-        if reaction in self.NetworkReactions:
-            return self.get_reaction_template(reaction).Name
-        else:
+        reaction_entry = self.get_reaction(reaction)
+        
+        if reaction_entry == None:
             print('Reaction not found in Network')
             return None
-
+        else:
+            return reaction_entry.Name
 
     def convert_to_networkx(self):
         '''

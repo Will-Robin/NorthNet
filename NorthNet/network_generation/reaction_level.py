@@ -1,6 +1,6 @@
 from rdkit import Chem
-from NorthNet import Classes
 from rdkit.Chem import AllChem
+from NorthNet import Classes
 from NorthNet.network_generation.molecule_operations import editing
 
 def run_reaction(reactant_compounds, reaction_template):

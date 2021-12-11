@@ -1,5 +1,4 @@
 from rdkit import Chem
-from NorthNet import Classes
 from NorthNet import network_generation as n_gen
 
 def extend_network_specific(network, reagents, reaction_template):
