@@ -2,9 +2,12 @@ import sys
 from NorthNet import Classes
 
 class Network:
+    '''
+    An object which stored compounds and reactions and the connections
+    between them. 
+    '''
     def __init__(self, reactions, name, description):
         '''
-        A network object consisting of Edges (reactions) and nodes (species).
         The Network object is initialised with a list of Reaction objects. If
         the list is empty, then the network is initialised as an empty network.
 
@@ -84,8 +87,8 @@ class Network:
             sys.exit('''Network.add_compounds():
             compounds arg should be a list of NorthNet Compound objects''')
 
-        for n in compounds:
-            self.add_compound(n)
+        for compound in compounds:
+            self.add_compound(compound)
 
     def remove_compounds(self, compounds):
         '''
@@ -108,17 +111,17 @@ class Network:
             compounds arg should be a list of NorthNet Compound objects''')
 
         remove_reactions = []
-        for c in compounds:
-            remove_reactions.extend(self.NetworkCompounds[c.SMILES].In)
-            remove_reactions.extend(self.NetworkCompounds[c.SMILES].Out)
+        for compound in compounds:
+            remove_reactions.extend(self.NetworkCompounds[compound.SMILES].In)
+            remove_reactions.extend(self.NetworkCompounds[compound.SMILES].Out)
 
         remove_reactions = list(set(remove_reactions))
 
         self.remove_reactions([self.NetworkReactions[r]
                                                     for r in remove_reactions])
 
-        for c in compounds:
-            del self.NetworkCompounds[c.SMILES]
+        for compound in compounds:
+            del self.NetworkCompounds[compound.SMILES]
 
     def add_reaction(self, reaction):
         '''
@@ -137,46 +140,21 @@ class Network:
         # check if the reaction is in NetworkReactions (avoid overwriting)
         # shouldn't be an issue if all reaction data is encapsulated properly
         # i.e. one reaction SMILES string to one set of data
-        if reaction.ReactionSMILES in self.NetworkReactions:
-            pass
-        else:
+        if reaction.ReactionSMILES not in self.NetworkReactions:
+            smiles = reaction.ReactionSMILES
+
             # add the reaction into NetworkReactions
-            self.NetworkReactions[reaction.ReactionSMILES] = reaction
+            self.NetworkReactions[smiles] = reaction
 
-            for a in reaction.Reactants:
-                if a in self.NetworkCompounds:
-                    # if reaction is already connected to the reactant,
-                    # pass. This should not happen if all reaction data
-                    # is encapsulated properly
-                    if reaction.ReactionSMILES in self.NetworkCompounds[a].Out:
-                        pass
-                    # connect the reactant to the reaction
-                    else:
-                        self.NetworkCompounds[a].Out.append(
-                                                        reaction.ReactionSMILES
-                                                        )
-                # add the reactant into NetworkCompounds
-                # and connect the reactant to the reaction
-                else:
-                    self.NetworkCompounds[a] = Classes.Compound(a)
-                    self.NetworkCompounds[a].Out.append(reaction.ReactionSMILES)
+            for reactant in reaction.Reactants:
+                self.add_compound(reactant)
+                if smiles not in self.NetworkCompounds[reactant].Out:
+                    self.NetworkCompounds[reactant].Out.append(smiles)
 
-            for b in reaction.Products:
-                if b in self.NetworkCompounds:
-                    # if reaction is already connected to the product,
-                    # pass. This should not happen if all reaction data
-                    # is encapsulated properly
-                    if reaction.ReactionSMILES in self.NetworkCompounds[b].In:
-                        pass
-                    # connect the reaction to the product
-                    else:
-                        self.NetworkCompounds[b].In.append(
-                                                        reaction.ReactionSMILES)
-                # add the product into NetworkCompounds
-                # and connect the reaction to the product
-                else:
-                    self.NetworkCompounds[b] = Classes.Compound(b)
-                    self.NetworkCompounds[b].In.append(reaction.ReactionSMILES)
+            for product in reaction.Products:
+                self.add_compound(product)
+                if smiles not in self.NetworkCompounds[product].In:
+                    self.NetworkCompounds[product].In.append(smiles)
 
     def add_reactions(self,reactions):
         '''
@@ -197,8 +175,8 @@ class Network:
             sys.exit('''Network.add_reactions():
             reactions arg should be a list of NorthNet Reaction objects''')
 
-        for r in reactions:
-            self.add_reaction(r)
+        for reaction in reactions:
+            self.add_reaction(reaction)
 
     def remove_reactions(self, remove_reactions):
         '''
@@ -223,20 +201,20 @@ class Network:
             sys.exit('''Network.remove_reactions():
             reactions arg should be a list of NorthNet Reaction objects''')
 
-        for r in remove_reactions:
-            if isinstance(r, str):
-                r_key = r
+        for reaction in remove_reactions:
+            if isinstance(reaction, str):
+                r_key = reaction
             else:
-                r_key = r.ReactionSMILES
+                r_key = reaction.ReactionSMILES
 
-            for rc in self.NetworkReactions[r_key].Reactants:
-                self.NetworkCompounds[rc].Out.remove(r_key)
-            for p in self.NetworkReactions[r_key].Products:
-                self.NetworkCompounds[p].In.remove(r_key)
+            for reactant in self.NetworkReactions[r_key].Reactants:
+                self.NetworkCompounds[reactant].Out.remove(r_key)
+            for product in self.NetworkReactions[r_key].Products:
+                self.NetworkCompounds[product].In.remove(r_key)
 
             del self.NetworkReactions[r_key]
 
-    def add_input(self, input):
+    def add_input(self, input_addition):
         '''
         Add a NetworkInput to the Network
 
@@ -246,28 +224,31 @@ class Network:
             Input to be added
         '''
 
-        if not isinstance(input, Classes.ReactionInput):
+        if not isinstance(input_addition, Classes.ReactionInput):
             sys.exit('''Network.add_input(): input arg must be a NorthNet
             NetworkInput object''')
 
-        if input.InputID in self.NetworkInputs:
+        if input_addition.InputID in self.NetworkInputs:
             pass
         else:
-            self.NetworkReactions[input.ReactionSMILES] = input
-            if input.CompoundInput in self.NetworkCompounds:
+            self.NetworkReactions[input_addition.ReactionSMILES] = input
+            if input_addition.CompoundInput in self.NetworkCompounds:
                 pass
             else:
-                self.NetworkCompounds[input.CompoundInput] = input
+                self.NetworkCompounds[input_addition.CompoundInput] = input
 
-            self.NetworkCompounds[input.CompoundInput].In.append(
-                                                        input.ReactionSMILES)
+            self.NetworkCompounds[input_addition.CompoundInput].In.append(
+                                                input_addition.ReactionSMILES
+                                                )
 
-            if input.InputID in self.NetworkInputs:
+            if input_addition.InputID in self.NetworkInputs:
                 pass
             else:
-                self.NetworkInputs[input.InputID] = input
+                self.NetworkInputs[input_addition.InputID] = input_addition
 
-            self.NetworkInputs[input.InputID].Out.append(input.ReactionSMILES)
+            self.NetworkInputs[input_addition.InputID].Out.append(
+                                                input_addition.ReactionSMILES
+                                                )
 
     def add_inputs(self, inputs):
         '''
@@ -343,8 +324,8 @@ class Network:
             sys.exit('''Network.add_outputs(): outputs arg must be a list of NorthNet
             NetworkOutput object''')
 
-        for o in outputs:
-            self.add_output(o)
+        for out in outputs:
+            self.add_output(out)
 
     def get_reaction(self, reaction):
         '''
@@ -368,9 +349,9 @@ class Network:
 
         if reaction in self.NetworkReactions:
             return self.NetworkReactions[reaction]
-        else:
-            print('Reaction not found in Network')
-            return None
+
+        print('Reaction not found in Network')
+        return None
 
 
     def get_reactants(self, reaction):
@@ -390,8 +371,8 @@ class Network:
         if reaction_entry is None:
             print('Reaction not found in Network')
             return None
-        else:
-            return reaction_entry.Reactants
+
+        return reaction_entry.Reactants
 
     def get_products(self, reaction):
         '''
@@ -409,8 +390,8 @@ class Network:
         if reaction_entry is None:
             print('Reaction not found in Network')
             return None
-        else:
-            return reaction_entry.Products
+
+        return reaction_entry.Products
 
     def get_reaction_template(self, reaction):
         '''
@@ -428,8 +409,8 @@ class Network:
         if reaction_entry is None:
             print('Reaction not found in Network')
             return None
-        else:
-            return reaction_entry.ReactionTemplate
+
+        return reaction_entry.ReactionTemplate
 
     def get_reaction_SMARTS(self, reaction):
         '''
@@ -448,10 +429,11 @@ class Network:
         if reaction_entry is None:
             print('Reaction not found in Network')
             return None
-        elif reaction_entry.ReactionTemplate != None:
+
+        if reaction_entry.ReactionTemplate is not None:
             return reaction_entry.ReactionTemplate.ReactionSMARTS
-        else:
-            return None
+
+        return None
 
     def get_reaction_name(self, reaction):
         '''
@@ -470,10 +452,11 @@ class Network:
         if reaction_entry is None:
             print('Reaction not found in Network')
             return None
-        elif reaction_entry.ReactionTemplate != None:
+
+        if reaction_entry.ReactionTemplate is not None:
             return reaction_entry.ReactionTemplate.Name
-        else:
-            return None
+
+        return None
 
     def convert_to_networkx(self):
         '''
@@ -486,16 +469,16 @@ class Network:
         '''
         import networkx as nx
 
-        G = nx.DiGraph()
+        Graph = nx.DiGraph()
 
         for node in self.NetworkCompounds:
-            G.add_node(node)
+            Graph.add_node(node)
 
-        for r in self.NetworkReactions:
-            for sr in self.NetworkReactions[r].Reactants:
-                for sp in self.NetworkReactions[r].Products:
-                    G.add_edge(sr,r)
-                    G.add_edge(r,sp)
+        for reaction in self.NetworkReactions:
+            for reactant in self.NetworkReactions[reaction].Reactants:
+                for product in self.NetworkReactions[reaction].Products:
+                    Graph.add_edge(reactant,reaction)
+                    Graph.add_edge(reaction,product)
 
-        return G
+        return Graph
 
