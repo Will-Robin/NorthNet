@@ -1,10 +1,39 @@
 from NorthNet import Classes
 from NorthNet import network_generation as n_gen
 
-default_deprotonation_rule = Classes.ReactionTemplate("deprotonation","[Ch:1][C:2]=[O:3].[O-:4] >> [C:1]=[C:2][O:3].[O-:4]",["[Ch:1][C:2]=[O:3","[O-:4]"],["[C:1]=[C:2][O:3]","[O-:4]"])
-default_protonation_rule = Classes.ReactionTemplate("protonation","[C:1]=[C:2][O:3].[O:4] >> [Ch:1][C:2]=[O:3].[O:4]", ["[C:1]=[C:2][O:3]","[O:4]"],["[Ch:1][C:2]=[O:3]","[O:4]"])
-default_protonation_rule_a = Classes.ReactionTemplate("protonation_@","[C:1]=[C:2][O:3].[O:4] >> [C@H:1][C:2]=[O:3].[O:4]", ["[C:1]=[C:2][O:3]","[O:4]"], ["[C@H:1][C:2]=[O:3]","[O:4]"])
-default_protonation_rule_b = Classes.ReactionTemplate("protonation_@@","[C:1]=[C:2][O:3].[O:4] >> [C@@H:1][C:2]=[O:3].[O:4]", ["[C:1]=[C:2][O:3]","[O:4]"], ["[C@@H:1][C:2]=[O:3]","[O:4]"])
+deprotonation_rule = "[Ch:1][C:2]=[O:3].[O-:4] >> [C:1]=[C:2][O:3].[O-:4]"
+protonation_rule_0 ="[C:1]=[C:2][O:3].[O:4] >> [Ch:1][C:2]=[O:3].[O:4]" 
+protonation_rule_1 = "[C:1]=[C:2][O:3].[O:4] >> [C@H:1][C:2]=[O:3].[O:4]"
+protonation_rule_2 = "[C:1]=[C:2][O:3].[O:4] >> [C@@H:1][C:2]=[O:3].[O:4]"
+
+protonation_reactant_substructs = ["[C:1]=[C:2][O:3]","[O:4]"]
+
+default_deprotonation_rule = Classes.ReactionTemplate(
+                                            "deprotonation",
+                                            deprotonation_rule,
+                                            ["[Ch:1][C:2]=[O:3","[O-:4]"],
+                                            ["[C:1]=[C:2][O:3]","[O-:4]"]
+                                            )
+default_protonation_rule = Classes.ReactionTemplate(
+                                            "protonation",
+                                            protonation_rule_0, 
+                                            protonation_reactant_substructs,
+                                            ["[Ch:1][C:2]=[O:3]","[O:4]"]
+                                            )
+
+default_protonation_rule_a = Classes.ReactionTemplate(
+                                            "protonation_@",
+                                            protonation_rule_1, 
+                                            ["[C:1]=[C:2][O:3]","[O:4]"], 
+                                            ["[C@H:1][C:2]=[O:3]","[O:4]"]
+                                            )
+
+default_protonation_rule_b = Classes.ReactionTemplate(
+                                            "protonation_@@",
+                                            protonation_rule_2, 
+                                            ["[C:1]=[C:2][O:3]","[O:4]"], 
+                                            ["[C@@H:1][C:2]=[O:3]","[O:4]"]
+                                            )
 
 hydroxide = Classes.Compound("[OH-]")
 water = Classes.Compound("O")
@@ -14,7 +43,6 @@ def carbonyl_migration_isomers(network,
                                prot_rule = default_protonation_rule):
 
     i = 0
-
     while i < 10:
         n_gen.extend_network_specific(network, [hydroxide], deprot_rule)
 

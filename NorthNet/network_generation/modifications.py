@@ -3,15 +3,14 @@ from NorthNet import Classes
 
 def add_flow_terms(network, inputs):
     '''
-    Add flow terms into network (inputs and outputs are
-    empty species and )
+    Add flow terms into network.
 
     Parameters
     ----------
     network: NorthNet Network object
         Network to add flow terms to.
-    inputs: list 
-        List of input string tokens to add.    
+    inputs: list
+        List of input string tokens to add.
 
     Returns
     -------
@@ -79,7 +78,7 @@ def skip_step(network,substructure):
                 # removal
                 for o in network.NetworkCompounds[c].Out:
                     reaction_removal_list.append(o)
-                    
+
                     # Find the products for this reaction and any other
                     # reactants which are required with the removed compound.
                     out_ps = network.NetworkReactions[o].Products
@@ -105,7 +104,7 @@ def skip_step(network,substructure):
                     re_str = "{}>>{}".format(LHS,RHS)
 
                     rdkit_reaction = Chem.ReactionFromSmiles(re_str)
-                    new_reaction = Classes.Reaction(rdkit_reaction) 
+                    new_reaction = Classes.Reaction(rdkit_reaction)
                     new_reaction_list.append(new_reaction)
 
     network.add_reactions(new_reaction_list)
