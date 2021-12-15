@@ -1,3 +1,6 @@
+import copy
+import numpy as np
+from NorthNet.network_visualisation import coordinates
 '''
 Useful functions for manipulating networkx DiGraphs
 '''
@@ -16,15 +19,14 @@ def set_network_coords(G, pos):
         Coordinates for plotting a line plot of the network.
     '''
 
-    import numpy as np
 
     xmin = np.mean([pos[p][0] for p in pos])
     ymin = np.mean([pos[p][1] for p in pos])
-    for n in G.nodes:
-        if n in pos:
-            G.nodes[n]['pos'] = pos[n]
+    for node in G.nodes:
+        if node in pos:
+            G.nodes[node]['pos'] = pos[node]
         else:
-            G.nodes[n]['pos'] = (xmin, ymin)
+            G.nodes[node]['pos'] = (xmin, ymin)
 
     return G
 
@@ -43,12 +45,12 @@ def get_network_lineplot(G):
         Coordinates for plotting a line plot of the network.
     '''
 
-    import numpy as np
 
+    
     net_lines = []
-    for e in G.edges:
-        for n in e:
-            net_lines.append(G.nodes[n]["pos"])
+    for edge in G.edges:
+        for node in edge:
+            net_lines.append(G.nodes[node]["pos"])
         net_lines.append((np.nan,np.nan))
 
     net_lines = np.array(net_lines)
@@ -72,11 +74,9 @@ def get_network_scatter(G):
         Coordinates for plotting a line plot of the network.
     '''
 
-    import numpy as np
-
     net_scatter = []
-    for n in G.nodes:
-        net_scatter.append(G.nodes[n]["pos"])
+    for node in G.nodes:
+        net_scatter.append(G.nodes[node]["pos"])
 
     net_scatter = np.array(net_scatter)
     net_scatter = net_scatter.T
@@ -97,9 +97,6 @@ def normalise_network_coordinates(G):
     -------
     G2: networkx DiGraph
     '''
-    import copy
-    import numpy as np
-    from NorthNet.network_visualisation import coordinates
 
     coords = coordinates.get_network_lineplot(G)
 
@@ -108,11 +105,11 @@ def normalise_network_coordinates(G):
 
     G2 = copy.deepcopy(G)
 
-    for n in G.nodes:
-        pos = G.nodes[n]['pos']
-        a = pos[0]/net_width
-        b = pos[1]/net_height
-        G2.nodes[n]['pos'] = (a,b)
+    for node in G.nodes:
+        pos = G.nodes[node]['pos']
+        x_coordinate = pos[0]/net_width
+        y_coordinate = pos[1]/net_height
+        G2.nodes[node]['pos'] = (x_coordinate,y_coordinate)
 
     return G2
 
@@ -132,22 +129,19 @@ def rotate_network(G, radians):
     G2: networkx DiGraph
     '''
 
-    import copy
-    import numpy as np
-
     xy = get_network_scatter(G)
 
     ox, oy = xy[0].mean(),  xy[1].mean()
 
     G2 = copy.deepcopy(G)
 
-    for n in G.nodes:
-        px,py =  G.nodes[n]['pos']
+    for node in G.nodes:
+        px,py =  G.nodes[node]['pos']
 
         qx = ox + np.cos(radians) * (px - ox) - np.sin(radians) * (py - oy)
         qy = oy + np.sin(radians) * (px - ox) + np.cos(radians) * (py - oy)
 
-        G2.nodes[n]['pos'] = (qx, qy)
+        G2.nodes[node]['pos'] = (qx, qy)
 
     return G2
 

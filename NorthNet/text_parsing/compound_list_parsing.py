@@ -1,3 +1,4 @@
+from NorthNet import Classes
 '''
 For loading compound objects from a text file.
 '''
@@ -24,11 +25,10 @@ def load_compounds_from_file(fname,
         Dictionary containing extracted compounds.
         {SMILES string: NorthNet Compound object}
     '''
-    from NorthNet import Classes
 
     reagents = {}
-    with open(fname, "r") as f:
-        for c,line in enumerate(f):
+    with open(fname, "r") as file:
+        for c,line in enumerate(file):
             if c == 0:
                 pass
             else:

@@ -38,7 +38,7 @@ class Reaction:
             sys.exit('''class Reaction: rdkit_reaction arg should be an RDKit
             Reaction object.''')
 
-        if reaction_template != None:
+        if reaction_template is not None:
             if not isinstance(reaction_template, Classes.ReactionTemplate):
                 sys.exit('''class Reaction: reaction_template should be None or
                 a NortNet ReactionTemplate object.''')
@@ -49,7 +49,7 @@ class Reaction:
         self.Reaction = rdkit_reaction
         self.ReactionSMILES = AllChem.ReactionToSmiles(rdkit_reaction)
 
-        if reaction_template == None:
+        if reaction_template is None:
             self.ReactionTemplate = Classes.ReactionTemplate('none', '', [], [])
         else:
             self.ReactionTemplate = reaction_template

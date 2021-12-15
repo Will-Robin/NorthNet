@@ -1,3 +1,6 @@
+import json
+from graphviz import Digraph
+
 def graphviz_layout_NorthNet(network, render_engine = 'fdp'):
     '''
     Uses graphviz to generate a layout from a NorthNet Network.
@@ -25,8 +28,6 @@ def graphviz_layout_NorthNet(network, render_engine = 'fdp'):
         Compounds SMILES and Reaction SMILES are keys to their positions.
         {SMILES:[float(x),float(y)]}
     '''
-    import json
-    from graphviz import Digraph
 
     # Create a graph with graphviz to plot a scheme of the network
     dot = Digraph(comment = '',
@@ -34,29 +35,29 @@ def graphviz_layout_NorthNet(network, render_engine = 'fdp'):
                   strict = 'True',
                   format = 'json')
 
-    for n in network.NetworkCompounds:
-        dot.node(n,n)
+    for node in network.NetworkCompounds:
+        dot.node(node,node)
 
-    for r in network.NetworkReactions: # Create edges between the nodes.
+    for reaction in network.NetworkReactions: # Create edges between the nodes.
 
-        reactants = network.NetworkReactions[r].Reactants
-        products = network.NetworkReactions[r].Products
+        reactants = network.NetworkReactions[reaction].Reactants
+        products = network.NetworkReactions[reaction].Products
 
-        dot.node(r, r)
+        dot.node(reaction, reaction)
 
-        for reac in network.NetworkReactions[r].Reactants:
-            dot.edge(reac,r)
+        for reactant in reactants:
+            dot.edge(reactant,reaction)
 
-        for p in network.NetworkReactions[r].Products:
-            dot.edge(r,p)
+        for product in products:
+            dot.edge(reaction,product)
 
     json_string = dot.pipe().decode()
 
-    y = json.loads(json_string)
+    layout_in_string = json.loads(json_string)
 
     pos = {}
-    for o in y['objects']:
-        pos[o['name']] = [float(x) for x in o['pos'].split(',')]
+    for l_obj in layout_in_string['objects']:
+        pos[l_obj['name']] = [float(x) for x in l_obj['pos'].split(',')]
 
     return pos
 
@@ -86,25 +87,23 @@ def graphviz_layout_networkx(network, render_engine = 'fdp'):
         Compounds SMILES and Reaction SMILES are keys to their positions.
         {SMILES:[float(x),float(y)]}
     '''
-    import json
-    from graphviz import Digraph
 
     # Create a graph with graphviz to plot a scheme of the network
     dot = Digraph(comment = '', engine=render_engine, strict = 'True',
                 format = 'json')
 
-    for n in network.nodes: # add in nodes
-        dot.node(n,n)
+    for node in network.nodes: # add in nodes
+        dot.node(node,node)
 
-    for e in network.edges: # Create edges between the nodes.
-        dot.edge(e[0],e[1])
+    for edge in network.edges: # Create edges between the nodes.
+        dot.edge(edge[0],edge[1])
 
     json_string = dot.pipe().decode()
 
-    y = json.loads(json_string)
+    layout_in_string = json.loads(json_string)
 
     pos = {}
-    for o in y['objects']:
-        pos[o['name']] = [float(x) for x in o['pos'].split(',')]
+    for l_obj in layout_in_string['objects']:
+        pos[l_obj['name']] = [float(x) for x in l_obj['pos'].split(',')]
 
     return pos

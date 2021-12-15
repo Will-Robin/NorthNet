@@ -18,15 +18,15 @@ def add_flow_terms(network, inputs):
     '''
 
     add_inputs = []
-    for i in inputs:
-        r_obj = Classes.ReactionInput("{}_#0>>{}".format(i,i))
+    for inp in inputs:
+        r_obj = Classes.ReactionInput("{}_#0>>{}".format(inp,inp))
         add_inputs.append(r_obj)
 
     network.add_inputs(add_inputs)
 
     add_outputs = []
-    for c in network.NetworkCompounds:
-        r_obj = Classes.ReactionOutput("{}>>Sample".format(c))
+    for compound in network.NetworkCompounds:
+        r_obj = Classes.ReactionOutput("{}>>Sample".format(compound))
         add_outputs.append(r_obj)
 
     network.add_outputs(add_outputs)
@@ -53,16 +53,16 @@ def skip_step(network,substructure):
     compounds_removal_list = []
     new_reaction_list = []
 
-    for c in network.NetworkCompounds:
+    for compound in network.NetworkCompounds:
 
-        if network.NetworkCompounds[c].Mol.HasSubstructMatch(substructure.Mol):
-            compounds_removal_list.append(c)
+        if network.NetworkCompounds[compound].Mol.HasSubstructMatch(substructure.Mol):
+            compounds_removal_list.append(compound)
             # Find reactions connected to the compound to remove
             # and their reactants and products
 
             # Cycle through the incoming reactions, add them into a list for
             # removal.
-            for i in network.NetworkCompounds[c].In:
+            for i in network.NetworkCompounds[compound].In:
                 reaction_removal_list.append(i)
 
                 # Find the reactants for this reaction and any
@@ -70,23 +70,23 @@ def skip_step(network,substructure):
                 in_rs = network.NetworkReactions[i].Reactants
                 outs = []
 
-                for z in network.NetworkReactions[i].Products:
-                    if z.SMILES != c:
-                        outs.append(z.SMILES)
+                for product in network.NetworkReactions[i].Products:
+                    if product.SMILES != compound:
+                        outs.append(product.SMILES)
 
                 # Go through the outgoing reactions add them into a list for
                 # removal
-                for o in network.NetworkCompounds[c].Out:
-                    reaction_removal_list.append(o)
+                for reaction in network.NetworkCompounds[compound].Out:
+                    reaction_removal_list.append(reaction)
 
                     # Find the products for this reaction and any other
                     # reactants which are required with the removed compound.
-                    out_ps = network.NetworkReactions[o].Products
+                    out_ps = network.NetworkReactions[reaction].Products
                     ins = []
 
-                    for z in network.NetworkReactions[o].Reactants:
-                        if z.SMILES != c:
-                            ins.append(z.SMILES)
+                    for product in network.NetworkReactions[reaction].Reactants:
+                        if product.SMILES != compound:
+                            ins.append(product.SMILES)
 
                     # Process the tokens for the new reaction
                     new_reactants = ins+in_rs
@@ -111,15 +111,16 @@ def skip_step(network,substructure):
 
     # Remove reactions from the network and any compounds which are exclusively
     # produced by these reactions (if not already picked up in the compounds_removal_list.
-    for s in set(reaction_removal_list):
-        del network.NetworkReactions[s]
-        for n in network.NetworkCompounds:
-            for x in network.NetworkCompounds[n].In:
-                if x == s:
-                    network.NetworkCompounds[n].In.remove(s)
-            for x in network.NetworkCompounds[n].In:
-                if x == s:
-                    network.NetworkCompounds[n].Out.remove(s)
+    for reaction in set(reaction_removal_list):
+        del network.NetworkReactions[reaction]
+        for compound in network.NetworkCompounds:
+            for in_reaction in network.NetworkCompounds[compound].In:
+                if in_reaction == reaction:
+                    network.NetworkCompounds[compound].In.remove(reaction)
+            for out_reaction in network.NetworkCompounds[reaction].Out:
+                if out_reaction == reaction:
+                    network.NetworkCompounds[compound].Out.remove(reaction)
 
-    for n in set(compounds_removal_list):
-        del network.NetworkCompounds[n]
+    for compound in set(compounds_removal_list):
+        del network.NetworkCompounds[compound]
+

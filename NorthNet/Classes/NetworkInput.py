@@ -5,7 +5,7 @@ class NetworkInput:
     '''
     Class to store inputs into reaction network
     '''
-    def __init__(self,id):
+    def __init__(self,net_input):
         '''
         Designed to behave like a compound object
         self.SMILES does not actually hold a valid SMILES string,
@@ -19,16 +19,16 @@ class NetworkInput:
             SMILES_#0
         '''
 
-        if not isinstance(id, str):
+        if not isinstance(net_input, str):
             sys.exit('''class NetworkInput:
                         id arg must be str like SMILES_#0.''')
 
-        self.Mol = Chem.MolFromSmiles(id.split('_')[0])
+        self.Mol = Chem.MolFromSmiles(net_input.split('_')[0])
 
         # Note that the self.SMILES does not
         # actually hold a valid SMILES string,
         # it stores the input ID code
-        self.SMILES = id
+        self.SMILES = net_input
 
         self.In = None
         self.Out = []

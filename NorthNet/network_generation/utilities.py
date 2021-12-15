@@ -1,3 +1,5 @@
+from rdkit import Chem
+
 def cleanup(reactions):
     '''
     Used to clear up the output of rdkit reaction function, parsing multiple
@@ -10,10 +12,9 @@ def cleanup(reactions):
 
     Returns
     -------
-    reactions_out: list 
+    reactions_out: list
         list of cleaned reaction SMILES strings
     '''
-    from rdkit import Chem
 
     reactions = [r.replace('[H+][O-]','O')    for r in reactions]
     reactions = [r.replace('[O-][H+]','O')    for r in reactions]
@@ -22,23 +23,23 @@ def cleanup(reactions):
 
 
     reactions_out = []
-    for c in range(0,len(reactions)):
+    for _,reaction in enumerate(reactions):
         # Split the reaction up for inspection
-        LHS = reactions[c].split(">>")[0].split(".")
-        RHS = reactions[c].split(">>")[1].split(".")
+        LHS = reaction.split(">>")[0].split(".")
+        RHS = reaction.split(">>")[1].split(".")
         ins = ''
-        for l in LHS:
-            mol = Chem.MolFromSmiles(l)
-            x = Chem.MolToSmiles(mol, canonical = True)
-            ins += x + '.'
+        for l_elem in LHS:
+            mol = Chem.MolFromSmiles(l_elem)
+            smiles = Chem.MolToSmiles(mol, canonical = True)
+            ins += smiles + '.'
 
         ins = ins.strip('.')
         ins += '>>'
 
-        for r in RHS:
-            mol = Chem.MolFromSmiles(r)
-            x = Chem.MolToSmiles(mol, canonical = True)
-            ins += x + '.'
+        for r_elem in RHS:
+            mol = Chem.MolFromSmiles(r_elem)
+            smiles = Chem.MolToSmiles(mol, canonical = True)
+            ins += smiles + '.'
 
         reactions_out.append(ins.strip('.'))
 
@@ -59,37 +60,39 @@ def remove_network_symmetry(network):
     -------
     None
     '''
-    from rdkit import Chem
 
     node_remove = []
     edge_remove = []
 
-    for n in [*network.NetworkCompounds]:
+    for compound in [*network.NetworkCompounds]:
 
-        ch_centres = Chem.FindMolChiralCenters(network.NetworkCompounds[n].Mol)
+        ch_centres = Chem.FindMolChiralCenters(
+                                        network.NetworkCompounds[compound].Mol
+                                        )
 
         if len(ch_centres) > 0 and ch_centres[-1][-1] == "S":
-            node_remove.append(n)
+            node_remove.append(compound)
 
-            for r in network.NetworkCompounds[n].In:
-                edge_remove.append(r)
+            for reaction in network.NetworkCompounds[compound].In:
+                edge_remove.append(reaction)
 
-            for r in network.NetworkCompounds[n].Out:
-                edge_remove.append(r)
+            for reaction in network.NetworkCompounds[compound].Out:
+                edge_remove.append(reaction)
 
     node_remove = list(set(node_remove))
     edge_remove = list(set(edge_remove))
 
-    for r in edge_remove:
-        for re in network.NetworkReactions[r].Reactants:
-            while r in network.NetworkCompounds[re].Out:
-                network.NetworkCompounds[re].Out.remove(r)
-        for p in network.NetworkReactions[r].Products:
-            while r in network.NetworkCompounds[p].In:
-                network.NetworkCompounds[p].In.remove(r)
+    for removal in edge_remove:
+        for reactant in network.NetworkReactions[removal].Reactants:
+            while removal in network.NetworkCompounds[reactant].Out:
+                network.NetworkCompounds[reactant].Out.remove(removal)
+        for product in network.NetworkReactions[removal].Products:
+            while removal in network.NetworkCompounds[product].In:
+                network.NetworkCompounds[product].In.remove(removal)
 
-    for r in edge_remove:
-        del network.NetworkReactions[r]
+    for removal in edge_remove:
+        del network.NetworkReactions[removal]
 
-    for n in node_remove:
-        del network.NetworkCompounds[n]
+    for removal in node_remove:
+        del network.NetworkCompounds[removal]
+

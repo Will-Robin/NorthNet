@@ -18,7 +18,7 @@ class Substructure:
 
         self.Mol = Chem.MolFromSmarts(SMARTS)
 
-        if Chem.MolToSmarts(self.Mol) == None:
+        if Chem.MolToSmarts(self.Mol) is None:
             self.SMARTS = SMARTS
         else:
             self.SMARTS = Chem.MolToSmarts(self.Mol)

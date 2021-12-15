@@ -1,3 +1,4 @@
+from NorthNet import Classes
 '''
 For loading reaction information fron text files.
 '''
@@ -26,13 +27,11 @@ def load_reaction_templates_from_file(fname, delimiter  = '\t'):
         {reaction class name: NorthNet Reaction_Template}
     '''
 
-    from NorthNet import Classes
-
     lines = []
-    with open(fname, "r") as f:
-        for c,line in enumerate(f):
-            lines = f.readlines()
-            
+    with open(fname, "r") as file:
+        for c,line in enumerate(file):
+            lines = file.readlines()
+
     reaction_templates = {}
     for c,line in enumerate(lines):
         if c == 0:

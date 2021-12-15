@@ -25,8 +25,8 @@ def extend_network_specific(network, reagents, reaction_template):
     reactants = n_gen.reactive_species(list(network.NetworkCompounds.values()),
                                                             reactive_substructs)
 
-    for r in reactants:
-        insert = [r] + reagents
+    for reactant in reactants:
+        insert = [reactant] + reagents
         if n_gen.check_reaction_input(insert, reactive_substructs):
             resulting_reactions = n_gen.run_reaction(insert, reaction_template)
             network.add_reactions(resulting_reactions)
@@ -64,9 +64,9 @@ def extend_network_self(network, reaction_template):
                     list(network.NetworkCompounds.values()), [substructures[1]]
                     )
 
-    for r1 in reactants1:
-        for r2 in reactants2:
-            insert = [r1] + [r2]
+    for reactant_1 in reactants1:
+        for reactant_2 in reactants2:
+            insert = [reactant_1] + [reactant_2]
             resulting_reactions = n_gen.run_reaction(insert, reaction_template)
             network.add_reactions(resulting_reactions)
 
@@ -93,8 +93,8 @@ def extend_network_task(network, reaction_template):
     import itertools
 
     reactants = []
-    for x in reaction_template.ReactantSubstructures:
-        substructure = Chem.MolFromSmarts(x)
+    for substruct in reaction_template.ReactantSubstructures:
+        substructure = Chem.MolFromSmarts(substruct)
         reactants.append(
             n_gen.reactive_species(
                         list(network.NetworkCompounds.values()), [substructure])
@@ -105,3 +105,4 @@ def extend_network_task(network, reaction_template):
     for i in inputs:
         resulting_reactions = n_gen.run_reaction(i, reaction_template)
         network.add_reactions(resulting_reactions)
+

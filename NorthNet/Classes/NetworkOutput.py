@@ -4,7 +4,7 @@ class NetworkOutput:
     '''
     Class to store inputs into reaction network
     '''
-    def __init__(self,id):
+    def __init__(self,output):
         '''
         Designed to behave like a compound object
         self.SMILES does not actually hold a valid SMILES string,
@@ -18,7 +18,7 @@ class NetworkOutput:
             SMILES_#0
         '''
 
-        if not isinstance(id, str):
+        if not isinstance(output, str):
             sys.exit('''class NetworkOutput:
                     id arg must be str like SMILES_#0.''')
 
@@ -27,7 +27,7 @@ class NetworkOutput:
         # Note that the self.SMILES does not
         # actually hold a valid SMILES string,
         # it stores the input ID code
-        self.SMILES = id
+        self.SMILES = output
 
         self.In = []
         self.Out = None

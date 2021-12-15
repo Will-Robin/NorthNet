@@ -31,21 +31,22 @@ def run_reaction(reactant_compounds, reaction_template):
     reactants = tuple(r.Mol for r in reactant_compounds)
 
     # Run the reaction to give a list of products sets
-    product_sets = reaction_template.Reaction.RunReactants(reactants) 
-    for u in product_sets:
-        for product in u:
+    product_sets = reaction_template.Reaction.RunReactants(reactants)
+
+    for product_set in product_sets:
+        for product in product_set:
             product = editing.incorrect_chiral_H_solve(product)
             Chem.SanitizeMol(product)
 
         rxn = AllChem.ChemicalReaction() # Create an empty chemical reaction
         [rxn.AddReactantTemplate(r) for r in reactants]
-        [rxn.AddProductTemplate(p) for p in u]
+        [rxn.AddProductTemplate(p) for p in product_set]
 
         reactions.append(
                          Classes.Reaction(
-                                          rxn, 
+                                          rxn,
                                           reaction_template = reaction_template
-                                          ) 
+                                          )
                         )
 
     return reactions

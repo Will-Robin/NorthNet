@@ -2,7 +2,7 @@ from itertools import compress
 
 def reactive_species(species_list, substructures):
     '''
-    TODO: rename 
+    TODO: rename
 
     Find species with the given subtructure.
     Returns a list of matching compounds
@@ -22,10 +22,13 @@ def reactive_species(species_list, substructures):
         List of NorthNet Compound objects which contain the substructure.
     '''
     matches = [] # empty container to put matching molecules in
-    for mol in species_list: # testing each molecule in the list of species for reaction group matches
-        for s in substructures:
-            if mol.Mol.HasSubstructMatch(s):
-                matches.append(mol) # append the molecule to the matches if in contains the reactive group
+    # testing each molecule in the list of species for reaction group matches
+    for mol in species_list: 
+        for substructure in substructures:
+            if mol.Mol.HasSubstructMatch(substructure):
+                # append the molecule to the matches if
+                # it contains the reactive group
+                matches.append(mol) 
     return matches
 
 def remove_invalid_reactions(reactions,invalid_substructures):
@@ -49,11 +52,12 @@ def remove_invalid_reactions(reactions,invalid_substructures):
     '''
 
     sortlist = []
-    for r in reactions:
+    for reaction in reactions:
         tag = True
         for exc in invalid_substructures:
+
             if any([p.HasSubstructMatch(exc.Mol)
-                                            for p in r.Reaction.GetProducts()]):
+                                            for p in reaction.Reaction.GetProducts()]):
                 tag = False
 
         sortlist.append(tag)

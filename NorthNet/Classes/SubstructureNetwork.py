@@ -7,6 +7,10 @@ class SubstructureNetwork:
 
     A network designed to show the relationship between functional
     group transformations.
+
+    The network has three kinds of node: reactions, compounds, and
+    substructures. Substructures connect reactions to compounds. Compounds and
+    reactions can only link to substructures.
     '''
     def __init__(self,reactions,name,description):
         '''
@@ -17,13 +21,6 @@ class SubstructureNetwork:
             A name for the network.
         description: str
             A description of the network.
-        '''
-
-        '''
-        Idea:
-            Nodes will be individual reaction centres and functional group
-            transformations. Edges will connect the reaction centres to
-            functional group transformations.
         '''
 
         if isinstance(reactions, list):
@@ -143,7 +140,7 @@ class SubstructureNetwork:
             reactions arg should be a list of NorthNet Reaction objects''')
 
         for r in reactions:
-            if r.ReactionTemplate == None:
+            if r.ReactionTemplate is None:
                 pass
             elif r.ReactionTemplate.ReactionSMARTS in self.SNetworkTemplates:
                 pass
