@@ -53,6 +53,19 @@ class Network:
         else:
             self.add_reactions(reactions)
 
+    def add_compound(self, compound):
+        '''
+        Add a compound to the network.
+        compoud: NorthNet Compound object
+        '''
+
+        if not isinstance(compound, Classes.Compound):
+            sys.exit('''Network.add_compound():
+                compound arg should be a NorthNet Compound object''')
+
+        if compound.SMILES not in self.NetworkCompounds:
+            self.NetworkCompounds[compound.SMILES] = compound
+
     def add_compounds(self,compounds):
         '''
         Add list of NorthNet Compound objects to the Network
@@ -72,10 +85,7 @@ class Network:
             compounds arg should be a list of NorthNet Compound objects''')
 
         for n in compounds:
-            if n.SMILES in self.NetworkCompounds:
-                pass
-            else:
-                self.NetworkCompounds[n.SMILES] = n
+            self.add_compound(n)
 
     def remove_compounds(self, compounds):
         '''
@@ -143,7 +153,8 @@ class Network:
                     # connect the reactant to the reaction
                     else:
                         self.NetworkCompounds[a].Out.append(
-                                                        reaction.ReactionSMILES)
+                                                        reaction.ReactionSMILES
+                                                        )
                 # add the reactant into NetworkCompounds
                 # and connect the reactant to the reaction
                 else:
@@ -195,7 +206,7 @@ class Network:
 
         Parameters
         ----------
-        remove_reactions: list of NorthNet Reaction objects or 
+        remove_reactions: list of NorthNet Reaction objects or
                           valid reaction SMILES
             reactions to be removed.
         '''
@@ -238,7 +249,7 @@ class Network:
         if not isinstance(input, Classes.ReactionInput):
             sys.exit('''Network.add_input(): input arg must be a NorthNet
             NetworkInput object''')
-        
+
         if input.InputID in self.NetworkInputs:
             pass
         else:
@@ -376,7 +387,7 @@ class Network:
 
 
         reaction_entry = self.get_reaction(reaction)
-        if reaction_entry == None:
+        if reaction_entry is None:
             print('Reaction not found in Network')
             return None
         else:
@@ -395,7 +406,7 @@ class Network:
             SMILES string.''')
 
         reaction_entry = self.get_reaction(reaction)
-        if reaction_entry == None:
+        if reaction_entry is None:
             print('Reaction not found in Network')
             return None
         else:
@@ -414,7 +425,7 @@ class Network:
             SMILES string.''')
 
         reaction_entry = self.get_reaction(reaction)
-        if reaction_entry == None:
+        if reaction_entry is None:
             print('Reaction not found in Network')
             return None
         else:
@@ -433,8 +444,8 @@ class Network:
             SMILES string.''')
 
         reaction_entry = self.get_reaction(reaction)
-        
-        if reaction_entry == None:
+
+        if reaction_entry is None:
             print('Reaction not found in Network')
             return None
         elif reaction_entry.ReactionTemplate != None:
@@ -455,8 +466,8 @@ class Network:
             SMILES string.''')
 
         reaction_entry = self.get_reaction(reaction)
-        
-        if reaction_entry == None:
+
+        if reaction_entry is None:
             print('Reaction not found in Network')
             return None
         elif reaction_entry.ReactionTemplate != None:
