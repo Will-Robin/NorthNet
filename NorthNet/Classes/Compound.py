@@ -17,7 +17,7 @@ class Compound:
             sys.exit('class Compound: argument should be a SMILES string.')
 
         self.Mol = Chem.MolFromSmiles(SMILES)
-        if self.Mol == None:
+        if self.Mol is None:
             self.SMILES = SMILES
         else:
             self.SMILES = Chem.MolToSmiles(self.Mol)
@@ -26,5 +26,4 @@ class Compound:
         self.Out = []
 
         self.ReactiveSubstructures = None
-
 
