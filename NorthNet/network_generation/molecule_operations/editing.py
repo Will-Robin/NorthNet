@@ -3,7 +3,16 @@ from rdkit.Chem import AllChem
 
 def canonicalise(smiles):
     '''
-    Canonicalises a SMILES string
+    Parameters
+    ----------
+    smiles: str
+        Canonicalises a SMILES string.
+
+    Return
+    ------
+    str
+        Canonicalised smiles.
+
     '''
     mol = Chem.MolFromSmiles(smiles)
     return Chem.MolToSmiles(mol, isomericSmiles = True)

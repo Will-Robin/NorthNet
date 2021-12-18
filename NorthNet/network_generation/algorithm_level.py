@@ -19,15 +19,23 @@ def extend_network_specific(network, reagents, reaction_template):
     None
     '''
 
-    reactive_substructs = [Chem.MolFromSmarts(x)
-                            for x in reaction_template.ReactantSubstructures]
+    template_substructures = reaction_template.ReactantSubstructures
+    compounds_in_network = list(network.NetworkCompounds.values())
+     
+    reactive_substrs = [Chem.MolFromSmarts(x) for x in template_substructures]
 
-    reactants = n_gen.reactive_species(list(network.NetworkCompounds.values()),
-                                                            reactive_substructs)
+    reactants = n_gen.reactive_species(compounds_in_network, reactive_substrs)
 
     for reactant in reactants:
         insert = [reactant] + reagents
-        if n_gen.check_reaction_input(insert, reactive_substructs):
+        reaction_done = n_gen.check_reaction_occurence(
+                                                        reactant, 
+                                                        network, 
+                                                        reaction_template
+                                                        )
+        input_valid = n_gen.check_reaction_input(insert, reactive_substrs)
+
+        if not reaction_done and input_valid:
             resulting_reactions = n_gen.run_reaction(insert, reaction_template)
             network.add_reactions(resulting_reactions)
         else:

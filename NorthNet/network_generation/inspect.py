@@ -84,3 +84,32 @@ def check_reaction_input(reactant_list, reactive_substructs):
                             for r,s in zip(reactant_list,reactive_substructs)]
 
     return all(test_list)
+
+def check_reaction_occurence(compound, network, reaction_template):
+    '''
+    Check if a reaction template has already been applied to a compound.
+    
+    Parameters
+    ----------
+    compound: NorthNet Compound object
+    network: NorthNet Network object
+    reaction_template: NorthNet ReactionTemplate object
+
+    Returns
+    -------
+    bool
+        Whether reaction type has been applied to the compound or not.
+    '''
+
+    reaction_name = reaction_template.Name
+
+    reactions = []
+    reactions.extend(compound.In)
+    reactions.extend(compound.Out)
+
+    used_reaction_classes = [network.get_reaction_name(r) for r in reactions]
+
+    if reaction_name in used_reaction_classes:
+        return True
+
+    return False

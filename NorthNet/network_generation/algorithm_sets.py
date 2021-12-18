@@ -43,14 +43,19 @@ def carbonyl_migration_isomers(network,
                                prot_rule = DEFAULT_PROTONATION_RULE):
 
     i = 0
-    while i < 10:
+    reaction_number = len(network.NetworkReactions)
+    while i < 0:
         n_gen.extend_network_specific(network, [hydroxide], deprot_rule)
 
         n_gen.extend_network_specific(network, [water], prot_rule)
 
         n_gen.extend_network_specific(network, [hydroxide], deprot_rule)
 
-        i += 1
+        new_reaction_number = len(network.NetworkReactions)
+
+        i = new_reaction_number - reaction_number
+
+        reaction_number = new_reaction_number
 
 def carbonyl_migration_isomers_stereo(
                                     network,
@@ -59,7 +64,8 @@ def carbonyl_migration_isomers_stereo(
                                     prot_rule_2 = DEFAULT_PROTONATION_RULE_B):
 
     i = 0
-    while i < 20:
+    reaction_number = len(network.NetworkReactions)
+    while i < 0:
         n_gen.extend_network_specific(network, [hydroxide], deprot_rule)
 
         n_gen.extend_network_specific(network, [water], prot_rule_1)
@@ -67,7 +73,11 @@ def carbonyl_migration_isomers_stereo(
 
         n_gen.extend_network_specific(network, [hydroxide], deprot_rule)
 
-        i += 1
+        new_reaction_number = len(network.NetworkReactions)
+
+        i = new_reaction_number - reaction_number
+
+        reaction_number = new_reaction_number
 
 def carbonyl_migration_isomers_multiclass(
                                         network,
@@ -80,12 +90,17 @@ def carbonyl_migration_isomers_multiclass(
                                                     DEFAULT_PROTONATION_RULE_B
                                                     ]):
     i = 0
-    while i < 20:
+    reaction_number = len(network.NetworkReactions)
+    while i < 0:
         for d_rule in deprot_rules:
             n_gen.extend_network_specific(network, [hydroxide], d_rule)
 
         for p_rule in prot_rules:
             n_gen.extend_network_specific(network, [water], p_rule)
 
-        i += 1
+        new_reaction_number = len(network.NetworkReactions)
+
+        i = new_reaction_number - reaction_number
+
+        reaction_number = new_reaction_number
 
