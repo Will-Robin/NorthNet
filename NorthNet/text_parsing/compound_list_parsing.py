@@ -33,7 +33,8 @@ def load_compounds_from_file(fname,
                 pass
             else:
                 ins = line.strip("\n").split(delimiter)
+                name = ins[name_col]
 
-                reagents[ ins[name_col] ] = Classes.Compound(ins[SMILES_col])
+                reagents[name] = Classes.Compound(ins[SMILES_col])
 
     return reagents

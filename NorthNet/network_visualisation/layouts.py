@@ -1,7 +1,7 @@
-import json
+import conversions as conv
 from graphviz import Digraph
 
-def graphviz_layout_NorthNet(network, render_engine = 'fdp'):
+def generate_network_layout(network, render_engine = 'fdp'):
     '''
     Uses graphviz to generate a layout from a NorthNet Network.
 
@@ -53,15 +53,11 @@ def graphviz_layout_NorthNet(network, render_engine = 'fdp'):
 
     json_string = dot.pipe().decode()
 
-    layout_in_string = json.loads(json_string)
-
-    pos = {}
-    for l_obj in layout_in_string['objects']:
-        pos[l_obj['name']] = [float(x) for x in l_obj['pos'].split(',')]
+    pos = conv.dictionary_from_layout(json_string)
 
     return pos
 
-def graphviz_layout_networkx(network, render_engine = 'fdp'):
+def generate_networkx_layout(network, render_engine = 'fdp'):
     '''
     Uses graphviz to generate a layout from a networkx graph.
 
@@ -100,10 +96,6 @@ def graphviz_layout_networkx(network, render_engine = 'fdp'):
 
     json_string = dot.pipe().decode()
 
-    layout_in_string = json.loads(json_string)
-
-    pos = {}
-    for l_obj in layout_in_string['objects']:
-        pos[l_obj['name']] = [float(x) for x in l_obj['pos'].split(',')]
+    pos = conv.dictionary_from_layout(json_string)
 
     return pos

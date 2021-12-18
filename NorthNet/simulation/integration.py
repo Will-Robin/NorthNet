@@ -12,6 +12,8 @@ def integrate_model(
     Wrapper for scipy ode
     uses old SciPy API (as of June 2021)
 
+    Parameters
+    ----------
     function: function for integration
         function(time, variables, rate constants)
 
@@ -24,6 +26,8 @@ def integrate_model(
     dt: float
         time step
 
+    Returns
+    -------
     time_arr: numpy array
         Time values from the integration
 

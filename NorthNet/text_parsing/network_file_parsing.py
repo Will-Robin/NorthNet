@@ -62,26 +62,3 @@ def node_edge_list_from_gdf(filename):
 
     return node_list, edge_list
 
-def network_from_gdf(filename):
-
-    import networkx as nx
-
-    _, edges = node_edge_list_from_gdf(filename)
-
-
-    # Create networkx graph
-    G = nx.DiGraph()
-
-    # add edges to network.
-    for edge in edges:
-        G.add_edge(edge [0],edge[1])
-
-    for node in G.nodes:
-        if ">>" in node:
-            G.nodes[node]["Type"] = "Reaction"
-        elif "S:" in node:
-            G.nodes[node]["Type"] = "Substructure"
-        else:
-            G.nodes[node]["Type"] = "Compound"
-
-    return G

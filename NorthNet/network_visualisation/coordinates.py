@@ -83,7 +83,6 @@ def get_network_scatter(G):
 
     return net_scatter
 
-
 def normalise_network_coordinates(G):
     '''
     Normalise the width and height of the DiGraph's coordinates.
