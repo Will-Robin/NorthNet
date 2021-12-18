@@ -1,4 +1,3 @@
-import sys
 from NorthNet import Classes
 
 class SubstructureNetwork:
@@ -58,7 +57,7 @@ class SubstructureNetwork:
     def add_reaction(self, reaction):
         '''
         Add a reaction to the network.
-            
+
         Parameters
         ----------
         reactions: NorthNet Reaction object
@@ -133,7 +132,7 @@ class SubstructureNetwork:
         ----------
         reactions: list of NorthNet Reaction objects
         '''
-        
+
         if isinstance(reactions, list):
             check_reactions = [isinstance(c, Classes.Reaction)
                                                             for c in reactions]
@@ -178,7 +177,7 @@ class SubstructureNetwork:
 
         for c in self.SNetworkCompounds:
             compound_alias = self.SNetworkCompounds[c].SMILES
-                
+
             G.add_node(compound_alias)
 
             for i in self.SNetworkCompounds[c].In:

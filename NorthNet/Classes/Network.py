@@ -1,4 +1,3 @@
-import sys
 from NorthNet import Classes
 
 class Network:

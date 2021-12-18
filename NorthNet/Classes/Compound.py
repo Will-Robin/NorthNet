@@ -1,4 +1,3 @@
-import sys
 from rdkit import Chem
 
 class Compound:

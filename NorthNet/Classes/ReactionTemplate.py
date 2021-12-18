@@ -1,4 +1,3 @@
-import sys
 from rdkit.Chem import AllChem
 
 class ReactionTemplate:
