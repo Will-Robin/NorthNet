@@ -19,9 +19,9 @@ class NetworkInput:
             SMILES_#0
         '''
 
-        if not isinstance(net_input, str):
-            sys.exit('''class NetworkInput:
-                        id arg must be str like SMILES_#0.''')
+        assert isinstance(net_input, str), \
+            '''class NetworkInput:
+            id arg must be str like SMILES_#0.'''
 
         self.Mol = Chem.MolFromSmiles(net_input.split('_')[0])
 

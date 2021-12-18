@@ -24,18 +24,22 @@ class SubstructureNetwork:
         '''
 
         if isinstance(reactions, list):
-            check_reactions = [isinstance(r, Classes.Reaction) for r in reactions]
-            if not all(check_reactions):
-                sys.exit('''class SubstructureNetwork: the reactions arg must be a list of
-                NorthNet Reaction objects.''')
+            check_reactions = [isinstance(r, Classes.Reaction)
+                                                            for r in reactions]
+            assert all(check_reactions), \
+                '''class SubstructureNetwork:
+                reactions arg must be a list of NorthNet Reaction objects.'''
         else:
-            sys.exit('''class SubstructureNetwork: the reactions arg must be a list of
-            NorthNet Reaction objects.''')
+            assert isinstance(reactions, list), \
+                '''class SubstructureNetwork:
+                reactions arg must be a list of NorthNet Reaction objects.'''
 
-        if not isinstance(name, str):
-            sys.exit('''class SubstructureNetwork: name arg should be a string.''')
-        if not isinstance(name, str):
-            sys.exit('''class SubstructureNetwork: description arg should be a string.''')
+        assert isinstance(name, str), \
+            '''class SubstructureNetwork:
+            name arg should be a string.'''
+        assert isinstance(name, str), \
+            '''class SubstructureNetwork:
+            description arg should be a string.'''
 
         self.Name = name
         self.Description = description
@@ -59,9 +63,9 @@ class SubstructureNetwork:
         ----------
         reactions: NorthNet Reaction object
         '''
-        if not isinstance(reaction, Classes.Reaction):
-            sys.exit('''SubstructureNetwork.add_reaction: reaction arg should be a NorthNet
-            Reaction object.''')
+        assert isinstance(reaction, Classes.Reaction), \
+            '''SubstructureNetwork.add_reaction:
+            reaction arg should be a NorthNet Reaction object.'''
 
         r_key = reaction.ReactionTemplate.ReactionSMARTS
         self.SNetworkTemplates[r_key] = reaction
@@ -131,13 +135,15 @@ class SubstructureNetwork:
         '''
         
         if isinstance(reactions, list):
-            check_reactions = [isinstance(c, Classes.Reaction) for c in reactions]
-            if not all(check_reactions):
-                sys.exit('''SubstructureNetwork.add_reactions():
-                reactions arg should be a list of NorthNet Reaction objects''')
+            check_reactions = [isinstance(c, Classes.Reaction)
+                                                            for c in reactions]
+            assert all(check_reactions), \
+                '''SubstructureNetwork.add_reactions():
+                reactions arg should be a list of NorthNet Reaction objects'''
         else:
-            sys.exit('''SubstructureNetwork.add_reactions():
-            reactions arg should be a list of NorthNet Reaction objects''')
+            assert isinstance(reactions, list), \
+                '''SubstructureNetwork.add_reactions():
+                reactions arg should be a list of NorthNet Reaction objects'''
 
         for r in reactions:
             if r.ReactionTemplate is None:

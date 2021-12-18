@@ -17,9 +17,9 @@ class ReactionInput:
             SMILES_#0>>SMILES
         '''
 
-        if not isinstance(id, str):
-            sys.exit('''class ReactionInput:
-                    reaction_input_string arg must be str like SMILES_#0>>SMILES.''')
+        assert isinstance(id, str), \
+            '''class ReactionInput:
+            reaction_input_string arg must be str like SMILES_#0>>SMILES.'''
 
         self.Reaction = None
         self.ReactionSMILES = reaction_input_string

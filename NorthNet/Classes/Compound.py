@@ -13,8 +13,8 @@ class Compound:
             SMILES corresponding to compound.
         '''
 
-        if not isinstance(SMILES, str):
-            sys.exit('class Compound: argument should be a SMILES string.')
+        assert isinstance(SMILES, str), \
+                'class Compound: argument should be a SMILES string.'
 
         self.Mol = Chem.MolFromSmiles(SMILES)
         if self.Mol is None:

@@ -16,9 +16,10 @@ class ReactionOutput:
             should follow the convention
             SMILES_#0>>SMILES
         '''
-        if not isinstance(reaction_output_string, str):
-            sys.exit('''class ReactionOutput:
-                    reaction_output_string must be string like SMILES>>#0''')
+        assert isinstance(reaction_output_string, str), \
+            '''class ReactionOutput:
+            reaction_output_string must be string like SMILES>>#0'''
+
         self.Reaction = None
         self.ReactionSMILES = reaction_output_string
         self.Reactants, self.Products = self.reactants_products_from_string(

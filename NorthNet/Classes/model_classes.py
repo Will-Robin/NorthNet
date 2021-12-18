@@ -43,29 +43,29 @@ class ModelWriter:
             Governs the time from which the model will begin calculation
             before the first data time point. (start time = t0 - lead_time)
         '''
-        if not isinstance(network, Classes.Network):
-            sys.exit('''Classes.ModelWriter:
-            network kwarg should be Network object''')
-        if not isinstance(experiment, Classes.DataReport):
-            sys.exit('''Classes.ModelWriter:
-            experiment kwarg should be DataReport object.''')
-        if not isinstance(input_token, str):
-            sys.exit('''Classes.ModelWriter:
-            input_token kwarg should be string.''')
-        if not isinstance(output_token, str):
-            sys.exit('''Classes.ModelWriter:
-            output_token kwarg should be string.''')
-        if not isinstance(flowrate_time_conversion, float):
-            sys.exit('''Classes.ModelWriter:
-            flowrate_time_conversion kwarg should be float.''')
+        assert isinstance(network, Classes.Network), \
+            '''Classes.ModelWriter:
+            network kwarg should be Network object'''
+        assert isinstance(experiment, Classes.DataReport), \
+            '''Classes.ModelWriter:
+            experiment kwarg should be DataReport object.'''
+        assert isinstance(input_token, str), \
+            '''Classes.ModelWriter:
+            input_token kwarg should be string.'''
+        assert isinstance(output_token, str), \
+            '''Classes.ModelWriter:
+            output_token kwarg should be string.'''
+        assert isinstance(flowrate_time_conversion, float), \
+            '''Classes.ModelWriter:
+            flowrate_time_conversion kwarg should be float.'''
         if not isinstance(time_limit, float):
-            if not isinstance(time_limit, bool):
-                sys.exit('''Classes.ModelWriter:
-                time_limit kwarg should be bool or float.''')
+            assert isinstance(time_limit, bool), \
+                '''Classes.ModelWriter:
+                time_limit kwarg should be bool or float.'''
         if not isinstance(lead_time, float):
-            if not isinstance(lead_time, bool):
-                sys.exit('''Classes.ModelWriter:
-                lead_time kwarg should be bool or float.''')
+            assert isinstance(lead_time, bool), \
+                '''Classes.ModelWriter:
+                lead_time kwarg should be bool or float.'''
 
         self.network = network
         self.input_token = input_token

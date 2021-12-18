@@ -34,17 +34,18 @@ class Reaction:
             Dictionary of information (e.g. database entries)
         '''
 
-        if not isinstance(rdkit_reaction, rdChemReactions.ChemicalReaction):
-            sys.exit('''class Reaction: rdkit_reaction arg should be an RDKit
-            Reaction object.''')
+        assert isinstance(rdkit_reaction, rdChemReactions.ChemicalReaction), \
+            '''class Reaction:
+            rdkit_reaction arg should be an RDKit Reaction object.'''
 
         if reaction_template is not None:
-            if not isinstance(reaction_template, Classes.ReactionTemplate):
-                sys.exit('''class Reaction: reaction_template should be None or
-                a NortNet ReactionTemplate object.''')
+            assert isinstance(reaction_template, Classes.ReactionTemplate), \
+                '''class Reaction:
+                reaction_template should be None or a NortNet
+                ReactionTemplate object.'''
 
-        if not isinstance(info, dict):
-            sys.exit('''class Reaction: info arg should be a dict.''')
+        assert isinstance(info, dict), \
+            '''class Reaction: info arg should be a dict.'''
 
         self.Reaction = rdkit_reaction
         self.ReactionSMILES = AllChem.ReactionToSmiles(rdkit_reaction)

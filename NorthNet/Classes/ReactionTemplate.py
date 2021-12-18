@@ -22,37 +22,35 @@ class ReactionTemplate:
             substructures to which reactant substructures are converted.
         '''
 
-        if not isinstance(name, str):
-            sys.exit('''class ReactionTemplate:
-        the name arg should be a name for the ReactionTemplate as a string.''')
+        assert isinstance(name, str), \
+            '''class ReactionTemplate:
+            name arg should be a name for the ReactionTemplate as a string.'''
 
-        if not isinstance(reaction_SMARTS, str):
-            sys.exit('''class ReactionTemplate:
-            the reaction_SMARTS arg should be a reaction SMARTS string.''')
+        assert isinstance(reaction_SMARTS, str), \
+            '''class ReactionTemplate:
+            the reaction_SMARTS arg should be a reaction SMARTS string.'''
 
         if isinstance(reactant_substructs, list):
             check_reactant_substructs = [isinstance(r, str) for r in
                                                             reactant_substructs]
-            if not all(check_reactant_substructs):
-                sys.exit('''class ReactionTemplate:
-                        the reactant_substructs arg should be a list of SMARTS
-                        strings.''')
+            assert all(check_reactant_substructs), \
+                '''class ReactionTemplate:
+                reactant_substructs arg should be a list of SMARTS strings.'''
         else:
-            sys.exit('''class ReactionTemplate:
-                    the reactant_substructs arg should be a list of SMARTS
-                    strings.''')
+            assert isinstance(reactant_substructs, list), \
+            '''class ReactionTemplate:
+            the reactant_substructs arg should be a list of SMARTS strings.'''
 
         if isinstance(product_substructs, list):
             check_product_substructs = [isinstance(s, str) for s in
                                                             product_substructs]
-            if not all(check_product_substructs):
-                sys.exit('''class ReactionTemplate:
-                        the product_substructs arg should be a list of SMARTS
-                        strings.''')
+            assert all(check_product_substructs), \
+                '''class ReactionTemplate:
+                product_substructs arg should be a list of SMARTS strings.'''
         else:
-            sys.exit('''class ReactionTemplate:
-                    the product_substructs arg should be a list of SMARTS
-                    strings.''')
+            assert isinstance(product_substructs, list), \
+                '''class ReactionTemplate:
+                product_substructs arg should be a list of SMARTS strings.'''
 
         self.Name = name
         if reaction_SMARTS != '':

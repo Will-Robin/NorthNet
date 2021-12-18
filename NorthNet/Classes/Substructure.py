@@ -13,8 +13,9 @@ class Substructure:
             SMARTS corresponding to substructure.
         '''
 
-        if not isinstance(SMARTS, str):
-            sys.exit('class Substructure: argument should be a SMARTS string.')
+        assert isinstance(SMARTS, str), \
+            '''class Substructure:
+            argument should be a SMARTS string.'''
 
         self.Mol = Chem.MolFromSmarts(SMARTS)
 

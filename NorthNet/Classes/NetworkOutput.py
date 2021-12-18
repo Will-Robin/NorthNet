@@ -18,9 +18,9 @@ class NetworkOutput:
             SMILES_#0
         '''
 
-        if not isinstance(output, str):
-            sys.exit('''class NetworkOutput:
-                    id arg must be str like SMILES_#0.''')
+        assert isinstance(output, str), \
+            '''class NetworkOutput:
+            id arg must be str like SMILES_#0.'''
 
         self.Mol = None
 

@@ -4,12 +4,12 @@ from NorthNet import Classes
 class Network:
     '''
     An object which stored compounds and reactions and the connections
-    between them. 
+    between them.
     '''
     def __init__(self, reactions, name, description):
         '''
         The Network object is initialised with a list of Reaction objects. If
-        the list is empty, then the network is initialised as an empty network.
+        the list is empty, then the netwurk is initialised as an empty network.
 
         Parameters
         ----------
@@ -21,24 +21,27 @@ class Network:
         '''
 
         if isinstance(reactions, list):
-            check_reactions = [isinstance(r, Classes.Reaction) for r in reactions]
-            if not all(check_reactions):
-                sys.exit('''class Network: the reactions arg must be a list of
-                NorthNet Reaction objects.''')
+            check_rxns = [isinstance(r, Classes.Reaction) for r in reactions]
+            assert all(check_rxns), \
+                '''class Network:
+                reactions arg should be a list of NorthNet Reaction objects.'''
         else:
-            sys.exit('''class Network: the reactions arg must be a list of
-            NorthNet Reaction objects.''')
+            assert isinstance(reactions, list), \
+                '''class Network:
+                reactions arg should be a list of NorthNet Reaction objects.'''
 
-        if not isinstance(name, str):
-            sys.exit('''class Network: name arg should be a string.''')
-        if not isinstance(name, str):
-            sys.exit('''class Network: description arg should be a string.''')
+        assert isinstance(name, str), \
+                '''class Network:
+                name arg should be a string.'''
+        assert isinstance(name, str), \
+                '''class Network:
+                description arg should be a string.'''
 
         self.Name = name
         self.Description = description
 
         '''1. create a dictionary of lists of Reaction objects, which are
-        organised by their reaction SMILES as keys. '''
+        organised by their reaction SMILES as keys.'''
         self.NetworkReactions = {}
 
         '''2. Create dictionary of Compound objects used as reactants
@@ -62,9 +65,9 @@ class Network:
         compoud: NorthNet Compound object
         '''
 
-        if not isinstance(compound, Classes.Compound):
-            sys.exit('''Network.add_compound():
-                compound arg should be a NorthNet Compound object''')
+        assert isinstance(compound, Classes.Compound), \
+                '''Network.add_compound():
+                compound arg should be a NorthNet Compound object'''
 
         if compound.SMILES not in self.NetworkCompounds:
             self.NetworkCompounds[compound.SMILES] = compound
@@ -79,13 +82,14 @@ class Network:
             compounds to be added
         '''
         if isinstance(compounds, list):
-            check_compounds = [isinstance(c, Classes.Compound) for c in compounds]
-            if not all(check_compounds):
-                sys.exit('''Network.add_compounds():
-                compounds arg should be a list of NorthNet Compound objects''')
+            check_cpds = [isinstance(c, Classes.Compound) for c in compounds]
+            assert all(check_cpds), \
+                    '''Network.add_compounds():
+                    compounds arg should be list of NorthNet Compound objects'''
         else:
-            sys.exit('''Network.add_compounds():
-            compounds arg should be a list of NorthNet Compound objects''')
+            assert isinstance(compounds, list), \
+                    '''Network.add_compounds():
+                    compounds arg should be list of NorthNet Compound objects'''
 
         for compound in compounds:
             self.add_compound(compound)
@@ -102,13 +106,14 @@ class Network:
         '''
 
         if isinstance(compounds, list):
-            check_compounds = [isinstance(c, Classes.Compound) for c in compounds]
-            if not all(check_compounds):
-                sys.exit('''Network.remove_compounds():
-                compounds arg should be a list of NorthNet Compound objects''')
+            check_cpds = [isinstance(c, Classes.Compound) for c in compounds]
+            assert all(check_cpds), \
+                '''Network.remove_compounds():
+                compounds arg should be a list of NorthNet Compound objects'''
         else:
-            sys.exit('''Network.remove_compounds():
-            compounds arg should be a list of NorthNet Compound objects''')
+            assert isinstance(compounds, list), \
+                '''Network.remove_compounds():
+                compounds arg should be a list of NorthNet Compound objects'''
 
         remove_reactions = []
         for compound in compounds:
@@ -133,9 +138,9 @@ class Network:
         reaction: NorthNet Reaction object
             reaction to be added
         '''
-        if not isinstance(reaction, Classes.Reaction):
-            sys.exit('''Network.add_reaction: reaction arg should be a NorthNet
-            Reaction object.''')
+        assert isinstance(reaction, Classes.Reaction), \
+            '''Network.add_reaction:
+            reaction arg should be a NorthNet Reaction object.'''
 
         # check if the reaction is in NetworkReactions (avoid overwriting)
         # shouldn't be an issue if all reaction data is encapsulated properly
@@ -147,12 +152,16 @@ class Network:
             self.NetworkReactions[smiles] = reaction
 
             for reactant in reaction.Reactants:
-                self.add_compound(reactant)
+                if reactant not in self.NetworkCompounds:
+                    new_compound = Classes.Compound(reactant)
+                    self.add_compound(new_compound)
                 if smiles not in self.NetworkCompounds[reactant].Out:
                     self.NetworkCompounds[reactant].Out.append(smiles)
 
             for product in reaction.Products:
-                self.add_compound(product)
+                if product not in self.NetworkCompounds:
+                    new_compound = Classes.Compound(product)
+                    self.add_compound(new_compound)
                 if smiles not in self.NetworkCompounds[product].In:
                     self.NetworkCompounds[product].In.append(smiles)
 
@@ -168,12 +177,13 @@ class Network:
         '''
         if isinstance(reactions, list):
             check_reactions = [isinstance(c, Classes.Reaction) for c in reactions]
-            if not all(check_reactions):
-                sys.exit('''Network.add_reactions():
-                reactions arg should be a list of NorthNet Reaction objects''')
+            assert all(check_reactions), \
+                '''Network.add_reactions():
+                reactions arg should be a list of NorthNet Reaction objects'''
         else:
-            sys.exit('''Network.add_reactions():
-            reactions arg should be a list of NorthNet Reaction objects''')
+            assert isinstance(reactions, list), \
+                '''Network.add_reactions():
+                reactions arg should be a list of NorthNet Reaction objects'''
 
         for reaction in reactions:
             self.add_reaction(reaction)
@@ -189,17 +199,19 @@ class Network:
             reactions to be removed.
         '''
 
+        assertion_msg = '''Network.remove_reactions():
+            remove_reactions arg should be list of NorthNet Reaction objects'''
+
         if isinstance(remove_reactions, list):
-            check_reactions = [isinstance(c, Classes.Reaction) for c in remove_reactions]
+            check_rxns = [isinstance(c, Classes.Reaction)
+                                                    for c in remove_reactions]
             check_for_strings = [isinstance(r, str) for r in remove_reactions]
 
-            if not all(check_reactions) and not all(check_for_strings):
-                sys.exit('''Network.remove_reactions():
-                remove_reactions arg should be a list of NorthNet Reaction objects''')
+            if not all(check_rxns) and not all (check_for_strings):
+                assert all(check_rxns), assertion_msg
 
         else:
-            sys.exit('''Network.remove_reactions():
-            reactions arg should be a list of NorthNet Reaction objects''')
+            assert isinstance(remove_reactions, list), assertion_msg
 
         for reaction in remove_reactions:
             if isinstance(reaction, str):
@@ -224,9 +236,9 @@ class Network:
             Input to be added
         '''
 
-        if not isinstance(input_addition, Classes.ReactionInput):
-            sys.exit('''Network.add_input(): input arg must be a NorthNet
-            NetworkInput object''')
+        assert isinstance(input_addition, Classes.ReactionInput), \
+            '''Network.add_input(): input arg must be a NorthNet
+            NetworkInput object'''
 
         if input_addition.InputID in self.NetworkInputs:
             pass
@@ -260,14 +272,15 @@ class Network:
             Inputs to be added to the network
         '''
         if isinstance(inputs, list):
-            check_inputs = [isinstance(i, Classes.NetworkInput)
-                                                    for i in inputs]
-            if not all(check_inputs):
-                sys.exit('''Network.add_inputs(): input arg must be a list of NorthNet
-                NetworkInput object''')
+            check_inputs = [isinstance(i, Classes.NetworkInput) for i in inputs]
+
+            assert all(check_inputs), \
+                '''Network.add_inputs(): input arg must be a list of NorthNet
+                NetworkInput object'''
         else:
-            sys.exit('''Network.add_inputs(): input arg must be a list of NorthNet
-            NetworkInput object''')
+            assert isinstance(inputs, list), \
+                '''Network.add_inputs(): input arg must be a list of NorthNet
+                NetworkInput object'''
 
         for i in inputs:
             self.add_input(i)
@@ -281,9 +294,9 @@ class Network:
         output NetworkOutput object
             Output to be added
         '''
-        if not isinstance(input, Classes.NetworkOutput):
-            sys.exit('''Network.add_output(): output arg must be a NorthNet
-            NetworkOutput object''')
+        assert isinstance(input, Classes.NetworkOutput), \
+            '''Network.add_output(): output arg must be a NorthNet
+            NetworkOutput object'''
 
         if output.OutputID in self.NetworkOutputs:
             pass
@@ -317,12 +330,13 @@ class Network:
         if isinstance(outputs, list):
             check_inputs = [isinstance(i, Classes.NetworkOutput)
                                                     for i in outputs]
-            if not all(check_inputs):
-                sys.exit('''Network.add_outputs(): outputs arg must be a list of NorthNet
-                NetworkOutput object''')
+            assert all(check_inputs), \
+                '''Network.add_outputs(): outputs arg must be a list of NorthNet
+                NetworkOutput object'''
         else:
-            sys.exit('''Network.add_outputs(): outputs arg must be a list of NorthNet
-            NetworkOutput object''')
+            assert isinstance(outputs, list), \
+                '''Network.add_outputs():
+                outputs arg must be a list of NorthNet NetworkOutput object'''
 
         for out in outputs:
             self.add_output(out)
@@ -343,9 +357,9 @@ class Network:
         None
         '''
 
-        if not isinstance(reaction, str):
-            sys.exit('''Network.get_reaction(): reaction arg must be a valid
-            SMILES string.''')
+        assert isinstance(reaction, str), \
+            '''Network.get_reaction(): reaction arg must be a valid
+            SMILES string.'''
 
         if reaction in self.NetworkReactions:
             return self.NetworkReactions[reaction]
@@ -362,9 +376,9 @@ class Network:
         reaction: str
             Key in self.NetworkReactions
         '''
-        if not isinstance(reaction, str):
-            sys.exit('''Network.get_reaction(): reaction arg must be a valid
-            SMILES string.''')
+        assert isinstance(reaction, str), \
+            '''Network.get_reaction(): reaction arg must be a valid
+            SMILES string.'''
 
 
         reaction_entry = self.get_reaction(reaction)
@@ -382,9 +396,9 @@ class Network:
         reaction: str
             Key in self.NetworkReactions
         '''
-        if not isinstance(reaction, str):
-            sys.exit('''Network.get_reaction(): reaction arg must be a valid
-            SMILES string.''')
+        assert isinstance(reaction, str), \
+            '''Network.get_reaction(): reaction arg must be a valid
+            SMILES string.'''
 
         reaction_entry = self.get_reaction(reaction)
         if reaction_entry is None:
@@ -401,9 +415,9 @@ class Network:
         reaction: str
             Key in self.NetworkReactions
         '''
-        if not isinstance(reaction, str):
-            sys.exit('''Network.get_reaction(): reaction arg must be a valid
-            SMILES string.''')
+        assert isinstance(reaction, str), \
+            '''Network.get_reaction(): reaction arg must be a valid
+            SMILES string.'''
 
         reaction_entry = self.get_reaction(reaction)
         if reaction_entry is None:
@@ -420,9 +434,9 @@ class Network:
         reaction: str
             Key in self.NetworkReactions
         '''
-        if not isinstance(reaction, str):
-            sys.exit('''Network.get_reaction(): reaction arg must be a valid
-            SMILES string.''')
+        assert isinstance(reaction, str), \
+            '''Network.get_reaction(): reaction arg must be a valid
+            SMILES string.'''
 
         reaction_entry = self.get_reaction(reaction)
 
@@ -443,9 +457,9 @@ class Network:
         reaction: str
             Key in self.NetworkReactions
         '''
-        if not isinstance(reaction, str):
-            sys.exit('''Network.get_reaction(): reaction arg must be a valid
-            SMILES string.''')
+        assert isinstance(reaction, str), \
+            '''Network.get_reaction(): reaction arg must be a valid
+            SMILES string.'''
 
         reaction_entry = self.get_reaction(reaction)
 
