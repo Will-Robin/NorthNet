@@ -1,4 +1,5 @@
 from NorthNet import Classes
+from NorthNet.text_parsing import conversions
 
 def load_network_from_reaction_list(reaction_list, name = '', description = ''):
     '''
@@ -12,7 +13,8 @@ def load_network_from_reaction_list(reaction_list, name = '', description = ''):
 
     rxns = []
     for reaction in reaction_list:
-        rxns.append(Classes.Reaction(reaction))
+        converted_reaction = conversions.smiles_to_rdkit_reaction(reaction)
+        rxns.append(Classes.Reaction(converted_reaction))
 
     network = Classes.Network(rxns, name, description)
 
