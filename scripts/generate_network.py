@@ -4,6 +4,27 @@ from NorthNet import Classes
 from NorthNet import text_parsing as text_p
 from NorthNet import network_generation as n_gen
 
+def generate_epimers(
+                    network,
+                    deprotonation_rules = [],
+                    protonation_rules = []
+                    ):
+    i = 0
+    reaction_number = len(network.NetworkReactions)
+    while i < 0:
+        for d_rule in deprot_rules:
+            n_gen.extend_network_specific(network, [hydroxide], d_rule)
+
+        for p_rule in prot_rules:
+            n_gen.extend_network_specific(network, [water], p_rule)
+
+        new_reaction_number = len(network.NetworkReactions)
+
+        i = new_reaction_number - reaction_number
+
+        reaction_number = new_reaction_number
+
+
 '''Get reaction components'''
 # there may be an error such as:
 # 'mapped atoms in the reactants were not mapped in the products.
@@ -89,10 +110,11 @@ while x < iterations:
     for task in reaction_pattern:
         n_gen.extend_network_task(reaction_network, reactions[task])
 
-    n_gen.carbonyl_migration_isomers_multiclass(reaction_network,
-            deprot_rules = [reactions[d] for d in deprotonation_rules],
-            prot_rules = [reactions[p] for p in protonation_rules]
-            )
+    generate_epimers(
+                    reaction_network,
+                    deprotonation_rules = [reactions[d] for d in deprotonation_rules],
+                    protonation_rules = [reactions[p] for p in protonation_rules]
+                    )
 
     '''Removing compounds > C6'''
     # In effect, this is equivalent to setting all chain-growing reaction
@@ -104,3 +126,10 @@ while x < iterations:
     reaction_network.remove_compounds(remove_compounds)
 
     x+=1
+
+compound_number = len(reaction_network.NetworkCompounds)
+reaction_number = len(reaction_network.NetworkReactions)
+
+print(f'Generated {compound_number} compounds and {reaction_number} reactions.')
+
+
