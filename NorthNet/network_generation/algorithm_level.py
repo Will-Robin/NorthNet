@@ -73,6 +73,14 @@ def extend_network_self(network, reaction_template):
                     )
 
     for reactant_1 in reactants1:
+        reaction_done = n_gen.check_reaction_occurence(
+                                                        reactant_1, 
+                                                        network, 
+                                                        reaction_template
+                                                        )
+        if reaction_done:
+            continue
+
         for reactant_2 in reactants2:
             insert = [reactant_1] + [reactant_2]
             resulting_reactions = n_gen.run_reaction(insert, reaction_template)
@@ -110,7 +118,13 @@ def extend_network_task(network, reaction_template):
 
     # Build reactant combinations
     inputs = list(itertools.product(*reactants))
-    for i in inputs:
-        resulting_reactions = n_gen.run_reaction(i, reaction_template)
-        network.add_reactions(resulting_reactions)
+    for input in inputs:
+        reaction_done = n_gen.check_reaction_occurence(
+                                                        input[0], 
+                                                        network, 
+                                                        reaction_template
+                                                        )
+        if not reaction_done:
+            resulting_reactions = n_gen.run_reaction(input, reaction_template)
+            network.add_reactions(resulting_reactions)
 
