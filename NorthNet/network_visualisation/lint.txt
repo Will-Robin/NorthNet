@@ -1,8 +1,0 @@
-************* Module layouts
-layouts.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-layouts.py:2:0: E0401: Unable to import 'graphviz' (import-error)
-layouts.py:4:0: C0103: Function name "graphviz_layout_NorthNet" doesn't conform to snake_case naming style (invalid-name)
-
-------------------------------------------------------------------
-Your code has been rated at 7.81/10 (previous run: 7.81/10, +0.00)
-

@@ -1,5 +1,9 @@
-import conversions as conv
+'''
+For generating network layouts from network objects using graphviz.
+'''
+
 from graphviz import Digraph
+from NorthNet.network_visualisation import dictionary_from_layout
 
 def generate_network_layout(network, render_engine = 'fdp'):
     '''
@@ -53,7 +57,7 @@ def generate_network_layout(network, render_engine = 'fdp'):
 
     json_string = dot.pipe().decode()
 
-    pos = conv.dictionary_from_layout(json_string)
+    pos = dictionary_from_layout(json_string)
 
     return pos
 
@@ -96,6 +100,6 @@ def generate_networkx_layout(network, render_engine = 'fdp'):
 
     json_string = dot.pipe().decode()
 
-    pos = conv.dictionary_from_layout(json_string)
+    pos = dictionary_from_layout(json_string)
 
     return pos
