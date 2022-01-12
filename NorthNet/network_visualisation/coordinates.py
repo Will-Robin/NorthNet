@@ -1,9 +1,10 @@
-import copy
-import numpy as np
-from NorthNet.network_visualisation import coordinates
 '''
 Useful functions for manipulating networkx DiGraphs
 '''
+import copy
+import numpy as np
+from NorthNet.network_visualisation import coordinates
+
 def set_network_coords(G, pos):
     '''
     Add coordinate information into a networkx DiGraph.
