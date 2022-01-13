@@ -31,17 +31,13 @@ def extend_network_specific(network, reagents, reaction_template):
 
     for reactant in reactants:
         insert = [reactant] + reagents
-        reaction_done = n_gen.check_reaction_occurence(
-                                                        reactant, 
-                                                        network, 
-                                                        reaction_template
-                                                        )
+
         input_valid = n_gen.check_reaction_input(
                                                 insert, 
                                                 reactive_substrs
                                                 )
 
-        if not reaction_done and input_valid:
+        if input_valid:
             resulting_reactions = n_gen.run_rdkit_reaction(
                                                             insert, 
                                                             reaction_template
@@ -86,15 +82,8 @@ def extend_network_self(network, reaction_template):
                                             )
 
     for reactant_1 in reactants1:
-        reaction_done = n_gen.check_reaction_occurence(
-                                                        reactant_1, 
-                                                        network, 
-                                                        reaction_template
-                                                        )
-        if reaction_done:
-            continue
-
         for reactant_2 in reactants2:
+
             insert = [reactant_1] + [reactant_2]
             resulting_reactions = n_gen.run_rdkit_reaction(
                                                             insert, 
@@ -137,17 +126,9 @@ def extend_network_task(network, reaction_template):
     # Build reactant combinations
     inputs = list(itertools.product(*reactants))
     for input in inputs:
-        reaction_done = n_gen.check_reaction_occurence(
+        resulting_reactions = n_gen.run_rdkit_reaction(
                                                         input, 
-                                                        network, 
                                                         reaction_template
                                                         )
-        if reaction_done:
-            pass
-        else:
-            resulting_reactions = n_gen.run_rdkit_reaction(
-                                                            input, 
-                                                            reaction_template
-                                                            )
-            network.add_reactions(resulting_reactions)
+        network.add_reactions(resulting_reactions)
 
