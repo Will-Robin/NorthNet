@@ -24,7 +24,10 @@ def extend_network_specific(network, reagents, reaction_template):
 
     reactive_substrs = [Chem.MolFromSmarts(x) for x in template_substructures]
 
-    reactants = n_gen.get_reactive_compounds(compounds_in_network, reactive_substrs)
+    reactants = n_gen.get_reactive_compounds(
+                                            compounds_in_network, 
+                                            reactive_substrs
+                                            )
 
     for reactant in reactants:
         insert = [reactant] + reagents
@@ -33,10 +36,16 @@ def extend_network_specific(network, reagents, reaction_template):
                                                         network, 
                                                         reaction_template
                                                         )
-        input_valid = n_gen.check_reaction_input(insert, reactive_substrs)
+        input_valid = n_gen.check_reaction_input(
+                                                insert, 
+                                                reactive_substrs
+                                                )
 
         if not reaction_done and input_valid:
-            resulting_reactions = n_gen.run_rdkit_reaction(insert, reaction_template)
+            resulting_reactions = n_gen.run_rdkit_reaction(
+                                                            insert, 
+                                                            reaction_template
+                                                            )
             network.add_reactions(resulting_reactions)
         else:
             pass
@@ -61,16 +70,20 @@ def extend_network_self(network, reaction_template):
     -------
     None
     '''
+    compounds_in_network = list(network.NetworkCompounds.values())
+
     substructures = [Chem.MolFromSmarts(x)
                             for x in reaction_template.ReactantSubstructures]
 
     reactants1 = n_gen.get_reactive_compounds(
-                    list(network.NetworkCompounds.values()), [substructures[0]]
-                    )
+                                            compounds_in_network, 
+                                            [substructures[0]]
+                                            )
 
     reactants2 = n_gen.get_reactive_compounds(
-                    list(network.NetworkCompounds.values()), [substructures[1]]
-                    )
+                                            compounds_in_network, 
+                                            [substructures[1]]
+                                            )
 
     for reactant_1 in reactants1:
         reaction_done = n_gen.check_reaction_occurence(
@@ -83,7 +96,10 @@ def extend_network_self(network, reaction_template):
 
         for reactant_2 in reactants2:
             insert = [reactant_1] + [reactant_2]
-            resulting_reactions = n_gen.run_rdkit_reaction(insert, reaction_template)
+            resulting_reactions = n_gen.run_rdkit_reaction(
+                                                            insert, 
+                                                            reaction_template
+                                                            )
             network.add_reactions(resulting_reactions)
 
 def extend_network_task(network, reaction_template):
@@ -108,23 +124,30 @@ def extend_network_task(network, reaction_template):
     '''
     import itertools
 
+    current_compounds = list(network.NetworkCompounds.values())
     reactants = []
     for substruct in reaction_template.ReactantSubstructures:
         substructure = Chem.MolFromSmarts(substruct)
-        reactants.append(
-            n_gen.get_reactive_compounds(
-                        list(network.NetworkCompounds.values()), [substructure])
-                        )
+        matches = n_gen.get_reactive_compounds(
+                                                current_compounds,
+                                                [substructure]
+                                                )
+        reactants.append(matches)
 
     # Build reactant combinations
     inputs = list(itertools.product(*reactants))
     for input in inputs:
         reaction_done = n_gen.check_reaction_occurence(
-                                                        input[0], 
+                                                        input, 
                                                         network, 
                                                         reaction_template
                                                         )
-        if not reaction_done:
-            resulting_reactions = n_gen.run_rdkit_reaction(input, reaction_template)
+        if reaction_done:
+            pass
+        else:
+            resulting_reactions = n_gen.run_rdkit_reaction(
+                                                            input, 
+                                                            reaction_template
+                                                            )
             network.add_reactions(resulting_reactions)
 
