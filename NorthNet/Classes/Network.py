@@ -141,28 +141,24 @@ class Network:
             '''Network.add_reaction:
             reaction arg should be a NorthNet Reaction object.'''
 
-        # check if the reaction is in NetworkReactions (avoid overwriting)
-        # shouldn't be an issue if all reaction data is encapsulated properly
-        # i.e. one reaction SMILES string to one set of data
         if reaction.ReactionSMILES not in self.NetworkReactions:
-            smiles = reaction.ReactionSMILES
+            reaction_smiles = reaction.ReactionSMILES
 
-            # add the reaction into NetworkReactions
-            self.NetworkReactions[smiles] = reaction
+            self.NetworkReactions[reaction_smiles] = reaction
 
             for reactant in reaction.Reactants:
                 if reactant not in self.NetworkCompounds:
                     new_compound = Classes.Compound(reactant)
                     self.add_compound(new_compound)
-                if smiles not in self.NetworkCompounds[reactant].Out:
-                    self.NetworkCompounds[reactant].Out.append(smiles)
+                if reaction_smiles not in self.NetworkCompounds[reactant].Out:
+                    self.NetworkCompounds[reactant].Out.append(reaction_smiles)
 
             for product in reaction.Products:
                 if product not in self.NetworkCompounds:
                     new_compound = Classes.Compound(product)
                     self.add_compound(new_compound)
-                if smiles not in self.NetworkCompounds[product].In:
-                    self.NetworkCompounds[product].In.append(smiles)
+                if reaction_smiles not in self.NetworkCompounds[product].In:
+                    self.NetworkCompounds[product].In.append(reaction_smiles)
 
     def add_reactions(self,reactions):
         '''
