@@ -90,14 +90,14 @@ def check_reaction_input(reactant_list, reactive_substructs):
 
     return all(test_list)
 
-def check_reaction_occurence(compound, network, reaction_template):
+def check_reaction_occurence(reactants, network, reaction_template):
     '''
     Check if a reaction template has already been applied to a compound in a 
     reaction network.
 
     Parameters
     ----------
-    compound: NorthNet Compound object
+    reactants: list or tuple of NorthNet Compound objects
     network: NorthNet Network object
     reaction_template: NorthNet ReactionTemplate object
 
@@ -107,15 +107,18 @@ def check_reaction_occurence(compound, network, reaction_template):
         Whether reaction type has been applied to the compound or not.
     '''
 
+    if not isinstance(reactants, tuple):
+        # Written since Python was passing in the variable
+        # inside tuples of length 1, rather than the tuple.
+        reactants = (reactants,)
+
     reaction_name = reaction_template.Name
 
-    reactions = []
-    reactions.extend(compound.In)
-    reactions.extend(compound.Out)
+    result = []
+    for reactant in reactants:
+        used_reactions = reactant.Out 
+        used_classes = [network.get_reaction_name(r) for r in used_reactions]
+        reaction_performed = reaction_name in used_classes
+        result.append(reaction_performed)
 
-    used_reaction_classes = [network.get_reaction_name(r) for r in reactions]
-
-    if reaction_name in used_reaction_classes:
-        return True
-
-    return False
+    return all(result)
