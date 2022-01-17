@@ -3,7 +3,7 @@ from NorthNet import network_generation as n_gen
 
 def extend_network_specific(network, reagents, reaction_template):
     '''
-    Extend the network using a single reagent set.
+    Extend the network using a single reagent set and reaction template.
 
     Parameters
     ----------
