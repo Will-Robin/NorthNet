@@ -1,7 +1,8 @@
-from NorthNet import Classes
 '''
 For loading reaction information fron text files.
 '''
+from NorthNet import Classes
+
 def load_reaction_templates_from_file(fname, delimiter  = '\t'):
     '''
     Reads reaction templates from a .csv file.

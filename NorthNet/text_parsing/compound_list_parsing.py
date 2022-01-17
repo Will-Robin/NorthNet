@@ -1,7 +1,8 @@
-from NorthNet import Classes
 '''
 For loading compound objects from a text file.
 '''
+from NorthNet import Classes
+
 def load_compounds_from_file(fname,
                             name_col = 0,
                             SMILES_col = 1,

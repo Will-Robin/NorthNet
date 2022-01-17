@@ -1,9 +1,9 @@
 from rdkit import Chem
 from NorthNet import Classes
 
-def add_flow_terms(network, inputs):
+def add_flow_inputs(network, inputs):
     '''
-    Add flow terms into network.
+    Add flow inputs into network.
 
     Parameters
     ----------
@@ -31,8 +31,10 @@ def add_flow_terms(network, inputs):
 
     network.add_outputs(add_outputs)
 
-def skip_step(network,substructure):
+def skip_compound(network, substructure):
     '''
+    TODo: refactor
+
     Finds compounds in the network which have the specified substructure and
     removes them from the network (including the reactions for which they are
     reactants and products). New reactions between the reactant compounds which
