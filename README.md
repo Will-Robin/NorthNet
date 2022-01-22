@@ -10,8 +10,6 @@ A Python package which aims to provide tools in understanding chemical reactions
 - Experimental reaction data integration with reaction networks
 - *Future* data manipulation guided by reaction networks.
 
-TODO: add substructure filter for reactions- to remove reactions whose products contain specific substructures
-
 ## Installation
 
 The programs contained in this repository require Python 3.9.2 and the rdkit, numpy, scipy, networkx and pandas matplotlib and sklearn libraries (see `environment.yml`)
