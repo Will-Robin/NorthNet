@@ -29,5 +29,3 @@ def remove_reactions_by_product_substruct(network, substruct):
                 remove_reactions.append(reaction_object)
 
     network.remove_reactions(remove_reactions)
-
-    return network
