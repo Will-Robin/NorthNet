@@ -1,4 +1,4 @@
-def remove_reactions_by_product_substruct(network, substructure):
+def remove_reactions_by_product_substruct(network, substruct):
     '''
     Remove the reactions in a nework if any of their products contain a defined
     substructure.
@@ -22,7 +22,7 @@ def remove_reactions_by_product_substruct(network, substructure):
         reaction_object = network.NetworkReactions[reaction]
         products = reaction_object.products
 
-        for product = products:
+        for product in products:
             mol = network.NetworkCompounds[product].Mol
 
             if mol.HasSubstructMatch(substruct.Mol):
@@ -30,3 +30,4 @@ def remove_reactions_by_product_substruct(network, substructure):
 
     network.remove_reactions(remove_reactions)
 
+    return network
