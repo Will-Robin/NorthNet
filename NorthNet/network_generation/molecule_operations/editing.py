@@ -3,7 +3,16 @@ from rdkit.Chem import AllChem
 
 def canonicalise(smiles):
     '''
-    Canonicalises a SMILES string
+    Parameters
+    ----------
+    smiles: str
+        Canonicalises a SMILES string.
+
+    Return
+    ------
+    str
+        Canonicalised smiles.
+
     '''
     mol = Chem.MolFromSmiles(smiles)
     return Chem.MolToSmiles(mol, isomericSmiles = True)
@@ -22,12 +31,12 @@ def mirror_smiles(smiles):
         Mirrored smiles
     '''
 
-    m1 = smiles.replace("@@","ZY")
-    m1 = m1.replace("@","@@")
-    m1 = m1.replace("ZY","@")
-    m1 = canonicalise(m1)
+    molecule_1 = smiles.replace("@@","ZY")
+    molecule_2 = molecule_1.replace("@","@@")
+    molecule_3 = molecule_2.replace("ZY","@")
+    canonicalised_molecule = canonicalise(molecule_3)
 
-    return m1
+    return canonicalised_molecule
 
 def mirror(compound):
     '''

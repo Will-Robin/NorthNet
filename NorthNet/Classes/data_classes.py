@@ -48,7 +48,7 @@ class DataReport:
         readstate = False
         c_set = []
         with open(file, 'r', encoding = 'latin-1') as f:
-            for c,line in enumerate(f):
+            for _,line in enumerate(f):
                 if start_token in line:
                     readstate = True
                     line = next(f)
@@ -82,7 +82,6 @@ class DataReport:
         condset = self.import_file_section(file, "start_conditions",
                                            "end_conditions")
 
-        c_out = {}
         for c in condset:
             entry = [float(x) for x in c[1:]]
             if len(entry) == 1:
@@ -176,7 +175,7 @@ class DataReport:
 
         output_lines.append(','.join(header))
 
-        for c, v in enumerate(dict_container[header[0]]):
+        for c, _ in enumerate(dict_container[header[0]]):
             line_str = ''
             for h in header:
                 line_str += f"{dict_container[h][c]},"
@@ -187,22 +186,14 @@ class DataReport:
         return output_lines
 
     def to_string(self):
-        import numpy as np
 
-        if 'Chromatography_method' in self.analysis_details:
-            an_type = self.analysis_details['Chromatography_method'][0]
-        else:
-            an_type = 'not specified'
-
-        sorted_keys = sorted([*self.data], key = lambda x:x.count('C'))
-        p_header = [self.series_unit]
         data_section = {self.series_unit: self.series_values}
         for d in self.data:
             data_section[d] = self.data[d]
 
         error_section = {self.series_unit: self.series_values}
         for e in self.errors:
-            error_section[d] = self.errors[d]
+            error_section[e] = self.errors[e]
 
         output_lines = []
         output_lines.append(f"Dataset,{self.experiment_code}")
@@ -244,7 +235,7 @@ class DataReport:
             fname = path/filename
 
         with open(fname, 'w') as outfile:
-            f.write(self.to_string())
+            outfile.write(self.to_string())
 
     def find_repeat_data_entries(self):
         '''
@@ -395,6 +386,6 @@ class DataSet:
         returns: i
             numpy array of int
         '''
-        x_ax, y_ax = self.find_entry(entry)
+        x_ax, _ = self.find_entry(entry)
         i = np.argsort(x_ax)
         return i

@@ -1,7 +1,10 @@
+import sys
 import numpy as np
+from NorthNet import Classes
 
 class ModelWriter:
-    def __init__(self, network = None, experiment = None,
+    def __init__(self, network = Classes.Network([],'',''),
+                       experiment = Classes.DataReport(file = ''),
                        input_token = '_#0',
                        output_token = 'Sample',
                        flowrate_time_conversion = 3600,
@@ -17,7 +20,7 @@ class ModelWriter:
         lighten the load in performing calculations.
 
         network: NorthNet Network
-            
+
         experiment: NorthNet DataReport
 
         input_token: str
@@ -40,6 +43,29 @@ class ModelWriter:
             Governs the time from which the model will begin calculation
             before the first data time point. (start time = t0 - lead_time)
         '''
+        assert isinstance(network, Classes.Network), \
+            '''Classes.ModelWriter:
+            network kwarg should be Network object'''
+        assert isinstance(experiment, Classes.DataReport), \
+            '''Classes.ModelWriter:
+            experiment kwarg should be DataReport object.'''
+        assert isinstance(input_token, str), \
+            '''Classes.ModelWriter:
+            input_token kwarg should be string.'''
+        assert isinstance(output_token, str), \
+            '''Classes.ModelWriter:
+            output_token kwarg should be string.'''
+        assert isinstance(flowrate_time_conversion, float), \
+            '''Classes.ModelWriter:
+            flowrate_time_conversion kwarg should be float.'''
+        if not isinstance(time_limit, float):
+            assert isinstance(time_limit, bool), \
+                '''Classes.ModelWriter:
+                time_limit kwarg should be bool or float.'''
+        if not isinstance(lead_time, float):
+            assert isinstance(lead_time, bool), \
+                '''Classes.ModelWriter:
+                lead_time kwarg should be bool or float.'''
 
         self.network = network
         self.input_token = input_token
@@ -48,6 +74,7 @@ class ModelWriter:
         self.time = np.inf
         self.time_limit = time_limit
         self.lead_time = lead_time
+
         self.observed_compounds = []
         self.reactor_volume = 1.0
         self.flow_profile_time = []
@@ -61,13 +88,13 @@ class ModelWriter:
         self.outflows = {}
         self.time_offset = 0.0
 
-        if network == None:
+        if network is None:
             pass
         else:
             self.name = network.Name
             self.get_network_tokens()
 
-        if experiment == None:
+        if experiment is None:
             pass
         else:
             self.load_experiment_details(experiment)
@@ -84,14 +111,14 @@ class ModelWriter:
         inflows = [r for r in reactions if self.input_token in r]
         outflows = [r for r in reactions if self.output_token in r]
 
-        for i in inflows:
-            reactions.remove(i)
-        for o in outflows:
-            reactions.remove(o)
+        for inlet in inflows:
+            reactions.remove(inlet)
+        for out in outflows:
+            reactions.remove(out)
 
         species = {s:f"S[{c}]" for c,s in enumerate(compounds) if s != ''}
         rate_consts = {k:f"k[{c}]" for c,k in enumerate(reactions)}
-        inputs = {i:0.0 for c,i in enumerate(network_inputs)}
+        inputs = {i:0.0 for _,i in enumerate(network_inputs)}
         flow_ins = {i:f'I[{c}]' for c,i in enumerate(inflows)}
         flow_outs = {o:'sigma_flow' for o in outflows}
 
@@ -108,25 +135,24 @@ class ModelWriter:
         if experiment.series_unit == 'time/ s':
             self.time = experiment.series_values.copy()
 
-        for d in experiment.data:
-            self.observed_compounds.append(d.split('/')[0].split(' ')[0])
+        for name in experiment.data:
+            self.observed_compounds.append(name.split('/')[0].split(' ')[0])
 
-        for c in experiment.conditions:
-            if 'reactor_volume' in c:
-                self.reactor_volume = experiment.conditions[c]
-            elif '/ M' in c:
-                smiles = c.split('/')[0]
-                clef = smiles
-                for f in self.inputs:
-                    stand_flow_key = f.split('_')[0]
+        for condition in experiment.conditions:
+            if 'reactor_volume' in condition:
+                self.reactor_volume = experiment.conditions[condition]
+            elif '/ M' in condition:
+                smiles = condition.split('/')[0]
+                for flow in self.inputs:
+                    stand_flow_key = flow.split('_')[0]
                     if smiles == stand_flow_key:
-                        self.inputs[f] = experiment.conditions[c]
-            elif 'time' in c and 'flow' in c:
-                self.flow_profile_time = experiment.conditions[c].copy()
+                        self.inputs[flow] = experiment.conditions[condition]
+            elif 'time' in condition and 'flow' in condition:
+                self.flow_profile_time = experiment.conditions[condition].copy()
 
-            elif 'flow' in c and not 'time' in c:
-                smiles = c.split('_')[0]
-                self.flow_profiles[smiles] = experiment.conditions[c].copy()
+            elif 'flow' in condition and not 'time' in condition:
+                smiles = condition.split('_')[0]
+                self.flow_profiles[smiles] = experiment.conditions[condition].copy()
 
         if self.time_limit:
             t_lim_max = min(np.amax(self.time), self.time_limit)
@@ -144,10 +170,10 @@ class ModelWriter:
         self.time -= self.time_offset
 
         self.sigma_flow = np.zeros(len(self.flow_profile_time))
-        for f in self.flow_profiles:
-            self.flow_profiles[f] = self.flow_profiles[f][idx]/self.reactor_volume
-            self.flow_profiles[f] /= self.flowrate_time_conversion
-            self.sigma_flow += self.flow_profiles[f]
+        for flow in self.flow_profiles:
+            self.flow_profiles[flow] = self.flow_profiles[flow][idx]/self.reactor_volume
+            self.flow_profiles[flow] /= self.flowrate_time_conversion
+            self.sigma_flow += self.flow_profiles[flow]
 
     def write_flow_profile_text(self, suffix = ""):
         '''
@@ -158,18 +184,23 @@ class ModelWriter:
                                      len(self.flow_profile_time)))
 
         collection_array[0] = self.flow_profile_time
-        for c,f in enumerate(self.inputs,1):
-            collection_array[c] = self.flow_profiles[f.split('_')[0]]
+        for c,flow in enumerate(self.inputs,1):
+            collection_array[c] = self.flow_profiles[flow.split('_')[0]]
 
         collection_array[-1] = self.sigma_flow
 
         text = 'F = np.array(\n'
         text += suffix
-        text += np.array2string(collection_array,
-                             formatter={'float_kind':lambda x: "%.9f" % x},
-                             separator=',',
-                             threshold=np.inf
-                             ).replace("\n",f"\n{suffix}")
+
+        array_text = np.array2string(
+                                collection_array,
+                                formatter={'float_kind':lambda x: "%.9f" % x},
+                                separator=',',
+                                threshold=np.inf
+                                )
+
+        text += array_text.replace("\n",f"\n{suffix}")
+
         text += ')'
 
         return text
@@ -199,14 +230,13 @@ class ModelWriter:
         '''
         network = self.network
 
-        compounds = [x for x in network.NetworkCompounds]
-        reactions = [*network.NetworkReactions]
+        compounds = [*network.NetworkCompounds]
 
         eq_lines = []
 
-        for count,c in enumerate(compounds):
+        for count,compound in enumerate(compounds):
             line_text = f"P[{count}] = "
-            for i in network.NetworkCompounds[c].In:
+            for i in network.NetworkCompounds[compound].In:
                 if '_#0' in i:
                     in_compound = network.NetworkReactions[i].InputID
                     ki = f'+{self.inflows[i]}*{self.inputs[in_compound]}'
@@ -225,15 +255,15 @@ class ModelWriter:
 
                     line_text += f"{ki}{specs}"
 
-            for o in network.NetworkCompounds[c].Out:
-                if 'Sample' in o:
-                    out_compound = network.NetworkReactions[o].CompoundOutput
-                    ki = f'-{self.outflows[o]}*{self.species[out_compound]}'
+            for out in network.NetworkCompounds[compound].Out:
+                if 'Sample' in out:
+                    out_compound = network.NetworkReactions[out].CompoundOutput
+                    ki = f'-{self.outflows[out]}*{self.species[out_compound]}'
                     line_text += ki
                 else:
-                    ki = f"-{self.rate_constants[o]}*"
+                    ki = f"-{self.rate_constants[out]}*"
                     reactants = [self.species[x]
-                                for x in network.NetworkReactions[o].Reactants]
+                                for x in network.NetworkReactions[out].Reactants]
                     specs = "*".join(reactants)
                     line_text += f"{ki}{specs}"
 
@@ -283,6 +313,8 @@ class ModelWriter:
 
     def write_to_module_text(self, numba_decoration = False):
         '''
+        TODO: refactor string building.
+
         Writing a Python script based on the object attributes
         This method creates an importable set of functions and varaibles
         which can be using in model calculations.
@@ -301,12 +333,19 @@ class ModelWriter:
         flow_profile_text = self.write_flow_profile_text(suffix = "\t\t")
         model_text = self.write_model_equation_text()
 
+        nf64 = 'numba.float64'
+        numba_dec = ''
+        numba_dec += f"@numba.jit({nf64}[:]({nf64},{nf64}[:],{nf64}[:]),\n"
+        numba_dec += "\tlocals="
+        numba_dec += f"{'P': {nf64}[:],'F': {nf64}[:,:],'I':{nf64}[:]}"
+        numba_dec += ",nopython=True)"
+
         lines = ["import numpy as np"]
         if numba_decoration:
             lines.append("import numba\n")
             lines.append("")
-            lines.append("@numba.jit(numba.float64[:](numba.float64,numba.float64[:],numba.float64[:]),\n"
-                       "\tlocals={'P': numba.float64[:],'F': numba.float64[:,:],'I':numba.float64[:]},nopython=True)")
+            lines.append(numba_dec)
+
         lines.append("def model_function(time, S, k):")
         lines.append("")
         lines.append("\tP = np.zeros(len(S))")
@@ -323,8 +362,8 @@ class ModelWriter:
         lines.append("")
         lines.append("")
 
-        for m in model_text:
-            lines.append(f"\t{m}")
+        for m_text in model_text:
+            lines.append(f"\t{m_text}")
 
         lines.append("\treturn P")
         lines.append("")
@@ -351,27 +390,27 @@ class ModelWriter:
         mat_text: str
             Rate equations in numpy matrix form.
         '''
-        compounds = [*self.NetworkCompounds]
-        reactions = [*self.NetworkReactions]
+        compounds = [*self.network.NetworkCompounds]
 
         species = self.species
         rate_consts = self.rate_constants
         inflows = self.inputs
-        flow_ins = self.inflows
-        flow_outs = self.outflows
 
-        ratemat = [['0' for x in species] for x in species]
+        ratemat = [['0' for _ in species] for _ in species]
 
-        for c in compounds:
+        for compound in compounds:
+            ind1 = compounds.index(compound)
 
             '''outgoing reactions'''
-            for i in self.NetworkCompounds[c].In:
+            for i in self.network.NetworkCompounds[compound].In:
 
-                reacs = self.NetworkReactions[i].Reactants
+                token = ''
+                ind2 = ind1
+                reacs = self.network.NetworkReactions[i].Reactants
                 ki = rate_consts[i]
-                ind1 = compounds.index(c)
+
                 if len(reacs) == 0:
-                    token = f"(+{ki}*{inflows[c]})/{species[c]}"
+                    token = f"(+{ki}*{inflows[compound]})/{species[compound]}"
                     ind2 = ind1
 
                 if len(reacs) == 1:
@@ -394,101 +433,102 @@ class ModelWriter:
 
                 ratemat[ind1][ind2] += token
 
-            for out in self.NetworkCompounds[c].Out:
+            for out in self.network.NetworkCompounds[compound].Out:
 
-                reacs = self.NetworkReactions[out].Reactants
-                ind1 = compounds.index(c)
+                token = ''
+                ind2 = ind1
+                reacs = self.network.NetworkReactions[out].Reactants
                 ki = rate_consts[out]
+
                 if len(reacs) == 1:
                     token = "-" + ki
                     ind2 = ind1
 
                 if len(reacs) == 2:
                     z = reacs[:]
-                    z.remove(c)
+                    z.remove(compound)
                     n2 = z[0]
                     ind2 = compounds.index(n2)
-                    token = "-" + ki + '*' + species[c]
-
+                    token = "-" + ki + '*' + species[compound]
 
                 if len(reacs) == 3:
                     z = reacs[:]
-                    z.remove(c)
+                    z.remove(compound)
                     n2 = z[0]
                     n3 = z[1]
                     ind2 = compounds.index(n2)
-                    token = "-" + ki + '*' + species[c] + '*' + species[n3]
+                    token = "-" + ki + '*' + species[compound] + '*' + species[n3]
 
                 ratemat[ind1][ind2] += token
 
         mat_text = "["
-        for r in ratemat:
-            mat_text += "[" + ",".join(r) + "],\n"
+        for element in ratemat:
+            mat_text += "[" + ",".join(element) + "],\n"
 
         mat_text = mat_text.strip(",\n") + "]"
 
         return mat_text
 
-def write_Jacobian_matrix_text(network):
-    '''
-    Prototype for writing the Jacobian matrix as text for the model.
-    Parameters
-    ----------
-    network: NorthNet ReactionNetwork object
-        Network to be written.
-
-    Returns
-    -------
-    jac_text: str
-        Jacobian matrix as text.
-    '''
-    compounds = [x for x in self.NetworkCompounds]
-    reactions = [*self.NetworkReactions]
-
-    species = self.species
-    rate_consts = self.rate_constants
-    inflows = self.inputs
-    flow_ins = self.inflows
-    flow_outs = self.outflows
-
-    jac_mat = [['0' for x in species] for x in species]
-
-    for c,comp1 in enumerate(compounds):
-        for c2,comp2 in enumerate(compounds):
-            element = ""
-            for i in self.NetworkCompounds[comp1].In:
-                if '_#0' in i:
-                    pass
-                elif comp2 in self.NetworkReactions[i].Reactants:
-                    reacs = [species[x]
-                                    for x in self.NetworkReactions[i].Reactants
-                                        if x != comp2]
-                    ki = f"+{rate_consts[i]}"
-                    rctnt_elems = "*".join(reacs)
-                    element += f"{ki}*{rctnt_elems}"
-                else:
-                    pass
-
-            for o in self.NetworkCompounds[comp1].Out:
-                if 'Sample' in o:
-                    ki = f'-{flow_outs[o]}'
-                    element += ki
-                elif comp2 in self.NetworkReactions[o].Reactants:
-                    reacs = [species[x]
-                                    for x in self.NetworkReactions[o].Reactants
-                                        if x != comp2]
-                    ki = f"-{rate_consts[o]}"
-                    rctnt_elems = "*".join(reacs)
-                    element += f"{ki}*{rctnt_elems}"
-                else:
-                    pass
-
-            jac_mat[c][c2] += element
-
-    jac_text = ""
-    for r in jac_mat:
-        jac_text += "[" + ",".join(r) + "],\n"
-
-    jac_text = jac_text.strip(",\n") + "]"
-
-    return jac_text
+#def write_Jacobian_matrix_text(network):
+#    '''
+#    Prototype for writing the Jacobian matrix as text for the model.
+#    Parameters
+#    ----------
+#    network: NorthNet ReactionNetwork object
+#        Network to be written.
+#
+#    Returns
+#    -------
+#    jac_text: str
+#        Jacobian matrix as text.
+#    '''
+#    compounds = [x for x in self.NetworkCompounds]
+#    reactions = [*self.NetworkReactions]
+#
+#    species = self.species
+#    rate_consts = self.rate_constants
+#    inflows = self.inputs
+#    flow_ins = self.inflows
+#    flow_outs = self.outflows
+#
+#    jac_mat = [['0' for x in species] for x in species]
+#
+#    for c,comp1 in enumerate(compounds):
+#        for c2,comp2 in enumerate(compounds):
+#            element = ""
+#            for i in self.NetworkCompounds[comp1].In:
+#                if '_#0' in i:
+#                    pass
+#                elif comp2 in self.NetworkReactions[i].Reactants:
+#                    reacs = [species[x]
+#                                    for x in self.NetworkReactions[i].Reactants
+#                                        if x != comp2]
+#                    ki = f"+{rate_consts[i]}"
+#                    rctnt_elems = "*".join(reacs)
+#                    element += f"{ki}*{rctnt_elems}"
+#                else:
+#                    pass
+#
+#            for o in self.NetworkCompounds[comp1].Out:
+#                if 'Sample' in o:
+#                    ki = f'-{flow_outs[o]}'
+#                    element += ki
+#                elif comp2 in self.NetworkReactions[o].Reactants:
+#                    reacs = [species[x]
+#                                    for x in self.NetworkReactions[o].Reactants
+#                                        if x != comp2]
+#                    ki = f"-{rate_consts[o]}"
+#                    rctnt_elems = "*".join(reacs)
+#                    element += f"{ki}*{rctnt_elems}"
+#                else:
+#                    pass
+#
+#            jac_mat[c][c2] += element
+#
+#    jac_text = ""
+#    for r in jac_mat:
+#        jac_text += "[" + ",".join(r) + "],\n"
+#
+#    jac_text = jac_text.strip(",\n") + "]"
+#
+#    return jac_text

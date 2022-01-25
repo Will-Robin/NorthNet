@@ -1,4 +1,11 @@
-def graphviz_layout_NorthNet(network, render_engine = 'fdp'):
+'''
+For generating network layouts from network objects using graphviz.
+'''
+
+from graphviz import Digraph
+from NorthNet.network_visualisation import dictionary_from_layout
+
+def generate_network_layout(network, render_engine = 'fdp'):
     '''
     Uses graphviz to generate a layout from a NorthNet Network.
 
@@ -18,14 +25,13 @@ def graphviz_layout_NorthNet(network, render_engine = 'fdp'):
         NorthNet Network to be represented.
     render_engine: str
         Layout render engine for graphviz.
+
     Returns
     -------
     pos: dict
         Compounds SMILES and Reaction SMILES are keys to their positions.
         {SMILES:[float(x),float(y)]}
     '''
-    import json
-    from graphviz import Digraph
 
     # Create a graph with graphviz to plot a scheme of the network
     dot = Digraph(comment = '',
@@ -33,33 +39,29 @@ def graphviz_layout_NorthNet(network, render_engine = 'fdp'):
                   strict = 'True',
                   format = 'json')
 
-    for n in network.NetworkCompounds:
-        dot.node(n,n)
+    for node in network.NetworkCompounds:
+        dot.node(node,node)
 
-    for r in network.NetworkReactions: # Create edges between the nodes.
+    for reaction in network.NetworkReactions: # Create edges between the nodes.
 
-        reactants = network.NetworkReactions[r].Reactants
-        products = network.NetworkReactions[r].Products
+        reactants = network.NetworkReactions[reaction].Reactants
+        products = network.NetworkReactions[reaction].Products
 
-        dot.node(r, r)
+        dot.node(reaction, reaction)
 
-        for reac in network.NetworkReactions[r].Reactants:
-            dot.edge(reac,r)
+        for reactant in reactants:
+            dot.edge(reactant,reaction)
 
-        for p in network.NetworkReactions[r].Products:
-            dot.edge(r,p)
+        for product in products:
+            dot.edge(reaction,product)
 
     json_string = dot.pipe().decode()
 
-    y = json.loads(json_string)
-
-    pos = {}
-    for o in y['objects']:
-        pos[o['name']] = [float(x) for x in o['pos'].split(',')]
+    pos = dictionary_from_layout(json_string)
 
     return pos
 
-def graphviz_layout_networkx(network, render_engine = 'fdp'):
+def generate_networkx_layout(network, render_engine = 'fdp'):
     '''
     Uses graphviz to generate a layout from a networkx graph.
 
@@ -85,25 +87,19 @@ def graphviz_layout_networkx(network, render_engine = 'fdp'):
         Compounds SMILES and Reaction SMILES are keys to their positions.
         {SMILES:[float(x),float(y)]}
     '''
-    import json
-    from graphviz import Digraph
 
     # Create a graph with graphviz to plot a scheme of the network
     dot = Digraph(comment = '', engine=render_engine, strict = 'True',
                 format = 'json')
 
-    for n in network.nodes: # add in nodes
-        dot.node(n,n)
+    for node in network.nodes: # add in nodes
+        dot.node(node,node)
 
-    for e in network.edges: # Create edges between the nodes.
-        dot.edge(e[0],e[1])
+    for edge in network.edges: # Create edges between the nodes.
+        dot.edge(edge[0],edge[1])
 
     json_string = dot.pipe().decode()
 
-    y = json.loads(json_string)
-
-    pos = {}
-    for o in y['objects']:
-        pos[o['name']] = [float(x) for x in o['pos'].split(',')]
+    pos = dictionary_from_layout(json_string)
 
     return pos

@@ -1,37 +1,9 @@
-def load_compounds_from_csv(fname, name_col = 0, SMILES_col = 1):
-    '''
-    Reads compounds from a .csv file.
+'''
+For loading reaction information fron text files.
+'''
+from NorthNet import Classes
 
-    Parameters
-    ----------
-    fname: str or pathlib Path
-        Path to the file containing nformation.
-    name_col: int
-        Column in the file which will give the keys for the output dict
-    SMILES_col:
-        Column containing the compound SMILES
-
-    Returns
-    -------
-    reagents: dict
-        Dictionary containing extracted compounds.
-        {SMILES string: NorthNet Compound object}
-    '''
-    from NorthNet import Classes
-
-    reagents = {}
-    with open(fname, "r") as f:
-        for c,line in enumerate(f):
-            if c == 0:
-                pass
-            else:
-                ins = line.strip("\n").split(",")
-
-                reagents[ ins[name_col] ] = Classes.Compound(ins[SMILES_col])
-
-    return reagents
-
-def load_reaction_templates_from_csv(fname, delimiter  = '\t'):
+def load_reaction_templates_from_file(fname, delimiter  = '\t'):
     '''
     Reads reaction templates from a .csv file.
 
@@ -56,19 +28,18 @@ def load_reaction_templates_from_csv(fname, delimiter  = '\t'):
         {reaction class name: NorthNet Reaction_Template}
     '''
 
-    from NorthNet import Classes
+    lines = []
+    with open(fname, "r") as file:
+        for c,line in enumerate(file):
+            lines = file.readlines()
 
-    with open(fname, "r") as f:
-        for c,line in enumerate(f):
-            lines = f.readlines()
-            
     reaction_templates = {}
     for c,line in enumerate(lines):
         if c == 0:
             pass
         else:
             ins = line.strip("\n").split(delimiter)
-            reaction_templates[ ins[0] ] = Classes.Reaction_Template(ins[0],
+            reaction_templates[ ins[0] ] = Classes.ReactionTemplate(ins[0],
                                                         ins[3],
                                                         ins[1].split("."),
                                                         ins[2].split("."))
