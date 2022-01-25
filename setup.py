@@ -2,7 +2,7 @@ from setuptools import setup, version
 
 setup(
     name="NorthNet",
-    version="0.0",
+    version="0.2",
     author="William E. Robinson",
     packages = ["NorthNet"],
 )
