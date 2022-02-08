@@ -9,8 +9,10 @@ from NorthNet.Classes.ReactionOutput import ReactionOutput
 from NorthNet.Classes.Network import Network
 from NorthNet.Classes.SubstructureNetwork import SubstructureNetwork
 
-from NorthNet.Classes.data_classes import Experiment_Information
+from NorthNet.Classes.data_classes import ExperimentInformation
 from NorthNet.Classes.data_classes import DataReport
 from NorthNet.Classes.data_classes import DataSet
+
+from NorthNet.Classes.ExperimentConditions import ExperimentConditions
 
 from NorthNet.Classes.model_classes import ModelWriter

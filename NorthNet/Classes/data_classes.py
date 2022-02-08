@@ -1,7 +1,7 @@
 import numpy as np
 from pathlib import Path
 
-class Experiment_Information:
+class ExperimentInformation:
     def __init__(self, name, path, parameters, modulation):
         '''
         name: str
