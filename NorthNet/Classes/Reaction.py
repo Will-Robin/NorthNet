@@ -55,8 +55,8 @@ class Reaction:
             self.ReactionTemplate = reaction_template
         self.Data = info
 
-        self.Reactants = [Chem.MolToSmiles(x, canonical = True)
+        self.Reactants = [Chem.MolToSmiles(Chem.MolFromSmiles(Chem.MolToSmiles(x, canonical = True)))
                                         for x in rdkit_reaction.GetReactants()]
-        self.Products  = [Chem.MolToSmiles(x, canonical = True)
+        self.Products  = [Chem.MolToSmiles(Chem.MolFromSmiles(Chem.MolToSmiles(x, canonical = True)))
                                         for x in rdkit_reaction.GetProducts()]
 
