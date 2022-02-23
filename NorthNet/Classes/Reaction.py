@@ -4,12 +4,14 @@ from rdkit.Chem import rdChemReactions
 
 from NorthNet import Classes
 
+
 class Reaction:
-    '''
+    """
     A class representing chemical reactions
-    '''
-    def __init__(self, rdkit_reaction, reaction_template = None, info = {}):
-        '''
+    """
+
+    def __init__(self, rdkit_reaction, reaction_template=None, info={}):
+        """
 
         Parameters
         ----------
@@ -31,32 +33,46 @@ class Reaction:
             Reaction template for the reaction. Defaults to None
         self.info: dict
             Dictionary of information (e.g. database entries)
-        '''
+        """
 
-        assert isinstance(rdkit_reaction, rdChemReactions.ChemicalReaction), \
-            '''class Reaction:
-            rdkit_reaction arg should be an RDKit Reaction object.'''
+        assert isinstance(
+            rdkit_reaction, rdChemReactions.ChemicalReaction
+        ), """class Reaction:
+            rdkit_reaction arg should be an RDKit Reaction object."""
 
         if reaction_template is not None:
-            assert isinstance(reaction_template, Classes.ReactionTemplate), \
-                '''class Reaction:
+            assert isinstance(
+                reaction_template, Classes.ReactionTemplate
+            ), """class Reaction:
                 reaction_template should be None or a NortNet
-                ReactionTemplate object.'''
+                ReactionTemplate object."""
 
-        assert isinstance(info, dict), \
-            '''class Reaction: info arg should be a dict.'''
+        assert isinstance(info, dict), """class Reaction: info arg should be a dict."""
 
         self.Reaction = rdkit_reaction
         self.ReactionSMILES = AllChem.ReactionToSmiles(rdkit_reaction)
 
         if reaction_template is None:
-            self.ReactionTemplate = Classes.ReactionTemplate('none', '', [], [])
+            self.ReactionTemplate = Classes.ReactionTemplate("none", "", [], [])
         else:
             self.ReactionTemplate = reaction_template
         self.Data = info
 
-        self.Reactants = [Chem.MolToSmiles(x, canonical = True)
-                                        for x in rdkit_reaction.GetReactants()]
-        self.Products  = [Chem.MolToSmiles(x, canonical = True)
-                                        for x in rdkit_reaction.GetProducts()]
-
+        self.Reactants = [
+            Chem.MolToSmiles(
+                Chem.MolFromSmiles(
+                    Chem.MolToSmiles(x, canonical=True)
+                        ), 
+                    canonical=True
+                    )
+            for x in rdkit_reaction.GetReactants()
+        ]
+        self.Products = [
+            Chem.MolToSmiles(
+                Chem.MolFromSmiles(
+                    Chem.MolToSmiles(x, canonical=True)
+                        ), 
+                    canonical=True
+                    )
+            for x in rdkit_reaction.GetProducts()
+        ]
