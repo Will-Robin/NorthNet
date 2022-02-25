@@ -8,11 +8,11 @@ class Reaction:
 
     def __init__(self, reaction_smiles, reaction_template = None, info = {}):
         """
-
         Parameters
         ----------
         reaction_smiles: str
-            Reaction object for the reaction.
+            Reaction object for the reaction. Please provide a valid reaction
+            SMILES string with canonicalised SMILES reactants and products.
         reaction_template: NorthNet Reaction_Template object
             Reaction template which created the reaction.
         info: dict
