@@ -1,6 +1,25 @@
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
+def reaction_smiles_split(reaction_smiles):
+    """
+    Parameters
+    ----------
+    reaction_smiles: str
+
+
+    Returns
+    -------
+    reactants, products: tuple(list[str])
+    """
+
+    split_rxn = reaction_smiles.split(">>")
+
+    reactants = split_rxn[0].split(".")
+    products = split_rxn[1].split(".")
+
+    return reactants, products
+
 def smiles_to_rdkit_reaction(smiles):
     '''
     For converting reaction SMILES strings into RDKit AllChem.ChemicalReaction 

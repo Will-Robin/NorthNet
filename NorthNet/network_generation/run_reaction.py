@@ -42,9 +42,11 @@ def run_rdkit_reaction(reactant_compounds, reaction_template):
         [rxn.AddReactantTemplate(r) for r in reactants]
         [rxn.AddProductTemplate(p) for p in product_set]
 
+        reaction_SMILES = AllChem.ReactionToSmiles(rxn)
+
         reactions.append(
                          Classes.Reaction(
-                                          rxn,
+                                          reaction_SMILES,
                                           reaction_template = reaction_template
                                           )
                         )
