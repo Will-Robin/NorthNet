@@ -1,20 +1,23 @@
 from rdkit import Chem
 
+
 class Substructure:
-    '''
+    """
     Class to store substructures.
-    '''
-    def __init__(self,SMARTS):
-        '''
+    """
+
+    def __init__(self, SMARTS):
+        """
         Parameters
         ----------
         SMARTS: str
             SMARTS corresponding to substructure.
-        '''
+        """
 
-        assert isinstance(SMARTS, str), \
-            '''class Substructure:
-            argument should be a SMARTS string.'''
+        assert isinstance(
+            SMARTS, str
+        ), """class Substructure:
+            argument should be a SMARTS string."""
 
         self.Mol = Chem.MolFromSmarts(SMARTS)
 
@@ -25,4 +28,3 @@ class Substructure:
 
         self.In = []
         self.Out = []
-

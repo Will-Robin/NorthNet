@@ -3,8 +3,9 @@ from rdkit.Chem import AllChem
 from NorthNet import Classes
 from NorthNet.network_generation.molecule_operations import editing
 
+
 def run_rdkit_reaction(reactant_compounds, reaction_template):
-    '''
+    """
     Performs a chemical reaction.
 
     Mapping can be added:
@@ -25,7 +26,7 @@ def run_rdkit_reaction(reactant_compounds, reaction_template):
     -------
     reactions: list
         A list of NorthNet Reaction objects.
-    '''
+    """
 
     reactions = []
     reactants = tuple(r.Mol for r in reactant_compounds)
@@ -38,17 +39,14 @@ def run_rdkit_reaction(reactant_compounds, reaction_template):
             product = editing.incorrect_chiral_H_solve(product)
             Chem.SanitizeMol(product)
 
-        rxn = AllChem.ChemicalReaction() # Create an empty chemical reaction
+        rxn = AllChem.ChemicalReaction()  # Create an empty chemical reaction
         [rxn.AddReactantTemplate(r) for r in reactants]
         [rxn.AddProductTemplate(p) for p in product_set]
 
         reaction_SMILES = AllChem.ReactionToSmiles(rxn)
 
         reactions.append(
-                         Classes.Reaction(
-                                          reaction_SMILES,
-                                          reaction_template = reaction_template
-                                          )
-                        )
+            Classes.Reaction(reaction_SMILES, reaction_template=reaction_template)
+        )
 
     return reactions

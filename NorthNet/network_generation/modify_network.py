@@ -1,8 +1,9 @@
 from rdkit import Chem
 from NorthNet import Classes
 
+
 def add_flow_inputs(network, inputs):
-    '''
+    """
     Add flow inputs into network.
 
     Parameters
@@ -15,11 +16,11 @@ def add_flow_inputs(network, inputs):
     Returns
     -------
     None
-    '''
+    """
 
     add_inputs = []
     for inp in inputs:
-        r_obj = Classes.ReactionInput("{}_#0>>{}".format(inp,inp))
+        r_obj = Classes.ReactionInput("{}_#0>>{}".format(inp, inp))
         add_inputs.append(r_obj)
 
     network.add_inputs(add_inputs)
@@ -31,8 +32,9 @@ def add_flow_inputs(network, inputs):
 
     network.add_outputs(add_outputs)
 
+
 def skip_compound(network, substructure):
-    '''
+    """
     TODo: refactor
 
     Finds compounds in the network which have the specified substructure and
@@ -49,7 +51,7 @@ def skip_compound(network, substructure):
     Returns
     -------
     None
-    '''
+    """
 
     reaction_removal_list = []
     compounds_removal_list = []
@@ -91,8 +93,8 @@ def skip_compound(network, substructure):
                             ins.append(product.SMILES)
 
                     # Process the tokens for the new reaction
-                    new_reactants = ins+in_rs
-                    new_products = outs+out_ps
+                    new_reactants = ins + in_rs
+                    new_products = outs + out_ps
 
                     new_reactants.sort()
                     new_products.sort()
@@ -103,7 +105,7 @@ def skip_compound(network, substructure):
                     # both these reactions (which were not tagged for removal
                     LHS = ".".join(new_reactants)
                     RHS = ".".join(new_products)
-                    re_str = "{}>>{}".format(LHS,RHS)
+                    re_str = "{}>>{}".format(LHS, RHS)
 
                     rdkit_reaction = Chem.ReactionFromSmiles(re_str)
                     new_reaction = Classes.Reaction(rdkit_reaction)
@@ -125,4 +127,3 @@ def skip_compound(network, substructure):
 
     for compound in set(compounds_removal_list):
         del network.NetworkCompounds[compound]
-

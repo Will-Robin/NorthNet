@@ -1,7 +1,8 @@
 from itertools import compress
 
+
 def get_reactive_compounds(species_list, substructures):
-    '''
+    """
     Find species with the given subtructure.
     Returns a list of matching compounds
 
@@ -18,17 +19,18 @@ def get_reactive_compounds(species_list, substructures):
     -------
     matches: list
         List of NorthNet Compound objects which contain the substructure.
-    '''
+    """
     matches = []
     # testing each molecule in the list of species for reaction group matches
-    for mol in species_list: 
+    for mol in species_list:
         for substructure in substructures:
             if mol.Mol.HasSubstructMatch(substructure):
-                matches.append(mol) 
+                matches.append(mol)
     return matches
 
+
 def remove_invalid_reactions(reactions, invalid_substructures):
-    '''
+    """
     Removes reactions with products that contain invalid substructures.
 
     Parameters
@@ -43,7 +45,7 @@ def remove_invalid_reactions(reactions, invalid_substructures):
     reactions: list
         list of reactions with those that produce
         invalid substructures removed.
-    '''
+    """
 
     sortlist = []
     for reaction in reactions:
@@ -64,8 +66,9 @@ def remove_invalid_reactions(reactions, invalid_substructures):
 
     return reactions
 
+
 def check_reaction_input(reactant_list, reactive_substructs):
-    '''
+    """
     Checks for valid reaction input by checking the reactants
     contain the supplied substructures in the same order.
 
@@ -81,18 +84,20 @@ def check_reaction_input(reactant_list, reactive_substructs):
     Returns
     -------
     bool
-        Whether the supplied list of compounds is compatible with the 
+        Whether the supplied list of compounds is compatible with the
         reaction substructure order supplied.
-    '''
+    """
 
-    test_list = [r.Mol.HasSubstructMatch(s)
-                            for r,s in zip(reactant_list,reactive_substructs)]
+    test_list = [
+        r.Mol.HasSubstructMatch(s) for r, s in zip(reactant_list, reactive_substructs)
+    ]
 
     return all(test_list)
 
+
 def check_reaction_occurence(reactants, network, reaction_template):
-    '''
-    Check if a reaction template has already been applied to a compound in a 
+    """
+    Check if a reaction template has already been applied to a compound in a
     reaction network.
 
     Parameters
@@ -105,7 +110,7 @@ def check_reaction_occurence(reactants, network, reaction_template):
     -------
     bool
         Whether reaction type has been applied to the compound or not.
-    '''
+    """
 
     if not isinstance(reactants, tuple):
         # Written since Python was passing in the variable
@@ -116,7 +121,7 @@ def check_reaction_occurence(reactants, network, reaction_template):
 
     result = []
     for reactant in reactants:
-        used_reactions = reactant.Out 
+        used_reactions = reactant.Out
         used_classes = [network.get_reaction_name(r) for r in used_reactions]
         reaction_performed = reaction_name in used_classes
         result.append(reaction_performed)

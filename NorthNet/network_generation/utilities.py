@@ -1,7 +1,8 @@
 from rdkit import Chem
 
+
 def cleanup(reactions):
-    '''
+    """
     Used to clear up the output of rdkit reaction function, parsing multiple
     reaction outcomes. Not perfect.
 
@@ -14,39 +15,39 @@ def cleanup(reactions):
     -------
     reactions_out: list
         list of cleaned reaction SMILES strings
-    '''
+    """
 
-    reactions = [r.replace('[H+][O-]','O')    for r in reactions]
-    reactions = [r.replace('[O-][H+]','O')    for r in reactions]
-    reactions = [r.replace("/"   ,"") for r in reactions]
-    reactions = [r.replace( r"\\"  ,"") for r in reactions]
-
+    reactions = [r.replace("[H+][O-]", "O") for r in reactions]
+    reactions = [r.replace("[O-][H+]", "O") for r in reactions]
+    reactions = [r.replace("/", "") for r in reactions]
+    reactions = [r.replace(r"\\", "") for r in reactions]
 
     reactions_out = []
-    for _,reaction in enumerate(reactions):
+    for _, reaction in enumerate(reactions):
         # Split the reaction up for inspection
         LHS = reaction.split(">>")[0].split(".")
         RHS = reaction.split(">>")[1].split(".")
-        ins = ''
+        ins = ""
         for l_elem in LHS:
             mol = Chem.MolFromSmiles(l_elem)
-            smiles = Chem.MolToSmiles(mol, canonical = True)
-            ins += smiles + '.'
+            smiles = Chem.MolToSmiles(mol, canonical=True)
+            ins += smiles + "."
 
-        ins = ins.strip('.')
-        ins += '>>'
+        ins = ins.strip(".")
+        ins += ">>"
 
         for r_elem in RHS:
             mol = Chem.MolFromSmiles(r_elem)
-            smiles = Chem.MolToSmiles(mol, canonical = True)
-            ins += smiles + '.'
+            smiles = Chem.MolToSmiles(mol, canonical=True)
+            ins += smiles + "."
 
-        reactions_out.append(ins.strip('.'))
+        reactions_out.append(ins.strip("."))
 
     return reactions_out
 
+
 def remove_network_symmetry(network):
-    '''
+    """
     Removes left handed sugars from the network based on the rule:
     if the stereocentre furthest from the carbonyl is S, delete the species and
     its associated reactions from the network. Furthest from the carbonyl is
@@ -59,16 +60,14 @@ def remove_network_symmetry(network):
     Returns
     -------
     None
-    '''
+    """
 
     node_remove = []
     edge_remove = []
 
     for compound in [*network.NetworkCompounds]:
 
-        ch_centres = Chem.FindMolChiralCenters(
-                                        network.NetworkCompounds[compound].Mol
-                                        )
+        ch_centres = Chem.FindMolChiralCenters(network.NetworkCompounds[compound].Mol)
 
         if len(ch_centres) > 0 and ch_centres[-1][-1] == "S":
             node_remove.append(compound)
@@ -95,4 +94,3 @@ def remove_network_symmetry(network):
 
     for removal in node_remove:
         del network.NetworkCompounds[removal]
-

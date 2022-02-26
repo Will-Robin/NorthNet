@@ -1,40 +1,42 @@
 import numpy as np
 from pathlib import Path
 
+
 class ExperimentInformation:
     def __init__(self, name, path, parameters, modulation):
-        '''
+        """
         name: str
         path: str
         parameters: dict
-        '''
+        """
         self.name = name
         self.path = path
         self.parameters = parameters
         self.modulation = modulation
 
+
 class DataReport:
-    def __init__(self, file = ''):
-        '''
+    def __init__(self, file=""):
+        """
         file: pathlib Path or str
             Path to file
-        '''
-        self.filename = 'not specified'
-        self.experiment_code = 'not specified'
+        """
+        self.filename = "not specified"
+        self.experiment_code = "not specified"
         self.conditions = {}
         self.analysis_details = {}
         self.series_values = np.array([])
-        self.series_unit = 'not specified'
+        self.series_unit = "not specified"
         self.data = {}
         self.errors = {}
 
-        if file == '':
+        if file == "":
             pass
         else:
             self.read_from_file(file)
 
     def import_file_section(self, file, start_token, end_token):
-        '''
+        """
         Parameters
         ----------
         file: path to file
@@ -42,13 +44,13 @@ class DataReport:
             String in line to start reading file from.
         end_token:
             String in line to end reading file from.
-        '''
+        """
 
-        spl_lin = lambda x : [e for e in x.strip('\n').split(',') if e != '']
+        spl_lin = lambda x: [e for e in x.strip("\n").split(",") if e != ""]
         readstate = False
         c_set = []
-        with open(file, 'r', encoding = 'latin-1') as f:
-            for _,line in enumerate(f):
+        with open(file, "r", encoding="latin-1") as f:
+            for _, line in enumerate(f):
                 if start_token in line:
                     readstate = True
                     line = next(f)
@@ -61,26 +63,25 @@ class DataReport:
         return c_set
 
     def read_from_file(self, file):
-        '''
+        """
         Parameters
         ----------
         file: pathlib Path or str
-        '''
-        spl_lin = lambda x : [e for e in x.strip('\n').split(',') if e != '']
+        """
+        spl_lin = lambda x: [e for e in x.strip("\n").split(",") if e != ""]
 
         if type(file) == str:
             file = Path(file)
 
         self.filename = file.name
 
-        with open(file, 'r', encoding = 'latin-1') as f:
+        with open(file, "r", encoding="latin-1") as f:
             for line in f:
                 ins = spl_lin(line)
-                if 'Dataset' in line:
+                if "Dataset" in line:
                     self.experiment_code = ins[1]
 
-        condset = self.import_file_section(file, "start_conditions",
-                                           "end_conditions")
+        condset = self.import_file_section(file, "start_conditions", "end_conditions")
 
         for c in condset:
             entry = [float(x) for x in c[1:]]
@@ -94,7 +95,7 @@ class DataReport:
         transposed_datalines = [list(i) for i in zip(*dataset)]
         d_out = {}
         for s in transposed_datalines:
-            d_out[s[0]] = np.array([0 if x == 'nan' else float(x) for x in s[1:]])
+            d_out[s[0]] = np.array([0 if x == "nan" else float(x) for x in s[1:]])
 
         self.series_unit = dataset[0][0]
         self.series_values = d_out[self.series_unit]
@@ -106,22 +107,25 @@ class DataReport:
         errors = self.import_file_section(file, "start_errors", "end_errors")
 
         if len(errors) == 0:
-            self.errors = {d:np.zeros(len(self.series_values)) for d in self.data}
+            self.errors = {d: np.zeros(len(self.series_values)) for d in self.data}
         else:
             transposed_error_lines = [list(i) for i in zip(*errors)]
             errors_out = {}
             for s in transposed_error_lines:
-                errors_out[s[0]] = np.array([0 if x == 'nan' else float(x) for x in s[1:]])
+                errors_out[s[0]] = np.array(
+                    [0 if x == "nan" else float(x) for x in s[1:]]
+                )
             del errors_out[self.series_unit]
             self.errors = errors_out
 
-        analysis = self.import_file_section(file, "start_analysis_details",
-                                                         "end_analysis_details")
+        analysis = self.import_file_section(
+            file, "start_analysis_details", "end_analysis_details"
+        )
         for a in analysis:
             self.analysis_details[a[0]] = [x for x in a[1:]]
 
     def rows_from_dict(self, dict_container):
-        '''
+        """
         Converts the keys and values in a dict_container
         into rows of a .csv file, organised in a list.
 
@@ -136,24 +140,24 @@ class DataReport:
         Returns
         -------
         output_lines: list
-        '''
+        """
 
         output_lines = []
         for c in dict_container:
-            line_str = f'{c},'
+            line_str = f"{c},"
             if type(dict_container[c]) == float:
                 line_str += f"{dict_container[c]}"
             else:
                 for x in dict_container[c]:
                     line_str += f"{x},"
 
-            line_str = line_str.strip(',')
+            line_str = line_str.strip(",")
             output_lines.append(line_str)
 
         return output_lines
 
     def columns_from_dict(self, dict_container):
-        '''
+        """
         Converts the keys and values in a dict_container
         into columns of a .csv file, organised in a list.
 
@@ -168,19 +172,19 @@ class DataReport:
         Returns
         -------
         output_lines: list
-        '''
+        """
 
         output_lines = []
         header = [*dict_container]
 
-        output_lines.append(','.join(header))
+        output_lines.append(",".join(header))
 
         for c, _ in enumerate(dict_container[header[0]]):
-            line_str = ''
+            line_str = ""
             for h in header:
                 line_str += f"{dict_container[h][c]},"
 
-            line_str = line_str.strip(',')
+            line_str = line_str.strip(",")
             output_lines.append(line_str)
 
         return output_lines
@@ -211,40 +215,40 @@ class DataReport:
         output_lines.extend(self.columns_from_dict(error_section))
         output_lines.append("end_errors")
 
-        text = '\n'.join(output_lines)
+        text = "\n".join(output_lines)
 
         return text
 
-    def write_to_file(self, filename = '', path = None):
-        '''
+    def write_to_file(self, filename="", path=None):
+        """
         Parameters
         ----------
         filename: str
             name for file
         path: pathlib Path object
             Path to folder for file storage.
-        '''
+        """
 
-        if filename == '':
+        if filename == "":
             filename = self.filename
-        elif not filename.endswith('.csv'):
-            filename = filename + '.csv'
+        elif not filename.endswith(".csv"):
+            filename = filename + ".csv"
         if path == None:
             fname = filename
         else:
-            fname = path/filename
+            fname = path / filename
 
-        with open(fname, 'w') as outfile:
+        with open(fname, "w") as outfile:
             outfile.write(self.to_string())
 
     def find_repeat_data_entries(self):
-        '''
+        """
         Find compound entries which are repeated in self.data
-        '''
+        """
         entries = []
         repeat_entries = []
         for d in self.data:
-            token = d.split(' ')[0]
+            token = d.split(" ")[0]
             if token in entries:
                 repeat_entries.append(token)
             entries.append(token)
@@ -252,10 +256,11 @@ class DataReport:
         return list(set(repeat_entries))
 
     def remove_repeat_entries(self):
-        '''
+        """
         Remove compound entries which are repeated in self.data
-        '''
+        """
         import numpy as np
+
         # deleting duplicate entries: taking the entry with the higher signal using the
         # signal sum as a discriminant.
         repeat_entries = self.find_repeat_data_entries()
@@ -267,35 +272,36 @@ class DataReport:
                     compare_keys.append(d)
 
             checkline = np.zeros(len(compare_keys))
-            for c,comp in enumerate(compare_keys):
+            for c, comp in enumerate(compare_keys):
                 checkline[c] = np.sum(self.data[comp])
 
             i_min = np.argmin(checkline)
 
             del self.data[compare_keys[i_min]]
 
-    def remove_specific_entries(self,remove_list):
-        '''
+    def remove_specific_entries(self, remove_list):
+        """
         remove entries in remove list from self.data
 
         Parameters
         ----------
         remove_list: list
             List of entries to remove from self.data
-        '''
+        """
         for r in remove_list:
             del self.data[r]
 
     def remove_entries_below_threshold(self, threshold):
-        '''
+        """
         remove entries whose maximum value does not exceed threshold
 
         Parameters
         ----------
         threshold: float
             threshold below which entries will be removed.
-        '''
+        """
         import numpy as np
+
         # remove entries whose concentrations/integrals do not cross a defined boundary
         del_list = []
         for d in self.data:
@@ -304,15 +310,17 @@ class DataReport:
 
         self.remove_specific_entries(del_list)
 
+
 class DataSet:
-    '''
+    """
     Container for multiple data reports
-    '''
-    def __init__(self, data_reports = []):
-        '''
+    """
+
+    def __init__(self, data_reports=[]):
+        """
         data_reports: list of NorthNet DataReport objects
             data reports to create the data set
-        '''
+        """
         self.data_reports = {}
         self.compounds = []
 
@@ -322,22 +330,21 @@ class DataSet:
             for d in data_reports:
                 self.add_data_report(d)
 
-
     def add_data_report(self, data_report):
-        '''
+        """
         Add data report to DataSet
 
         data_report: NorthNet DataReport
             DataReport to be added.
-        '''
-        self.data_reports[len(self.data_reports)+1] = data_report
+        """
+        self.data_reports[len(self.data_reports) + 1] = data_report
 
         for d in data_report.data:
             if d not in self.compounds:
                 self.compounds.append(d)
 
-    def find_entry(self,entry_name):
-        '''
+    def find_entry(self, entry_name):
+        """
         Get the series_values and values of a given compound.
 
         entry_name: str
@@ -345,7 +352,7 @@ class DataSet:
 
         Returns: tuple of 1D numpy arrays
             (series_values, variable)
-        '''
+        """
         x_ax = np.array([])
         y_ax = np.array([])
         for d in self.data_reports:
@@ -356,7 +363,7 @@ class DataSet:
         return x_ax, y_ax
 
     def get_entry(self, entry_name):
-        '''
+        """
         Wrapper for find_entry(). Sorts the arrays so x_ax values are increasing
         with increasing index.
 
@@ -365,7 +372,7 @@ class DataSet:
 
         Returns: tuple of 1D numpy arrays
             (series_values, variable)
-        '''
+        """
 
         x_ax, y_ax = self.find_entry(entry_name)
 
@@ -375,8 +382,8 @@ class DataSet:
 
         return x_ax, y_ax
 
-    def get_entry_indices(self,entry):
-        '''
+    def get_entry_indices(self, entry):
+        """
         Get the indices which order the data so x_ax values are increasing
         with increasing index.
 
@@ -385,7 +392,7 @@ class DataSet:
 
         returns: i
             numpy array of int
-        '''
+        """
         x_ax, _ = self.find_entry(entry)
         i = np.argsort(x_ax)
         return i

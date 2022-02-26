@@ -1,14 +1,11 @@
-'''
+"""
 For loading compound objects from a text file.
-'''
+"""
 from NorthNet import Classes
 
-def load_compounds_from_file(fname,
-                            name_col = 0,
-                            SMILES_col = 1,
-                            delimiter = ','
-                            ):
-    '''
+
+def load_compounds_from_file(fname, name_col=0, SMILES_col=1, delimiter=","):
+    """
     Reads compounds from a .csv file.
 
     Parameters
@@ -25,11 +22,11 @@ def load_compounds_from_file(fname,
     reagents: dict
         Dictionary containing extracted compounds.
         {SMILES string: NorthNet Compound object}
-    '''
+    """
 
     reagents = {}
     with open(fname, "r") as file:
-        for c,line in enumerate(file):
+        for c, line in enumerate(file):
             if c == 0:
                 pass
             else:

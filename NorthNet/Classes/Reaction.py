@@ -1,12 +1,13 @@
 from NorthNet import Classes
 from NorthNet.text_parsing import conversions as conv
 
+
 class Reaction:
     """
     A class representing chemical reactions
     """
 
-    def __init__(self, reaction_smiles, reaction_template = None, info = {}):
+    def __init__(self, reaction_smiles, reaction_template=None, info={}):
         """
         Parameters
         ----------
@@ -36,25 +37,19 @@ class Reaction:
         if reaction_template is not None:
             assert isinstance(
                 reaction_template, Classes.ReactionTemplate
-        ), """class Reaction:
+            ), """class Reaction:
             reaction_template should be None or a NortNet
             ReactionTemplate object."""
 
-        assert isinstance(
-                info, 
-                dict
-        ), """class Reaction: info arg should be a dict."""
+        assert isinstance(info, dict), """class Reaction: info arg should be a dict."""
 
         self.ReactionSMILES = reaction_smiles
 
         if reaction_template is None:
-            self.ReactionTemplate = Classes.ReactionTemplate('none', '', [], [])
+            self.ReactionTemplate = Classes.ReactionTemplate("none", "", [], [])
         else:
             self.ReactionTemplate = reaction_template
 
         self.Data = info
 
-        self.Reactants, self.Products = conv.reaction_smiles_split(
-                                                                reaction_smiles
-                                                                )
-
+        self.Reactants, self.Products = conv.reaction_smiles_split(reaction_smiles)

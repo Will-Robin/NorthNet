@@ -1,8 +1,9 @@
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
+
 def canonicalise(smiles):
-    '''
+    """
     Parameters
     ----------
     smiles: str
@@ -13,12 +14,13 @@ def canonicalise(smiles):
     str
         Canonicalised smiles.
 
-    '''
+    """
     mol = Chem.MolFromSmiles(smiles)
-    return Chem.MolToSmiles(mol, isomericSmiles = True)
+    return Chem.MolToSmiles(mol, isomericSmiles=True)
+
 
 def mirror_smiles(smiles):
-    '''
+    """
     Reverses enantiomers via string replacement in SMILES
 
     Parameters
@@ -29,17 +31,18 @@ def mirror_smiles(smiles):
     -------
     m1: str
         Mirrored smiles
-    '''
+    """
 
-    molecule_1 = smiles.replace("@@","ZY")
-    molecule_2 = molecule_1.replace("@","@@")
-    molecule_3 = molecule_2.replace("ZY","@")
+    molecule_1 = smiles.replace("@@", "ZY")
+    molecule_2 = molecule_1.replace("@", "@@")
+    molecule_3 = molecule_2.replace("ZY", "@")
     canonicalised_molecule = canonicalise(molecule_3)
 
     return canonicalised_molecule
 
+
 def mirror(compound):
-    '''
+    """
     Reverses the chirality of a NorthNet Compound object.
 
     Parameters
@@ -49,15 +52,16 @@ def mirror(compound):
     Returns
     -------
     None
-    '''
+    """
 
     m1 = mirror_smiles(compound.SMILES)
 
     compound.Mol = Chem.MolFromSmiles(m1)
-    compound.SMILES = Chem.MolToSmiles(compound.Mol, isomericSmiles = True)
+    compound.SMILES = Chem.MolToSmiles(compound.Mol, isomericSmiles=True)
+
 
 def incorrect_chiral_H_solve(mol):
-    '''
+    """
     Checks for carbon centres which exceed a total valence of 4, sets
     their chirality to unspecified and removes explicit hydrogens.
 
@@ -69,13 +73,11 @@ def incorrect_chiral_H_solve(mol):
     -------
     mol: rdkit mol object
         Cleaned molecule
-    '''
-    mol.UpdatePropertyCache(strict = False)
-    Chem.AssignStereochemistry(mol,
-                            cleanIt=True,
-                            force=True,
-                            flagPossibleStereoCenters=True
-                            )
+    """
+    mol.UpdatePropertyCache(strict=False)
+    Chem.AssignStereochemistry(
+        mol, cleanIt=True, force=True, flagPossibleStereoCenters=True
+    )
 
     for atom in mol.GetAtoms():
         if atom.GetSymbol() == "C" and atom.GetTotalValence() > 4:

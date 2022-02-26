@@ -1,5 +1,5 @@
 def remove_reactions_by_product_substruct(network, substruct):
-    '''
+    """
     Remove the reactions in a nework if any of their products contain a defined
     substructure.
 
@@ -13,7 +13,7 @@ def remove_reactions_by_product_substruct(network, substruct):
     Returns
     -------
     None
-    '''
+    """
 
     remove_reactions = []
 

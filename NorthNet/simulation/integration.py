@@ -1,14 +1,9 @@
 import numpy as np
 from scipy.integrate import ode
 
-def integrate_model(
-                    function,
-                    initial_species_concentrations,
-                    k,
-                    time,
-                    time_interval
-                    ):
-    '''
+
+def integrate_model(function, initial_species_concentrations, k, time, time_interval):
+    """
     Wrapper for scipy ode
     uses old SciPy API (as of June 2021)
 
@@ -33,20 +28,19 @@ def integrate_model(
 
     calc: numpy array
         Calculated time progresses
-    '''
+    """
 
-    integrator = ode(function).set_integrator('lsoda')
+    integrator = ode(function).set_integrator("lsoda")
     integrator.set_initial_value(initial_species_concentrations)
     integrator.set_f_params(k)
 
     calc = []
     time_arr = []
     while integrator.successful() and integrator.t <= time:
-        calc.append(integrator.integrate(integrator.t+time_interval))
-        time_arr.append(integrator.t+time_interval)
+        calc.append(integrator.integrate(integrator.t + time_interval))
+        time_arr.append(integrator.t + time_interval)
 
     calc = np.array(calc)
     time_arr = np.array(time_arr)
 
     return time_arr, calc
-
