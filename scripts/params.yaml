@@ -1,0 +1,69 @@
+network-name: formose-reaction
+network-description: A formose reaction generated up to C6 compounds.
+reaction-smarts-file: reaction_SMARTS_templates.tsv
+# Surround SMILES with "" ensures that they are parsed as strings.
+initiator-smiles:
+  - "O"
+  - "[OH-]"
+  - "O=CCO"
+  - "C=O"
+  - "OC=CO"
+  - "OC1COC(CO1)O"
+iterations: 6
+reaction-rules:
+  - deprotonation-t1
+  - deprotonation-t2
+  - deprotonation-t3
+  - deprotonation-t4
+  - deprotonation-t5
+  - deprotonation-t6
+  - deprotonation-t7
+  - deprotonation-t8
+
+  - protonation-t1-@
+  - protonation-t1-@@
+  - protonation-t2-@
+  - protonation-t2-@@
+  - protonation-t3-@
+  - protonation-t3-@@
+  - protonation-t4-@
+  - protonation-t4-@@
+  - protonation-t5-@
+  - protonation-t5-@@
+  - protonation-t6-@
+  - protonation-t6-@@
+  - protonation-t7-@
+  - protonation-t7-@@
+  - protonation-t8-@
+  - protonation-t8-@@
+
+  - aldol_addition_fast_pt_C=O-t1-@
+  - aldol_addition_fast_pt_C=O-t1-@@
+  - aldol_addition_fast_pt_C=O-t2-@
+  - aldol_addition_fast_pt_C=O-t2-@@
+  - aldol_addition_fast_pt_C=O-t3-@
+  - aldol_addition_fast_pt_C=O-t3-@@
+  - aldol_addition_fast_pt_C=O-t4-@
+  - aldol_addition_fast_pt_C=O-t4-@@
+  - aldol_addition_fast_pt_C=O-t5-@
+  - aldol_addition_fast_pt_C=O-t5-@@
+  - aldol_addition_fast_pt_C=O-t6-@
+  - aldol_addition_fast_pt_C=O-t6-@@
+  - aldol_addition_fast_pt_C=O-t7-@
+  - aldol_addition_fast_pt_C=O-t7-@@
+  - aldol_addition_fast_pt_C=O-t8-@
+  - aldol_addition_fast_pt_C=O-t8-@@
+
+  - aldol_sugar_addition_fast_pt-t1-@@-@
+  - aldol_sugar_addition_fast_pt-t2-@@-@
+  - aldol_sugar_addition_fast_pt-t1-@@-@@
+  - aldol_sugar_addition_fast_pt-t2-@@-@@
+  - aldol_sugar_addition_fast_pt-t2-@-@
+  - aldol_sugar_addition_fast_pt-t1-@-@
+  - aldol_sugar_addition_fast_pt-t1-@-@@
+  - aldol_sugar_addition_fast_pt-t2-@-@@
+
+  - retroaldol_to_enol-t1
+  - retroaldol_to_enol-t2
+  - Cannizzaro
+  - dimer_dissociation
