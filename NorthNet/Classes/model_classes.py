@@ -110,11 +110,12 @@ class ModelWriter:
         else:
             self.load_experiment_details(experiment)
 
-    def get_network_tokens(self):
+    def create_network_tokens(self):
         """
         Get dictionaries of tokens for the compounds, reactions, inputs,
         inflows, outflows
         """
+
         network = self.network
         compounds = [*network.NetworkCompounds]
         reactions = [*network.NetworkReactions]
@@ -141,8 +142,10 @@ class ModelWriter:
 
     def load_experiment_details(self, experiment):
         """
-        Load experiment details into the class attributes
+        Load experiment details into class attributes to allow compilation of
+        experimental conditions into the model.
         """
+
         if experiment.series_unit == "time/ s":
             self.time = experiment.series_values.copy()
 
