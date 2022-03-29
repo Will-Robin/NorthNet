@@ -14,8 +14,7 @@ def load_network_from_reaction_list(reaction_list, name="", description=""):
 
     rxns = []
     for reaction in reaction_list:
-        converted_reaction = conversions.smiles_to_rdkit_reaction(reaction)
-        rxns.append(Classes.Reaction(converted_reaction))
+        rxns.append(Classes.Reaction(reaction))
 
     network = Classes.Network(rxns, name, description)
 
