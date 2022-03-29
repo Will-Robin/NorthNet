@@ -217,6 +217,9 @@ class ModelWriter:
         text: str
         """
 
+        if len(self.flow_profiles) == 0:
+            return ""
+
         collection_array = np.zeros(
             (len(self.flow_profiles) + 2, len(self.flow_profile_time))
         )
@@ -390,7 +393,12 @@ class ModelWriter:
         numba_dec = ""
         numba_dec += f"@numba.jit({nf64}[:]({nf64},{nf64}[:],{nf64}[:]),\n"
         numba_dec += "\tlocals="
-        numba_dec += f"{'P': {nf64}[:],'F': {nf64}[:,:],'I':{nf64}[:]}"
+
+        if flow_profile_text == "": 
+            numba_dec += f"{{'P': {nf64}[:]}}"
+        else:
+            numba_dec += f"{{'P': {nf64}[:],'F': {nf64}[:,:],'I':{nf64}[:]}}"
+
         numba_dec += ",nopython=True)"
 
         lines = ["import numpy as np"]
@@ -403,17 +411,19 @@ class ModelWriter:
         lines.append("")
         lines.append("\tP = np.zeros(len(S))")
         lines.append("")
-        lines.append("\t")
-        lines.append("\t" + flow_profile_text)
-        lines.append("")
-        lines.append("")
-        lines.append("\tidx = np.abs(F[0] - time).argmin()")
-        lines.append("")
-        lines.append("\tI = F[1:-1,idx]")
-        lines.append("")
-        lines.append("\tsigma_flow = F[-1,idx]")
-        lines.append("")
-        lines.append("")
+
+        if flow_profile_text != "":
+            lines.append("\t")
+            lines.append("\t" + flow_profile_text)
+            lines.append("")
+            lines.append("")
+            lines.append("\tidx = np.abs(F[0] - time).argmin()")
+            lines.append("")
+            lines.append("\tI = F[1:-1,idx]")
+            lines.append("")
+            lines.append("\tsigma_flow = F[-1,idx]")
+            lines.append("")
+            lines.append("")
 
         for m_text in model_text:
             lines.append(f"\t{m_text}")
