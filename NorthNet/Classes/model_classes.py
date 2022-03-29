@@ -23,6 +23,8 @@ class ModelWriter:
         flow profile information). This may make a large object, but it should
         lighten the load in performing calculations.
 
+        Parameters
+        ----------
         network: NorthNet Network
 
         experiment: NorthNet DataReport
@@ -144,6 +146,14 @@ class ModelWriter:
         """
         Load experiment details into class attributes to allow compilation of
         experimental conditions into the model.
+
+        Parameters
+        ----------
+        experiment: Classes.DataReport
+
+        Returns
+        -------
+        None
         """
 
         if experiment.series_unit == "time/ s":
@@ -195,6 +205,14 @@ class ModelWriter:
     def write_flow_profile_text(self, suffix=""):
         """
         Write flow profiles as a text numpy array.
+
+        Parameters
+        ----------
+        suffix: str
+
+        Returns
+        -------
+        text: str
         """
 
         collection_array = np.zeros(
@@ -240,6 +258,10 @@ class ModelWriter:
             Inputs into the system (see self.get_network_tokens())
 
         Includes output flow terms for all compounds.
+
+        Parameters
+        ----------
+        None
 
         Returns
         -------
@@ -293,7 +315,17 @@ class ModelWriter:
     def write_variables_text(self):
         """
         Write model variables as strings stored in a list
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+
         """
+
         get_index = lambda x: int(x[x.find("[") + 1 : x.find("]")])
         lines = []
 
@@ -488,67 +520,3 @@ class ModelWriter:
 
         return mat_text
 
-
-# def write_Jacobian_matrix_text(network):
-#    '''
-#    Prototype for writing the Jacobian matrix as text for the model.
-#    Parameters
-#    ----------
-#    network: NorthNet ReactionNetwork object
-#        Network to be written.
-#
-#    Returns
-#    -------
-#    jac_text: str
-#        Jacobian matrix as text.
-#    '''
-#    compounds = [x for x in self.NetworkCompounds]
-#    reactions = [*self.NetworkReactions]
-#
-#    species = self.species
-#    rate_consts = self.rate_constants
-#    inflows = self.inputs
-#    flow_ins = self.inflows
-#    flow_outs = self.outflows
-#
-#    jac_mat = [['0' for x in species] for x in species]
-#
-#    for c,comp1 in enumerate(compounds):
-#        for c2,comp2 in enumerate(compounds):
-#            element = ""
-#            for i in self.NetworkCompounds[comp1].In:
-#                if '_#0' in i:
-#                    pass
-#                elif comp2 in self.NetworkReactions[i].Reactants:
-#                    reacs = [species[x]
-#                                    for x in self.NetworkReactions[i].Reactants
-#                                        if x != comp2]
-#                    ki = f"+{rate_consts[i]}"
-#                    rctnt_elems = "*".join(reacs)
-#                    element += f"{ki}*{rctnt_elems}"
-#                else:
-#                    pass
-#
-#            for o in self.NetworkCompounds[comp1].Out:
-#                if 'Sample' in o:
-#                    ki = f'-{flow_outs[o]}'
-#                    element += ki
-#                elif comp2 in self.NetworkReactions[o].Reactants:
-#                    reacs = [species[x]
-#                                    for x in self.NetworkReactions[o].Reactants
-#                                        if x != comp2]
-#                    ki = f"-{rate_consts[o]}"
-#                    rctnt_elems = "*".join(reacs)
-#                    element += f"{ki}*{rctnt_elems}"
-#                else:
-#                    pass
-#
-#            jac_mat[c][c2] += element
-#
-#    jac_text = ""
-#    for r in jac_mat:
-#        jac_text += "[" + ",".join(r) + "],\n"
-#
-#    jac_text = jac_text.strip(",\n") + "]"
-#
-#    return jac_text
