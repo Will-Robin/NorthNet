@@ -6,13 +6,13 @@ from NorthNet import Classes
 class ModelWriter:
     def __init__(
         self,
-        network=Classes.Network([], "", ""),
-        experiment=Classes.DataReport(file=""),
+        network=None,
+        experiment=None,
         input_token="_#0",
         output_token="Sample",
-        flowrate_time_conversion=3600,
+        flowrate_time_conversion=3600.0,
         time_limit=False,
-        lead_time=1000,
+        lead_time=1000.0,
     ):
         """
 
@@ -49,14 +49,16 @@ class ModelWriter:
             Governs the time from which the model will begin calculation
             before the first data time point. (start time = t0 - lead_time)
         """
-        assert isinstance(
-            network, Classes.Network
-        ), """Classes.ModelWriter:
-            network kwarg should be Network object"""
-        assert isinstance(
-            experiment, Classes.DataReport
-        ), """Classes.ModelWriter:
-            experiment kwarg should be DataReport object."""
+        if network:
+            assert isinstance(
+                network, Classes.Network
+            ), """Classes.ModelWriter:
+                network kwarg should be Network object"""
+        if experiment:
+            assert isinstance(
+                experiment, Classes.DataReport
+            ), """Classes.ModelWriter:
+                experiment kwarg should be DataReport object."""
         assert isinstance(
             input_token, str
         ), """Classes.ModelWriter:
@@ -84,13 +86,13 @@ class ModelWriter:
         self.input_token = input_token
         self.output_token = output_token
         self.flowrate_time_conversion = flowrate_time_conversion
-        self.time = np.inf
+        self.time = np.array([0.0])
         self.time_limit = time_limit
         self.lead_time = lead_time
 
         self.observed_compounds = []
         self.reactor_volume = 1.0
-        self.flow_profile_time = []
+        self.flow_profile_time = np.array([0.0])
         self.flow_profiles = {}
         self.sigma_flow = []
         self.name = ""
@@ -105,7 +107,7 @@ class ModelWriter:
             pass
         else:
             self.name = network.Name
-            self.get_network_tokens()
+            self.create_network_tokens()
 
         if experiment is None:
             pass
