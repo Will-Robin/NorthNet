@@ -1,9 +1,21 @@
+from pathlib import Path
+
+
 class ExperimentConditions:
     def __init__(self):
         """
-        Parameters
+        A container for experimental information.
+
+        Attributes
         ----------
-        information_file: str or pathlib Path
+        self.experiment_code: str
+            Code name for the experiment.
+        self.series_values: list
+            List of series values for the experiment.
+        self.series_unit: str
+            Unit of the series values.
+        self.conditions: dict
+            Experimental conditions.
         """
 
         self.experiment_code = "not specified"
@@ -13,12 +25,18 @@ class ExperimentConditions:
 
     def write_to_file(self, directory=""):
         """
+        Write the conditions to a csv file.
+
+        TODO: refactor the file writing into the Writers module
+
         Parameters
         ----------
         directory: str or pathlib Path
-        """
 
-        from pathlib import Path
+        Returns
+        -------
+        None
+        """
 
         fname = self.experiment_code
         exp_code = self.experiment_code

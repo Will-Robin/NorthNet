@@ -8,11 +8,12 @@ class ModelWriter:
         self,
         network=None,
         experiment=None,
+        conditions=None,
         input_token="_#0",
         output_token="Sample",
         flowrate_time_conversion=3600.0,
         time_limit=False,
-        lead_time=1000.0,
+        lead_time=0.0,
     ):
         """
 
@@ -28,6 +29,8 @@ class ModelWriter:
         network: NorthNet Network
 
         experiment: NorthNet DataReport
+
+        conditions: NorthNet ExperimentConditions
 
         input_token: str
 
@@ -59,6 +62,11 @@ class ModelWriter:
                 experiment, Classes.DataReport
             ), """Classes.ModelWriter:
                 experiment kwarg should be DataReport object."""
+        if conditions:
+            assert isinstance(
+                conditions, Classes.ExperimentConditions
+            ), """Classes.ModelWriter:
+                conditions kwarg should be ExperimentConditions object."""
         assert isinstance(
             input_token, str
         ), """Classes.ModelWriter:
@@ -113,6 +121,11 @@ class ModelWriter:
             pass
         else:
             self.load_experiment_details(experiment)
+
+        if conditions is None:
+            pass
+        else:
+            self.load_conditions_details(conditions)
 
     def create_network_tokens(self):
         """
@@ -186,6 +199,67 @@ class ModelWriter:
             t_lim_max = np.amax(self.time)
 
         t_lim_min = self.time[0] - self.lead_time
+        if self.lead_time > self.time[0]:
+            t_lim_min = 0.0
+
+        idx = np.where(
+            (self.flow_profile_time > t_lim_min) & (self.flow_profile_time < t_lim_max)
+        )[0]
+
+        self.flow_profile_time = self.flow_profile_time[idx]
+        self.time_offset = self.flow_profile_time[0]
+        self.flow_profile_time -= self.time_offset
+        self.time -= self.time_offset
+
+        self.sigma_flow = np.zeros(len(self.flow_profile_time))
+        for flow in self.flow_profiles:
+            self.flow_profiles[flow] = (
+                self.flow_profiles[flow][idx] / self.reactor_volume
+            )
+            self.flow_profiles[flow] /= self.flowrate_time_conversion
+            self.sigma_flow += self.flow_profiles[flow]
+
+    def load_conditions_details(self, conditions):
+        """
+        Load conditions details into class attributes to allow compilation of
+        experimental conditions into the model.
+
+        Parameters
+        ----------
+        conditions: Classes.ExperimentConditions
+
+        Returns
+        -------
+        None
+        """
+
+        if conditions.series_unit == "s":
+            self.time = conditions.series_values.copy()
+
+        for condition in conditions.conditions:
+            if "reactor_volume" in condition:
+                self.reactor_volume = conditions.conditions[condition]
+            elif "/ M" in condition:
+                smiles = condition.split("/")[0]
+                for flow in self.inputs:
+                    stand_flow_key = flow.split("_")[0]
+                    if smiles == stand_flow_key:
+                        self.inputs[flow] = conditions.conditions[condition]
+            elif "time" in condition and "flow" in condition:
+                self.flow_profile_time = np.array(conditions.conditions[condition])
+
+            elif "flow" in condition and not "time" in condition:
+                smiles = condition.split("_")[0]
+                self.flow_profiles[smiles] = np.array(conditions.conditions[condition])
+
+        if self.time_limit:
+            t_lim_max = min(np.amax(self.time), self.time_limit)
+        else:
+            t_lim_max = np.amax(self.time)
+
+        t_lim_min = self.time[0] - self.lead_time
+        if self.lead_time > self.time[0]:
+            t_lim_min = 0.0
 
         idx = np.where(
             (self.flow_profile_time > t_lim_min) & (self.flow_profile_time < t_lim_max)
