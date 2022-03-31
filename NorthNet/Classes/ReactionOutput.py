@@ -11,7 +11,7 @@ class ReactionOutput:
         reaction_input_string: str
             token for reaction input
             should follow the convention
-            SMILES_#0>>SMILES
+            SMILES>>#0
         """
         assert isinstance(
             reaction_output_string, str
@@ -22,5 +22,5 @@ class ReactionOutput:
 
         token_sides = reaction_output_string.split(">>")
         self.OutputID = token_sides[1].split(".")
-        self.CompoundOutput = token_sides[0].split(".")
+        self.OutputCompound = token_sides[0].split(".")
 

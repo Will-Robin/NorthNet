@@ -23,5 +23,5 @@ class ReactionInput:
 
         token_sides = reaction_input_string.split(">>")
         self.InputID = token_sides[0].split(".")
-        self.CompoundInput = token_sides[1].split(".")
+        self.InputCompound = token_sides[1].split(".")
 
