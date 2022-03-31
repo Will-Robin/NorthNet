@@ -1,0 +1,5 @@
+O=C(CO)CO.OC=C(O)CO>>O=C[C@@](O)(CO)C(O)(CO)CO
+O=C(CO)CO.[OH-]>>OC=C(O)CO.[OH-]
+O=C[C@H](O)CO.OC=C(O)CO>>O=C(CO)[C@H](O)[C@H](O)[C@H](O)CO
+O=C[C@H](O)CO.OC=C(O)CO>>O=C[C@@](O)(CO)[C@@H](O)[C@H](O)CO
+O.OC=C(O)CO>>O.O=C[C@H](O)CO
