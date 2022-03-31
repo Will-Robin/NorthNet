@@ -233,7 +233,7 @@ class Network:
 
             del self.NetworkReactions[r_key]
 
-    def add_input(self, input_addition):
+    def add_input_process(self, input_addition):
         """
         Add a NetworkInput to the Network
 
@@ -245,13 +245,13 @@ class Network:
 
         assert isinstance(
             input_addition, Classes.ReactionInput
-        ), """Network.add_input(): input arg must be a NorthNet
+        ), """Network.add_input_process(): input arg must be a NorthNet
             NetworkInput object"""
 
-        if input_addition.InputID in self.NetworkInputs:
-            pass
-        else:
-            self.NetworkReactions[input_addition.ReactionSMILES] = input
+        if input_addition.InputID not in self.NetworkInputs:
+
+            self.NetworkInputs[input_addition.ReactionSMILES] = input
+
             if input_addition.CompoundInput in self.NetworkCompounds:
                 pass
             else:
@@ -270,7 +270,7 @@ class Network:
                 input_addition.ReactionSMILES
             )
 
-    def add_inputs(self, inputs):
+    def add_input_processes(self, inputs):
         """
         For adding NetworkInput to the network
 
@@ -284,18 +284,18 @@ class Network:
 
             assert all(
                 check_inputs
-            ), """Network.add_inputs(): input arg must be a list of NorthNet
+            ), """Network.add_input_processes(): input arg must be a list of NorthNet
                 NetworkInput object"""
         else:
             assert isinstance(
                 inputs, list
-            ), """Network.add_inputs(): input arg must be a list of NorthNet
+            ), """Network.a_processesd_inputs(): input arg must be a list of NorthNet
                 NetworkInput object"""
 
         for i in inputs:
-            self.add_input(i)
+            self.add_input_process(i)
 
-    def add_output(self, output):
+    def add_output_process(self, output):
         """
         Add a NetworkOutput to the Network
 
@@ -306,7 +306,7 @@ class Network:
         """
         assert isinstance(
             input, Classes.NetworkOutput
-        ), """Network.add_output(): output arg must be a NorthNet
+        ), """Network.add_output_process(): output arg must be a NorthNet
             NetworkOutput object"""
 
         if output.OutputID in self.NetworkOutputs:
@@ -329,7 +329,7 @@ class Network:
 
             self.NetworkOutputs[output.OutputID].In.append(output.ReactionSMILES)
 
-    def add_outputs(self, outputs):
+    def add_output_processes(self, outputs):
         """
         For adding NetworkOutput to the network
 
@@ -342,16 +342,16 @@ class Network:
             check_inputs = [isinstance(i, Classes.NetworkOutput) for i in outputs]
             assert all(
                 check_inputs
-            ), """Network.add_outputs(): outputs arg must be a list of NorthNet
+            ), """Network.add_output_processes(): outputs arg must be a list of NorthNet
                 NetworkOutput object"""
         else:
             assert isinstance(
                 outputs, list
-            ), """Network.add_outputs():
+            ), """Network.add_output_processes():
                 outputs arg must be a list of NorthNet NetworkOutput object"""
 
         for out in outputs:
-            self.add_output(out)
+            self.add_output_process(out)
 
     def get_reaction(self, reaction):
         """
