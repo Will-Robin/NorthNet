@@ -22,10 +22,6 @@ class ModelWriter:
         A class designed to generate modelling apparatus by combining a Network
         structure and experimental conditions.
 
-        All of the input variables will be compiled into the model (including
-        flow profile information). This may make a large object, but it should
-        lighten the load in performing calculations.
-
         Parameters
         ----------
         network: NorthNet Network
@@ -224,33 +220,9 @@ class ModelWriter:
                 smiles = condition.split("_")[0]
                 self.flow_profiles[smiles] = np.array(data_report.conditions[condition])
 
-        # Define time limits for the model considering user input and conditions
-        if self.time_limit:
-            t_lim_max = min(np.amax(self.time), self.time_limit)
-        else:
-            t_lim_max = np.amax(self.time)
-
-        t_lim_min = self.time[0] - self.lead_time
-        if self.lead_time > self.time[0]:
-            t_lim_min = 0.0
-
-        idx = np.where(
-            (self.flow_profile_time > t_lim_min) & (self.flow_profile_time < t_lim_max)
-        )[0]
-
-        # Set the data as attributes
-        self.flow_profile_time = self.flow_profile_time[idx]
-        self.time_offset = self.flow_profile_time[0]
-        self.flow_profile_time -= self.time_offset
-        self.time -= self.time_offset
-
         # Get the total flow rate of all the inputs
         self.sigma_flow = np.zeros(len(self.flow_profile_time))
         for flow in self.flow_profiles:
-            self.flow_profiles[flow] = (
-                self.flow_profiles[flow][idx] / self.reactor_volume
-            )
-            self.flow_profiles[flow] /= self.flowrate_time_conversion
             self.sigma_flow += self.flow_profiles[flow]
 
     def load_conditions_details(self, conditions):
@@ -301,34 +273,10 @@ class ModelWriter:
                 smiles = condition.split("_")[0]
                 self.flow_profiles[smiles] = np.array(conditions.conditions[condition])
 
-        # Define time limits for the model considering user input and conditions
-        if self.time_limit:
-            t_lim_max = min(np.amax(self.time), self.time_limit)
-        else:
-            t_lim_max = np.amax(self.time)
-
-        t_lim_min = self.time[0] - self.lead_time
-        if self.lead_time > self.time[0]:
-            t_lim_min = 0.0
-
-        idx = np.where(
-            (self.flow_profile_time > t_lim_min) & (self.flow_profile_time < t_lim_max)
-        )[0]
-
-        # Set the data as attributes
-        self.flow_profile_time = self.flow_profile_time[idx]
-        self.time_offset = self.flow_profile_time[0]
-        self.flow_profile_time -= self.time_offset
-        self.time -= self.time_offset
-
         # Get the total flow rate of all the inputs
         self.sigma_flow = np.zeros(len(self.flow_profile_time))
         for flow in self.flow_profiles:
-            self.flow_profiles[flow] = (
-                self.flow_profiles[flow][idx] / self.reactor_volume
-            )
-            self.flow_profiles[flow] /= self.flowrate_time_conversion
-            self.sigma_flow += self.flow_profiles[flow]
+           self.sigma_flow += self.flow_profiles[flow]
 
     def write_flow_profile_text(self, indentation=""):
         """
@@ -355,7 +303,7 @@ class ModelWriter:
         )
 
         for c, flow in enumerate(self.inflows):
-            
+
             compound = flow.split("_")[0]
 
             if compound in self.inputs:
@@ -419,8 +367,6 @@ class ModelWriter:
         k: 1D array of len(self.network.NetworkReactions)
             rate constants arranged in standardised order.
             (see self.get_network_tokens())
-        I: 1D array of len(self.network.NetworkInputs)
-            Inputs into the system (see self.get_network_tokens())
 
         Includes output flow terms for all compounds.
 
@@ -454,7 +400,7 @@ class ModelWriter:
                     ki = f"+{self.rate_constants[i]}*"
 
                     if len(reactants) == 0:
-                        specs = ""  # inflows[i]
+                        specs = ""
                     else:
                         specs = "*".join([self.species[x] for x in reactants])
 
@@ -491,7 +437,7 @@ class ModelWriter:
 
         Returns
         -------
-        None
+        lines: list[str]
 
         """
 
