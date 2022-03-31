@@ -14,6 +14,7 @@ class ModelWriter:
         flowrate_time_conversion=3600.0,
         time_limit=False,
         lead_time=0.0,
+        model_name=""
     ):
         """
 
@@ -103,7 +104,7 @@ class ModelWriter:
         self.flow_profile_time = np.array([0.0])
         self.flow_profiles = {}
         self.sigma_flow = []
-        self.name = ""
+        self.name = model_name
         self.species = {}
         self.rate_constants = {}
         self.inputs = {}
@@ -114,7 +115,6 @@ class ModelWriter:
         if network is None:
             pass
         else:
-            self.name = network.Name
             self.create_network_tokens()
 
         if experiment is None:
