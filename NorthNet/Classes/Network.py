@@ -45,19 +45,17 @@ class Network:
         self.Name = name
         self.Description = description
 
-        """1. create a dictionary of lists of Reaction objects, which are
-        organised by their reaction SMILES as keys."""
         self.NetworkReactions = {}
 
-        """2. Create dictionary of Compound objects used as reactants
-        and products from the reaction objects (SMILES used as keys)."""
         self.NetworkCompounds = {}
 
-        """3. Create dictionary to store network inputs"""
         self.NetworkInputs = {}
 
-        """4. Create dictionary of network outputs"""
         self.NetworkOutputs = {}
+
+        self.InputProcesses = {}
+
+        self.OutputProcesses = {}
 
         if len(reactions) == 0:
             pass
@@ -246,39 +244,34 @@ class Network:
         assert isinstance(
             input_addition, Classes.ReactionInput
         ), """Network.add_input_process(): input arg must be a NorthNet
-            NetworkInput object"""
+            ReactionInput object"""
 
-        if input_addition.InputID not in self.NetworkInputs:
+        if input_addition.InputID not in self.InputProcesses:
 
-            self.NetworkInputs[input_addition.ReactionSMILES] = input
+            self.InputProcesses[input_addition.token] = input
 
-            if input_addition.CompoundInput in self.NetworkCompounds:
-                pass
-            else:
-                self.NetworkCompounds[input_addition.CompoundInput] = input
+            if input_addition.InputCompound not in self.NetworkCompounds:
+                self.NetworkCompounds[input_addition.InputCompound] = input
 
-            self.NetworkCompounds[input_addition.CompoundInput].In.append(
-                input_addition.ReactionSMILES
+            self.NetworkCompounds[input_addition.InputCompound].In.append(
+                input_addition.token
             )
 
-            if input_addition.InputID in self.NetworkInputs:
-                pass
-            else:
+            if input_addition.InputID not in self.NetworkInputs:
                 self.NetworkInputs[input_addition.InputID] = input_addition
 
-            self.NetworkInputs[input_addition.InputID].Out.append(
-                input_addition.ReactionSMILES
-            )
+            self.NetworkInputs[input_addition.InputID].Out.append(input_addition.token)
 
     def add_input_processes(self, inputs):
         """
-        For adding NetworkInput to the network
+        For adding ReactionInput to the network
 
         Parameters
         ----------
         inputs: list of NortNet NetworkInput objects
             Inputs to be added to the network
         """
+
         if isinstance(inputs, list):
             check_inputs = [isinstance(i, Classes.NetworkInput) for i in inputs]
 
@@ -301,22 +294,18 @@ class Network:
 
         Parameters
         ----------
-        output NetworkOutput object
+        output ReactionOutput object
             Output to be added
         """
         assert isinstance(
-            input, Classes.NetworkOutput
+            input, Classes.ReactionOutput
         ), """Network.add_output_process(): output arg must be a NorthNet
-            NetworkOutput object"""
+            ReactionOutput object"""
 
-        if output.OutputID in self.NetworkOutputs:
-            pass
-        else:
-            if output.CompoundOutput in self.NetworkCompounds:
-                self.NetworkReactions[output.ReactionSMILES] = output
-                self.NetworkCompounds[output.CompoundOutput].Out.append(
-                    output.ReactionSMILES
-                )
+        if output.OutputID not in self.NetworkOutputs:
+            if output.OutputCompound in self.NetworkCompounds:
+                self.NetworkReactions[output.token] = output
+                self.NetworkCompounds[output.OutputCompound].Out.append(output.token)
             else:
                 # The compound is not currently in the network, so cannot
                 # be an output
@@ -327,7 +316,7 @@ class Network:
             else:
                 self.NetworkOutputs[output.OutputID] = output
 
-            self.NetworkOutputs[output.OutputID].In.append(output.ReactionSMILES)
+            self.NetworkOutputs[output.OutputID].In.append(output.token)
 
     def add_output_processes(self, outputs):
         """
