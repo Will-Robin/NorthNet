@@ -2,6 +2,7 @@ import sys
 import numpy as np
 from NorthNet import Classes
 
+tab_spaces = "    "
 
 class ModelWriter:
     def __init__(
@@ -347,6 +348,7 @@ class ModelWriter:
         eq_lines: list
             List of rate equations in text form.
         """
+
         network = self.network
 
         compounds = [*network.NetworkCompounds]
@@ -441,7 +443,7 @@ class ModelWriter:
 
         return lines
 
-    def write_to_module_text(self, numba_decoration=False):
+    def write_to_module_text(self, numba_decoration=None):
         """
         TODO: refactor string building.
 
@@ -451,8 +453,11 @@ class ModelWriter:
 
         Parameters
         ----------
-        numba_decoration: bool
-            Whether to include numbda compilation in the function.
+        numba_decoration: str
+            Which numba decoration to add.
+            "jit": Decoration for just in time compilation.
+            "compile": Decoration for ahead of time compilation
+            None: No decoration.
 
         Returns
         -------
@@ -460,7 +465,7 @@ class ModelWriter:
             The module text.
         """
 
-        flow_profile_text = self.write_flow_profile_text(suffix="\t\t")
+        flow_profile_text = self.write_flow_profile_text(suffix="        ")
         model_text = self.write_model_equation_text()
 
         nf64 = "numba.float64"
@@ -476,36 +481,41 @@ class ModelWriter:
         numba_dec += ",nopython=True)"
 
         lines = ["import numpy as np"]
-        if numba_decoration:
+        if numba_decoration == "jit":
             lines.append("import numba\n")
             lines.append("")
             lines.append(numba_dec)
 
+        if numba_decoration == "compile":
+            lines.append("import numba")
+            lines.append("from numba.pycc import CC\n")
+            lines.append(f"cc = CC('{self.name}')\n")
+            lines.append('@cc.export("model_func", "float64[:](float64,float64[:],float64[:])")')
+
         lines.append("def model_function(time, S, k):")
         lines.append("")
-        lines.append("\tP = np.zeros(len(S))")
+        lines.append("    P = np.zeros(len(S))")
         lines.append("")
 
         if flow_profile_text != "":
-            lines.append("\t")
-            lines.append("\t" + flow_profile_text)
+            lines.append("    ")
+            lines.append("    " + flow_profile_text)
             lines.append("")
+            lines.append("    idx = np.abs(F[0] - time).argmin()")
             lines.append("")
-            lines.append("\tidx = np.abs(F[0] - time).argmin()")
+            lines.append("    I = F[1:-1,idx]")
             lines.append("")
-            lines.append("\tI = F[1:-1,idx]")
-            lines.append("")
-            lines.append("\tsigma_flow = F[-1,idx]")
-            lines.append("")
+            lines.append("    sigma_flow = F[-1,idx]")
             lines.append("")
 
         for m_text in model_text:
-            lines.append(f"\t{m_text}")
+            lines.append(f"    {m_text}")
 
-        lines.append("\treturn P")
+        lines.append("")
+        lines.append("    return P")
         lines.append("")
         lines.append("def wrapper_function(time, S, k):")
-        lines.append("\treturn model_function(time, S, k)")
+        lines.append("    return model_function(time, S, k)")
         lines.append("")
 
         lines.extend(self.write_variables_text())
