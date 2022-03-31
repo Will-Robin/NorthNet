@@ -33,11 +33,3 @@ class ReactionInput:
         self.ReactionTemplate = None
         self.Data = {}
 
-    def reactants_products_from_string(self, reaction_smiles):
-        """
-        C
-        """
-        split_rxn_smiles = reaction_smiles.split(">>")
-        reactants = [x for x in split_rxn_smiles[0].split(".") if x != ""]
-        products = [x for x in split_rxn_smiles[1].split(".") if x != ""]
-        return reactants, products
