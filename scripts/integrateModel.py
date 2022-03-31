@@ -33,11 +33,12 @@ def main(S, rate_constants, max_time, time_step):
     fig, ax = plt.subplots()
 
     for x in range(0, len(compound_traces)):
-        ax.plot(time, compound_traces[x])
+        ax.plot(time, compound_traces[x], label = species_names[x])
 
     ax.set_xlabel("time/ s")
     ax.set_ylabel("conc./ M")
 
+    plt.legend()
     plt.show()
     plt.close()
 
@@ -55,6 +56,8 @@ if __name__ == "__main__":
     'O':7,
     }
 
+    species_names = [*species]
+
     reactions = {
     'O=C(CO)CO.OC=C(O)CO>>O=C[C@@](O)(CO)C(O)(CO)CO':0,
     'O=C(CO)CO.[OH-]>>OC=C(O)CO.[OH-]':1,
@@ -70,12 +73,11 @@ if __name__ == "__main__":
     S0 = np.zeros(S.shape)
 
     S0[0] = 2.0
-    S0[7] = 0.12
+    S0[7] = 55.5
     S0[3] = 0.12
 
-    rate_constants = np.ones(k.shape) + 1000
+    rate_constants = np.ones(k.shape) * 500
 
-    time_offset = 4318.0
-    lead_in_time = 0.0
+    max_time = 5407.6 - 4317.0
 
-    main(S0, rate_constants, 10000.0, 1.0)
+    main(S0, rate_constants, max_time, 1.0)

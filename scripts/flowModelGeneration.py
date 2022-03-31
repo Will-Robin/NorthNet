@@ -1,3 +1,4 @@
+import numpy as np
 from NorthNet.Classes import DataReport
 from NorthNet.Classes import ReactionInput
 from NorthNet.Classes import ReactionOutput
@@ -16,17 +17,21 @@ reaction_list = [x for x in text.split("\n") if x != ""]
 
 network = load_network_from_reaction_list(reaction_list)
 
-for comp in network.NetworkCompounds:
-    output = ReactionOutput(f"{comp}>>#0")
-    network.add_output_process(output)
+model = ModelWriter(network=network, experiment = data)
 
-input_compounds = ["O=C(CO)CO", "[OH-]", "C=O"]
+# Trim the flow profiles down to limit the amount of compiling needed
+min_time = data.series_values[0] - 1000
+max_time = data.series_values[-1]
+inds = np.where(
+            (model.flow_profile_time > min_time) & 
+            (model.flow_profile_time < max_time)
+        )[0]
 
-for smiles in input_compounds:
-    input = ReactionInput(f"{smiles}_#0>>{smiles}")
-    network.add_input_process(input)
-
-model = ModelWriter(network=network, experiment = data, lead_time = data.series_values[0])
+model.flow_profile_time = model.flow_profile_time[inds]
+model.flow_profile_time -= model.flow_profile_time[0]
+model.sigma_flow = model.sigma_flow[inds]
+for fl in model.flow_profiles:
+    model.flow_profiles[fl] = model.flow_profiles[fl][inds]
 
 model_text = model.write_to_module_text(numba_decoration="compile")
 
