@@ -21,6 +21,8 @@ class ReactionOutput:
         self.token = reaction_output_string
 
         token_sides = reaction_output_string.split(">>")
-        self.OutputID = token_sides[1].split(".")
-        self.OutputCompound = token_sides[0].split(".")
+        self.OutputID = token_sides[1]
+        self.OutputCompound = token_sides[0]
+
+        self.In = []
 

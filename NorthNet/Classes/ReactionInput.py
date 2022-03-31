@@ -15,13 +15,15 @@ class ReactionInput:
         """
 
         assert isinstance(
-            id, str
+            reaction_input_string, str
         ), """class ReactionInput:
             reaction_input_string arg must be str like SMILES_#0>>SMILES."""
 
         self.token = reaction_input_string
 
         token_sides = reaction_input_string.split(">>")
-        self.InputID = token_sides[0].split(".")
+        self.InputID = token_sides[0]
         self.InputCompound = token_sides[1].split(".")
+
+        self.Out = []
 

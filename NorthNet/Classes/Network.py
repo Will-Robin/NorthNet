@@ -246,21 +246,22 @@ class Network:
         ), """Network.add_input_process(): input arg must be a NorthNet
             ReactionInput object"""
 
-        if input_addition.InputID not in self.InputProcesses:
+        if input_addition.token not in self.InputProcesses:
+
+            self.InputProcesses[input_addition.token] = input_addition
+
+            if input_addition.InputID not in self.NetworkInputs:
+                self.NetworkInputs[input_addition.InputID] = Classes.NetworkInput(input_addition.InputID)
+
+            self.NetworkInputs[input_addition.InputID].Out.append(input_addition.token)
 
             self.InputProcesses[input_addition.token] = input
 
-            if input_addition.InputCompound not in self.NetworkCompounds:
-                self.NetworkCompounds[input_addition.InputCompound] = input
+            for compound in input_addition.InputCompound:
+                if compound not in self.NetworkCompounds:
+                    self.NetworkCompounds[compound] = Classes.Compound(compound)
+                self.NetworkCompounds[compound].In.append(input_addition.token)
 
-            self.NetworkCompounds[input_addition.InputCompound].In.append(
-                input_addition.token
-            )
-
-            if input_addition.InputID not in self.NetworkInputs:
-                self.NetworkInputs[input_addition.InputID] = input_addition
-
-            self.NetworkInputs[input_addition.InputID].Out.append(input_addition.token)
 
     def add_input_processes(self, inputs):
         """
@@ -298,25 +299,25 @@ class Network:
             Output to be added
         """
         assert isinstance(
-            input, Classes.ReactionOutput
+            output, Classes.ReactionOutput
         ), """Network.add_output_process(): output arg must be a NorthNet
             ReactionOutput object"""
 
-        if output.OutputID not in self.NetworkOutputs:
-            if output.OutputCompound in self.NetworkCompounds:
-                self.NetworkReactions[output.token] = output
-                self.NetworkCompounds[output.OutputCompound].Out.append(output.token)
-            else:
-                # The compound is not currently in the network, so cannot
-                # be an output
-                pass
+        if output.OutputCompound in self.NetworkCompounds:
 
-            if output.OutputID in self.NetworkOutputs:
-                pass
-            else:
-                self.NetworkOutputs[output.OutputID] = output
+            self.OutputProcesses[output.token] = output
+
+            self.NetworkCompounds[output.OutputCompound].Out.append(output.token)
+
+            if output.OutputID not in self.NetworkOutputs:
+                self.NetworkOutputs[output.OutputID] = Classes.NetworkOutput(output.OutputID)
 
             self.NetworkOutputs[output.OutputID].In.append(output.token)
+
+        else:
+            # The output compound is not in the network, so cannot be an output
+            pass
+
 
     def add_output_processes(self, outputs):
         """
