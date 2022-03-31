@@ -247,20 +247,16 @@ class Network:
             ReactionInput object"""
 
         if input_addition.token not in self.InputProcesses:
-
-            self.InputProcesses[input_addition.token] = input_addition
-
-            if input_addition.InputID not in self.NetworkInputs:
-                self.NetworkInputs[input_addition.InputID] = Classes.NetworkInput(input_addition.InputID)
-
-            self.NetworkInputs[input_addition.InputID].Out.append(input_addition.token)
-
-            self.InputProcesses[input_addition.token] = input
-
             for compound in input_addition.InputCompound:
-                if compound not in self.NetworkCompounds:
-                    self.NetworkCompounds[compound] = Classes.Compound(compound)
-                self.NetworkCompounds[compound].In.append(input_addition.token)
+                if compound in self.NetworkCompounds:
+                    self.NetworkCompounds[compound].In.append(input_addition.token)
+
+                    self.InputProcesses[input_addition.token] = input_addition
+
+                    if input_addition.InputID not in self.NetworkInputs:
+                        self.NetworkInputs[input_addition.InputID] = Classes.NetworkInput(input_addition.InputID)
+
+                    self.NetworkInputs[input_addition.InputID].Out.append(input_addition.token)
 
 
     def add_input_processes(self, inputs):
