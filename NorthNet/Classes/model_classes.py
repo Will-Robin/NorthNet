@@ -2,8 +2,6 @@ import sys
 import numpy as np
 from NorthNet import Classes
 
-tab_spaces = "    "
-
 
 class ModelWriter:
     def __init__(
@@ -68,11 +66,6 @@ class ModelWriter:
         self.inflows = {}
         self.outflows = {}
 
-        if network is None:
-            pass
-        else:
-            self.create_network_tokens()
-
         if experiment is None:
             pass
         else:
@@ -82,6 +75,11 @@ class ModelWriter:
             pass
         else:
             self.load_conditions_details(conditions)
+
+        if network is None:
+            pass
+        else:
+            self.create_network_tokens()
 
     def create_network_tokens(self):
         """
@@ -173,6 +171,19 @@ class ModelWriter:
         for flow in self.flow_profiles:
             self.sigma_flow += self.flow_profiles[flow]
 
+        # update the network to reflect the inputs and outputs implied by the
+        # conditions
+        for inp in self.inputs:
+            input = Classes.ReactionInput(f"{inp}_#0>>{inp}")
+            self.network.add_input_process(input)
+
+        # No information about multiple outputs for now.
+        # Connect a single output to all of the compounds in the network
+        for comp in self.network.NetworkCompounds:
+            output = Classes.ReactionOutput(f"{comp}>>#0")
+            self.network.add_output_process(output)
+
+
     def load_conditions_details(self, conditions):
         """
         Load conditions details into ModelWriter attributes to allow compilation of
@@ -240,11 +251,11 @@ class ModelWriter:
         text: str
         """
 
-        network = self.network
-
         if len(self.flow_profiles) == 0:
             # No flow profile information
             return ""
+
+        network = self.network
 
         input_concentrations = np.zeros(
             (len(self.flow_profiles), len(self.flow_profile_time))
@@ -255,18 +266,20 @@ class ModelWriter:
             compound = flow.split("_")[0]
 
             if compound in self.inputs:
-                syr_concentration = self.inputs[compound]
+                conc = self.inputs[compound]
                 flow_rate = self.flow_profiles[flow.split("_")[0]]
-                conc_profile = syr_concentration * flow_rate / self.sigma_flow
+                conc_profile = conc * flow_rate / self.reactor_volume
                 input_concentrations[c] = conc_profile
 
         total_flows = np.zeros((len(self.outflows), len(self.sigma_flow)))
+
         # assume that the output flow rates are equally partitioned between the
         # output channels.
         partitioned_flow = self.sigma_flow / len(self.outflows)
         for c, out in enumerate(self.outflows):
-            total_flows[c] = partitioned_flow
+            total_flows[c] = partitioned_flow/self.reactor_volume
 
+        # Write concentration array
         text = f"{indentation}F_in = np.array(\n"
         text += indentation
         array_text = np.array2string(
@@ -278,6 +291,7 @@ class ModelWriter:
         text += array_text.replace("\n", f"\n{indentation}")
         text += f"{indentation})\n\n"
 
+        # Write flow profile time axis
         text += f"{indentation}flow_time = np.array(\n"
         text += indentation
         array_text = np.array2string(
@@ -289,6 +303,7 @@ class ModelWriter:
         text += array_text.replace("\n", f"\n{indentation}")
         text += f"{indentation})\n\n"
 
+        # Write total flow rate.
         text += f"{indentation}total_flow = np.array(\n"
         text += indentation
         array_text = np.array2string(
@@ -474,7 +489,7 @@ class ModelWriter:
         lines.append("    P = np.zeros(len(S))")
 
         if flow_profile_text != "":
-            lines.append("    ")
+            lines.append("")
             lines.append(flow_profile_text)
             lines.append("    i = np.abs(flow_time - time).argmin()")
             lines.append("")
@@ -482,6 +497,7 @@ class ModelWriter:
         for m_text in model_text:
             lines.append(f"    {m_text}")
 
+        lines.append("    P *= time")
         lines.append("")
         lines.append("    return P")
         lines.append("")
