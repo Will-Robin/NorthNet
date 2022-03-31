@@ -138,6 +138,7 @@ class ModelWriter:
         compounds = [*network.NetworkCompounds]
         reactions = [*network.NetworkReactions]
         network_inputs = [*network.NetworkInputs]
+
         inflows = [r for r in reactions if self.input_token in r]
         outflows = [r for r in reactions if self.output_token in r]
 
@@ -146,10 +147,17 @@ class ModelWriter:
         for out in outflows:
             reactions.remove(out)
 
+        # Tokens for reaction concentration terms
         species = {s: f"S[{c}]" for c, s in enumerate(compounds) if s != ""}
+        # Tokens for the reaction rate constants of the system
         rate_consts = {k: f"k[{c}]" for c, k in enumerate(reactions)}
+
+        # Tokens for the system inputs
         inputs = {i: 0.0 for _, i in enumerate(network_inputs)}
+
+        # Tokens for the system inputs
         flow_ins = {i: f"I[{c}]" for c, i in enumerate(inflows)}
+        # Tokens for the system outputs
         flow_outs = {o: "sigma_flow" for o in outflows}
 
         self.species = species
@@ -317,6 +325,7 @@ class ModelWriter:
                     line_text += ki
                 else:
                     reactants = network.NetworkReactions[i].Reactants
+
                     # remove water from reactants
                     reactants = [x for x in reactants if x != "O"]
 
