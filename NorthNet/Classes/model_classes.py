@@ -160,8 +160,19 @@ class ModelWriter:
 
     def load_conditions_details(self, conditions):
         """
-        Load conditions details into class attributes to allow compilation of
+        Load conditions details into ModelWriter attributes to allow compilation of
         experimental conditions into the model.
+
+        For now, this method will assume that values are in base SI units (e.g.
+        M, not mM), and the keys to conditions should follow some relatively strict
+        patterns.
+
+        "reactor_volume": gives the reactor volume in L 
+        "{}/ M": gives the concentration of an inlet in M.
+        "{}_flow_{}", not containing "time": gives the flow rate of an input,
+        in L/ s
+        "{}_flow_time_{}": (contains "flow" and "time") gives the time axis of
+        the flow profiles.
 
         Parameters
         ----------
@@ -172,9 +183,10 @@ class ModelWriter:
         None
         """
 
-        if conditions.series_unit == "s":
-            self.time = conditions.series_values.copy()
+        # Get the series values from the conditions
+        self.time = conditions.series_values.copy()
 
+        # Extract flow input information
         for condition in conditions.conditions:
             if "reactor_volume" in condition:
                 self.reactor_volume = conditions.conditions[condition]
@@ -191,6 +203,8 @@ class ModelWriter:
                 smiles = condition.split("_")[0]
                 self.flow_profiles[smiles] = np.array(conditions.conditions[condition])
 
+        # Define time limits for the model considering user input and
+        # conditions
         if self.time_limit:
             t_lim_max = min(np.amax(self.time), self.time_limit)
         else:
@@ -209,6 +223,7 @@ class ModelWriter:
         self.flow_profile_time -= self.time_offset
         self.time -= self.time_offset
 
+        # Get the total flow rate of all the inputs
         self.sigma_flow = np.zeros(len(self.flow_profile_time))
         for flow in self.flow_profiles:
             self.flow_profiles[flow] = (
