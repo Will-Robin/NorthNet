@@ -92,26 +92,37 @@ class ModelWriter:
             ), """Classes.ModelWriter:
                 lead_time kwarg should be bool or float."""
 
+        # name
+        self.name = model_name
+
+        # Network structure
         self.network = network
+
+        # Specification of tags for inputs and outputs
         self.input_token = input_token
         self.output_token = output_token
-        self.flowrate_time_conversion = flowrate_time_conversion
-        self.time = np.array([0.0])
-        self.time_limit = time_limit
-        self.lead_time = lead_time
 
-        self.observed_compounds = []
-        self.reactor_volume = 1.0
+        # Reaction conditions details
+        self.time = np.array([0.0])
         self.flow_profile_time = np.array([0.0])
+        self.flowrate_time_conversion = flowrate_time_conversion
         self.flow_profiles = {}
         self.sigma_flow = []
-        self.name = model_name
+        self.reactor_volume = 1.0
+
+        # Data attributes
+        self.observed_compounds = []
+
+        # Model attributes
         self.species = {}
         self.rate_constants = {}
         self.inputs = {}
+        self.outputs = {}
         self.inflows = {}
         self.outflows = {}
         self.time_offset = 0.0
+        self.lead_time = lead_time
+        self.time_limit = time_limit
 
         if network is None:
             pass
@@ -121,7 +132,7 @@ class ModelWriter:
         if experiment is None:
             pass
         else:
-            self.load_conditions_details(experiment.conditions)
+            self.load_conditions_from_data(experiment)
 
         if conditions is None:
             pass
@@ -134,37 +145,113 @@ class ModelWriter:
         inflows, outflows
         """
 
+        # shorthand for the network
         network = self.network
+
+        # Identies for compounds and reactions
         compounds = [*network.NetworkCompounds]
         reactions = [*network.NetworkReactions]
-        network_inputs = [*network.NetworkInputs]
 
-        inflows = [r for r in reactions if self.input_token in r]
-        outflows = [r for r in reactions if self.output_token in r]
+        # Identies for input and output entities
+        input_ids = [*network.NetworkInputs]
+        output_ids = [*network.NetworkOutputs]
 
-        for inlet in inflows:
-            reactions.remove(inlet)
-        for out in outflows:
-            reactions.remove(out)
+        # Identies for input and output processes
+        network_inputs = [*network.InputProcesses]
+        network_outputs = [*network.OutputProcesses]
 
         # Tokens for reaction concentration terms
         species = {s: f"S[{c}]" for c, s in enumerate(compounds) if s != ""}
         # Tokens for the reaction rate constants of the system
         rate_consts = {k: f"k[{c}]" for c, k in enumerate(reactions)}
 
-        # Tokens for the system inputs
-        inputs = {i: 0.0 for _, i in enumerate(network_inputs)}
+        # Tokens for flow terms 
+        # F_in is an (n x m) array of input concentrations over time
+        inflow_rates = {k: f"F_in[{c},i]" for c, k in enumerate(input_ids)}
+        outflow_rates = {k: f"total_flow[{c},i]" for c, k in enumerate(output_ids)}
 
-        # Tokens for the system inputs
-        flow_ins = {i: f"I[{c}]" for c, i in enumerate(inflows)}
-        # Tokens for the system outputs
-        flow_outs = {o: "sigma_flow" for o in outflows}
-
+        # Put the data into attributes
         self.species = species
         self.rate_constants = rate_consts
-        self.inputs = inputs
-        self.inflows = flow_ins
-        self.outflows = flow_outs
+        self.inflows = inflow_rates
+        self.outflows = outflow_rates
+
+    def load_conditions_from_data(self, data_report):
+        """
+        Load conditions details into ModelWriter attributes to allow compilation of
+        experimental conditions into the model.
+
+        For now, this method will assume that values are in base SI units (e.g.
+        M, not mM), and the keys to conditions should follow some relatively strict
+        patterns.
+
+        "reactor_volume": gives the reactor volume in L 
+        "{}/ M": gives the concentration of an inlet in M.
+        "{}_flow_{}", not containing "time": gives the flow rate of an input,
+        in L/ s
+        "{}_flow_time_{}": (contains "flow" and "time") gives the time axis of
+        the flow profiles.
+
+        Parameters
+        ----------
+        conditions: Classes.DataReport
+
+        Returns
+        -------
+        None
+        """
+
+        # Get the series values from the conditions
+        self.time = data_report.series_values.copy()
+
+        # Extract flow input information
+        for condition in data_report.conditions:
+            # Get the reactor volume
+            if "reactor_volume" in condition:
+                self.reactor_volume = data_report.conditions[condition]
+
+            # Get the input concentrations
+            elif "/ M" in condition:
+                smiles = condition.split("/")[0]
+                self.inputs[smiles] = data_report.conditions[condition]
+
+            # Get the flow profile time
+            elif "time" in condition and "flow" in condition:
+                self.flow_profile_time = np.array(data_report.conditions[condition])
+
+            # Get flow profile
+            elif "flow" in condition and not "time" in condition:
+                smiles = condition.split("_")[0]
+                self.flow_profiles[smiles] = np.array(data_report.conditions[condition])
+
+        # Define time limits for the model considering user input and conditions
+        if self.time_limit:
+            t_lim_max = min(np.amax(self.time), self.time_limit)
+        else:
+            t_lim_max = np.amax(self.time)
+
+        t_lim_min = self.time[0] - self.lead_time
+        if self.lead_time > self.time[0]:
+            t_lim_min = 0.0
+
+        idx = np.where(
+            (self.flow_profile_time > t_lim_min) & (self.flow_profile_time < t_lim_max)
+        )[0]
+
+        # Set the data as attributes
+        self.flow_profile_time = self.flow_profile_time[idx]
+        self.time_offset = self.flow_profile_time[0]
+        self.flow_profile_time -= self.time_offset
+        self.time -= self.time_offset
+
+        # Get the total flow rate of all the inputs
+        self.sigma_flow = np.zeros(len(self.flow_profile_time))
+        for flow in self.flow_profiles:
+            self.flow_profiles[flow] = (
+                self.flow_profiles[flow][idx] / self.reactor_volume
+            )
+            self.flow_profiles[flow] /= self.flowrate_time_conversion
+            self.sigma_flow += self.flow_profiles[flow]
 
     def load_conditions_details(self, conditions):
         """
@@ -196,23 +283,25 @@ class ModelWriter:
 
         # Extract flow input information
         for condition in conditions.conditions:
+            # Get the reactor volume
             if "reactor_volume" in condition:
                 self.reactor_volume = conditions.conditions[condition]
+
+            # Get the input concentrations
             elif "/ M" in condition:
                 smiles = condition.split("/")[0]
-                for flow in self.inputs:
-                    stand_flow_key = flow.split("_")[0]
-                    if smiles == stand_flow_key:
-                        self.inputs[flow] = conditions.conditions[condition]
+                self.inputs[smiles] = conditions.conditions[condition]
+
+            # Get the flow profile time
             elif "time" in condition and "flow" in condition:
                 self.flow_profile_time = np.array(conditions.conditions[condition])
 
+            # Get flow profile
             elif "flow" in condition and not "time" in condition:
                 smiles = condition.split("_")[0]
                 self.flow_profiles[smiles] = np.array(conditions.conditions[condition])
 
-        # Define time limits for the model considering user input and
-        # conditions
+        # Define time limits for the model considering user input and conditions
         if self.time_limit:
             t_lim_max = min(np.amax(self.time), self.time_limit)
         else:
@@ -226,6 +315,7 @@ class ModelWriter:
             (self.flow_profile_time > t_lim_min) & (self.flow_profile_time < t_lim_max)
         )[0]
 
+        # Set the data as attributes
         self.flow_profile_time = self.flow_profile_time[idx]
         self.time_offset = self.flow_profile_time[0]
         self.flow_profile_time -= self.time_offset
@@ -240,45 +330,79 @@ class ModelWriter:
             self.flow_profiles[flow] /= self.flowrate_time_conversion
             self.sigma_flow += self.flow_profiles[flow]
 
-    def write_flow_profile_text(self, suffix=""):
+    def write_flow_profile_text(self, indentation=""):
         """
-        Write flow profiles as a text numpy array.
+        Write a series of concentration profiles for each input and a total
+        flow rate profile.
 
         Parameters
         ----------
-        suffix: str
+        indentation: str
 
         Returns
         -------
         text: str
         """
 
+        network = self.network
+
         if len(self.flow_profiles) == 0:
+            # No flow profile information
             return ""
 
-        collection_array = np.zeros(
-            (len(self.flow_profiles) + 2, len(self.flow_profile_time))
+        input_concentrations = np.zeros(
+            (len(self.flow_profiles), len(self.flow_profile_time))
         )
 
-        collection_array[0] = self.flow_profile_time
-        for c, flow in enumerate(self.inputs, 1):
-            collection_array[c] = self.flow_profiles[flow.split("_")[0]]
+        for c, flow in enumerate(self.inflows):
+            
+            compound = flow.split("_")[0]
 
-        collection_array[-1] = self.sigma_flow
+            if compound in self.inputs:
+                syr_concentration = self.inputs[compound]
+                flow_rate = self.flow_profiles[flow.split("_")[0]]
+                conc_profile = syr_concentration*flow_rate/self.sigma_flow
+                input_concentrations[c] = conc_profile
 
-        text = "F = np.array(\n"
-        text += suffix
+        total_flows = np.zeros((len(self.outflows), len(self.sigma_flow)))
+        # assume that the output flow rates are equally partitioned between the
+        # output channels.
+        partitioned_flow = self.sigma_flow/len(self.outflows)
+        for c,out in enumerate(self.outflows):
+            total_flows[c] = partitioned_flow
 
+        text = f"{indentation}F_in = np.array(\n"
+        text += indentation
         array_text = np.array2string(
-            collection_array,
+            input_concentrations,
             formatter={"float_kind": lambda x: "%.9f" % x},
             separator=",",
             threshold=np.inf,
         )
+        text += array_text.replace("\n", f"\n{indentation}")
+        text += f"{indentation})\n\n"
 
-        text += array_text.replace("\n", f"\n{suffix}")
+        text += f"{indentation}flow_time = np.array(\n"
+        text += indentation
+        array_text = np.array2string(
+            self.flow_profile_time,
+            formatter={"float_kind": lambda x: "%.9f" % x},
+            separator=",",
+            threshold=np.inf,
+        )
+        text += array_text.replace("\n", f"\n{indentation}")
+        text += f"{indentation})\n\n"
 
-        text += ")"
+        text += f"{indentation}total_flow = np.array(\n"
+        text += indentation
+        array_text = np.array2string(
+            total_flows,
+            formatter={"float_kind": lambda x: "%.9f" % x},
+            separator=",",
+            threshold=np.inf,
+        )
+        text += array_text.replace("\n", f"\n{indentation}")
+        text += f"{indentation})\n"
 
         return text
 
@@ -319,15 +443,13 @@ class ModelWriter:
         for count, compound in enumerate(compounds):
             line_text = f"P[{count}] = "
             for i in network.NetworkCompounds[compound].In:
-                if "_#0" in i:
-                    in_compound = network.NetworkReactions[i].InputID
-                    ki = f"+{self.inflows[i]}*{self.inputs[in_compound]}"
+                if i in network.InputProcesses:
+                    input_id = network.InputProcesses[i].InputID
+                    input_conc = self.inflows[input_id]
+                    ki = f"+{input_conc}"
                     line_text += ki
                 else:
                     reactants = network.NetworkReactions[i].Reactants
-
-                    # remove water from reactants
-                    reactants = [x for x in reactants if x != "O"]
 
                     ki = f"+{self.rate_constants[i]}*"
 
@@ -339,9 +461,13 @@ class ModelWriter:
                     line_text += f"{ki}{specs}"
 
             for out in network.NetworkCompounds[compound].Out:
-                if "Sample" in out:
-                    out_compound = network.NetworkReactions[out].CompoundOutput
-                    ki = f"-{self.outflows[out]}*{self.species[out_compound]}"
+                if out in network.OutputProcesses:
+                    output_process = network.OutputProcesses[out]
+                    out_compound = output_process.OutputCompound
+                    outlet = output_process.OutputID
+                    out_flow = self.outflows[outlet]
+                    reactor_conc = self.species[out_compound]
+                    ki = f"-{reactor_conc}*{out_flow}"
                     line_text += ki
                 else:
                     ki = f"-{self.rate_constants[out]}*"
@@ -397,9 +523,6 @@ class ModelWriter:
         lines.append("")
         lines.append("S = np.zeros(len(species)) # initial concentrations")
         lines.append("")
-
-        lines.append("C = np.zeros(len(inputs)) # input concentrations")
-        lines.append("")
         lines.append(f"time_offset = {self.time_offset}")
         lines.append(f"lead_in_time = {self.lead_time}")
 
@@ -427,7 +550,8 @@ class ModelWriter:
             The module text.
         """
 
-        flow_profile_text = self.write_flow_profile_text(suffix="        ")
+        flow_profile_text = self.write_flow_profile_text(indentation="    ")
+
         model_text = self.write_model_equation_text()
 
         nf64 = "numba.float64"
@@ -451,23 +575,20 @@ class ModelWriter:
         if numba_decoration == "compile":
             lines.append("import numba")
             lines.append("from numba.pycc import CC\n")
-            lines.append(f"cc = CC('{self.name}')\n")
+            mod_name = self.name
+            if self.name == "":
+                mod_name = "model_func"
+            lines.append(f"cc = CC('{mod_name}')\n")
             lines.append('@cc.export("model_func", "float64[:](float64,float64[:],float64[:])")')
 
         lines.append("def model_function(time, S, k):")
         lines.append("")
         lines.append("    P = np.zeros(len(S))")
-        lines.append("")
 
         if flow_profile_text != "":
             lines.append("    ")
-            lines.append("    " + flow_profile_text)
-            lines.append("")
-            lines.append("    idx = np.abs(F[0] - time).argmin()")
-            lines.append("")
-            lines.append("    I = F[1:-1,idx]")
-            lines.append("")
-            lines.append("    sigma_flow = F[-1,idx]")
+            lines.append(flow_profile_text)
+            lines.append("    i = np.abs(flow_time - time).argmin()")
             lines.append("")
 
         for m_text in model_text:
@@ -481,6 +602,11 @@ class ModelWriter:
         lines.append("")
 
         lines.extend(self.write_variables_text())
+
+        lines.append("")
+        if numba_decoration == "compile":
+            lines.append('if __name__ == "__main__":')
+            lines.append('    cc.compile()')
 
         text = "\n".join(lines)
 
