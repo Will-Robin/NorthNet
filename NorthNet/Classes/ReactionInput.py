@@ -5,8 +5,6 @@ class ReactionInput:
 
     def __init__(self, reaction_input_string):
         """
-        Designed to behave like a Reaction object
-        self.SMILES does not actually hold a valid SMILES string,
 
         Parameters
         ----------
@@ -21,15 +19,9 @@ class ReactionInput:
         ), """class ReactionInput:
             reaction_input_string arg must be str like SMILES_#0>>SMILES."""
 
-        self.Reaction = None
-        self.ReactionSMILES = reaction_input_string
-        self.Reactants, self.Products = self.reactants_products_from_string(
-            reaction_input_string
-        )
+        self.token = reaction_input_string
 
-        self.CompoundInput = self.Products[0]
-        self.InputID = self.Reactants[0]
-
-        self.ReactionTemplate = None
-        self.Data = {}
+        token_sides = reaction_input_string.split(">>")
+        self.InputID = token_sides[0].split(".")
+        self.CompoundInput = token_sides[1].split(".")
 
