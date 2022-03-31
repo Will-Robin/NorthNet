@@ -4,18 +4,14 @@ from NorthNet import Classes
 
 tab_spaces = "    "
 
+
 class ModelWriter:
     def __init__(
         self,
         network=None,
         experiment=None,
         conditions=None,
-        input_token="_#0",
-        output_token="Sample",
-        flowrate_time_conversion=3600.0,
-        time_limit=False,
-        lead_time=0.0,
-        model_name=""
+        model_name="",
     ):
         """
 
@@ -30,26 +26,8 @@ class ModelWriter:
 
         conditions: NorthNet ExperimentConditions
 
-        input_token: str
-
-        output_token: str
-
-        flowrate_time_conversion: float
-            Conversion for the time component:
-
-            CAUTION: this class currently expects flow rates to be given
-            in units of uL/h and reactor volumes to be given in uL,
-            so conversion errors may result if the input DataReport's
-            attributes fall out of this pattern.
-
-        time_limit: bool or float
-            Time cutoff for the model calculation. The values of input flow
-            profiles will be included below the time limit.
-
-        lead_time: 1000
-            Governs the time from which the model will begin calculation
-            before the first data time point. (start time = t0 - lead_time)
         """
+
         if network:
             assert isinstance(
                 network, Classes.Network
@@ -65,28 +43,6 @@ class ModelWriter:
                 conditions, Classes.ExperimentConditions
             ), """Classes.ModelWriter:
                 conditions kwarg should be ExperimentConditions object."""
-        assert isinstance(
-            input_token, str
-        ), """Classes.ModelWriter:
-            input_token kwarg should be string."""
-        assert isinstance(
-            output_token, str
-        ), """Classes.ModelWriter:
-            output_token kwarg should be string."""
-        assert isinstance(
-            flowrate_time_conversion, float
-        ), """Classes.ModelWriter:
-            flowrate_time_conversion kwarg should be float."""
-        if not isinstance(time_limit, float):
-            assert isinstance(
-                time_limit, bool
-            ), """Classes.ModelWriter:
-                time_limit kwarg should be bool or float."""
-        if not isinstance(lead_time, float):
-            assert isinstance(
-                lead_time, bool
-            ), """Classes.ModelWriter:
-                lead_time kwarg should be bool or float."""
 
         # name
         self.name = model_name
@@ -94,14 +50,9 @@ class ModelWriter:
         # Network structure
         self.network = network
 
-        # Specification of tags for inputs and outputs
-        self.input_token = input_token
-        self.output_token = output_token
-
         # Reaction conditions details
         self.time = np.array([0.0])
         self.flow_profile_time = np.array([0.0])
-        self.flowrate_time_conversion = flowrate_time_conversion
         self.flow_profiles = {}
         self.sigma_flow = []
         self.reactor_volume = 1.0
@@ -116,9 +67,6 @@ class ModelWriter:
         self.outputs = {}
         self.inflows = {}
         self.outflows = {}
-        self.time_offset = 0.0
-        self.lead_time = lead_time
-        self.time_limit = time_limit
 
         if network is None:
             pass
@@ -161,7 +109,7 @@ class ModelWriter:
         # Tokens for the reaction rate constants of the system
         rate_consts = {k: f"k[{c}]" for c, k in enumerate(reactions)}
 
-        # Tokens for flow terms 
+        # Tokens for flow terms
         # F_in is an (n x m) array of input concentrations over time
         inflow_rates = {k: f"F_in[{c},i]" for c, k in enumerate(input_ids)}
         outflow_rates = {k: f"total_flow[{c},i]" for c, k in enumerate(output_ids)}
@@ -181,7 +129,7 @@ class ModelWriter:
         M, not mM), and the keys to conditions should follow some relatively strict
         patterns.
 
-        "reactor_volume": gives the reactor volume in L 
+        "reactor_volume": gives the reactor volume in L
         "{}/ M": gives the concentration of an inlet in M.
         "{}_flow_{}", not containing "time": gives the flow rate of an input,
         in L/ s
@@ -234,7 +182,7 @@ class ModelWriter:
         M, not mM), and the keys to conditions should follow some relatively strict
         patterns.
 
-        "reactor_volume": gives the reactor volume in L 
+        "reactor_volume": gives the reactor volume in L
         "{}/ M": gives the concentration of an inlet in M.
         "{}_flow_{}", not containing "time": gives the flow rate of an input,
         in L/ s
@@ -276,7 +224,7 @@ class ModelWriter:
         # Get the total flow rate of all the inputs
         self.sigma_flow = np.zeros(len(self.flow_profile_time))
         for flow in self.flow_profiles:
-           self.sigma_flow += self.flow_profiles[flow]
+            self.sigma_flow += self.flow_profiles[flow]
 
     def write_flow_profile_text(self, indentation=""):
         """
@@ -309,14 +257,14 @@ class ModelWriter:
             if compound in self.inputs:
                 syr_concentration = self.inputs[compound]
                 flow_rate = self.flow_profiles[flow.split("_")[0]]
-                conc_profile = syr_concentration*flow_rate/self.sigma_flow
+                conc_profile = syr_concentration * flow_rate / self.sigma_flow
                 input_concentrations[c] = conc_profile
 
         total_flows = np.zeros((len(self.outflows), len(self.sigma_flow)))
         # assume that the output flow rates are equally partitioned between the
         # output channels.
-        partitioned_flow = self.sigma_flow/len(self.outflows)
-        for c,out in enumerate(self.outflows):
+        partitioned_flow = self.sigma_flow / len(self.outflows)
+        for c, out in enumerate(self.outflows):
             total_flows[c] = partitioned_flow
 
         text = f"{indentation}F_in = np.array(\n"
@@ -468,19 +416,11 @@ class ModelWriter:
         lines.append("k = np.zeros(max(reactions.values())+1) # rate constants")
         lines.append("")
         lines.append("S = np.zeros(len(species)) # initial concentrations")
-        lines.append("")
-        lines.append(f"time_offset = {self.time_offset}")
-        lines.append(f"lead_in_time = {self.lead_time}")
 
         return lines
 
     def write_to_module_text(self, numba_decoration=None):
         """
-        TODO: refactor string building.
-
-        Writing a Python script based on the object attributes
-        This method creates an importable set of functions and varaibles
-        which can be using in model calculations.
 
         Parameters
         ----------
@@ -505,7 +445,7 @@ class ModelWriter:
         numba_dec += f"@numba.jit({nf64}[:]({nf64},{nf64}[:],{nf64}[:]),\n"
         numba_dec += "\tlocals="
 
-        if flow_profile_text == "": 
+        if flow_profile_text == "":
             numba_dec += f"{{'P': {nf64}[:]}}"
         else:
             numba_dec += f"{{'P': {nf64}[:],'F': {nf64}[:,:],'I':{nf64}[:]}}"
@@ -525,7 +465,9 @@ class ModelWriter:
             if self.name == "":
                 mod_name = "model_func"
             lines.append(f"cc = CC('{mod_name}')\n")
-            lines.append('@cc.export("model_func", "float64[:](float64,float64[:],float64[:])")')
+            lines.append(
+                '@cc.export("model_func", "float64[:](float64,float64[:],float64[:])")'
+            )
 
         lines.append("def model_function(time, S, k):")
         lines.append("")
@@ -552,7 +494,7 @@ class ModelWriter:
         lines.append("")
         if numba_decoration == "compile":
             lines.append('if __name__ == "__main__":')
-            lines.append('    cc.compile()')
+            lines.append("    cc.compile()")
 
         text = "\n".join(lines)
 
@@ -649,4 +591,3 @@ class ModelWriter:
         mat_text = mat_text.strip(",\n") + "]"
 
         return mat_text
-
