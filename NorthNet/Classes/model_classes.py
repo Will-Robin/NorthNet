@@ -69,12 +69,12 @@ class ModelWriter:
         if experiment is None:
             pass
         else:
-            self.load_conditions_from_data(experiment)
+            self.load_conditions(experiment)
 
         if conditions is None:
             pass
         else:
-            self.load_conditions_details(conditions)
+            self.load_conditions(conditions)
 
         if network is None:
             pass
@@ -118,7 +118,7 @@ class ModelWriter:
         self.inflows = inflow_rates
         self.outflows = outflow_rates
 
-    def load_conditions_from_data(self, data_report):
+    def load_conditions(self, data_report):
         """
         Load conditions details into ModelWriter attributes to allow compilation of
         experimental conditions into the model.
@@ -183,59 +183,6 @@ class ModelWriter:
             output = Classes.ReactionOutput(f"{comp}>>#0")
             self.network.add_output_process(output)
 
-
-    def load_conditions_details(self, conditions):
-        """
-        Load conditions details into ModelWriter attributes to allow compilation of
-        experimental conditions into the model.
-
-        For now, this method will assume that values are in base SI units (e.g.
-        M, not mM), and the keys to conditions should follow some relatively strict
-        patterns.
-
-        "reactor_volume": gives the reactor volume in L
-        "{}/ M": gives the concentration of an inlet in M.
-        "{}_flow_{}", not containing "time": gives the flow rate of an input,
-        in L/ s
-        "{}_flow_time_{}": (contains "flow" and "time") gives the time axis of
-        the flow profiles.
-
-        Parameters
-        ----------
-        conditions: Classes.ExperimentConditions
-
-        Returns
-        -------
-        None
-        """
-
-        # Get the series values from the conditions
-        self.time = conditions.series_values.copy()
-
-        # Extract flow input information
-        for condition in conditions.conditions:
-            # Get the reactor volume
-            if "reactor_volume" in condition:
-                self.reactor_volume = conditions.conditions[condition]
-
-            # Get the input concentrations
-            elif "/ M" in condition:
-                smiles = condition.split("/")[0]
-                self.inputs[smiles] = conditions.conditions[condition]
-
-            # Get the flow profile time
-            elif "time" in condition and "flow" in condition:
-                self.flow_profile_time = np.array(conditions.conditions[condition])
-
-            # Get flow profile
-            elif "flow" in condition and not "time" in condition:
-                smiles = condition.split("_")[0]
-                self.flow_profiles[smiles] = np.array(conditions.conditions[condition])
-
-        # Get the total flow rate of all the inputs
-        self.sigma_flow = np.zeros(len(self.flow_profile_time))
-        for flow in self.flow_profiles:
-            self.sigma_flow += self.flow_profiles[flow]
 
     def write_flow_profile_text(self, indentation=""):
         """
