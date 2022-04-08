@@ -224,9 +224,9 @@ class Network:
             else:
                 r_key = reaction.ReactionSMILES
 
-            for reactant in self.NetworkReactions[r_key].Reactants:
+            for reactant in set(self.NetworkReactions[r_key].Reactants):
                 self.NetworkCompounds[reactant].Out.remove(r_key)
-            for product in self.NetworkReactions[r_key].Products:
+            for product in set(self.NetworkReactions[r_key].Products):
                 self.NetworkCompounds[product].In.remove(r_key)
 
             del self.NetworkReactions[r_key]
