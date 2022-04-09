@@ -12,7 +12,7 @@ A Python package which aims to provide tools in understanding chemical reactions
 
 ## Installation
 
-The programs contained in this repository require Python 3.9.2 and the rdkit, numpy, scipy, networkx and pandas matplotlib and sklearn libraries (see `environment.yml`)
+The programs contained in this repository require Python 3.9.2 and the rdkit, numpy, scipy, networkx and pandas matplotlib and sklearn libraries.
 
 This software should work on all systems capable of installing the dependencies described above. It has been run successfully on MacOS (10.15) and Windows (Windows 10) machines.
 
@@ -65,8 +65,6 @@ Use `pip` or `conda` to install the following dependencies.
 e.g. using conda:
 - `conda install -c anaconda scipy`
 - `pip install networkx`
-- `conda install matplotlib`
-- `conda install pandas`
 - `conda install -c rdkit`
 
 ### Install NorthNet
