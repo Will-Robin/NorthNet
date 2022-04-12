@@ -65,6 +65,14 @@ def incorrect_chiral_H_solve(mol):
     Checks for carbon centres which exceed a total valence of 4, sets
     their chirality to unspecified and removes explicit hydrogens.
 
+    Example input:
+    OC[C@H](O)C(O)=[C@H](O)[C@H](O)CO
+                    ^- This carbon should not contain chiral information.
+
+    Example output given input above:
+    OC[C@H](O)C(O)=C(O)[C@H](O)CO
+                   ^- Chiral information has been removed.
+
     Parameters
     ----------
     mol: rdkit mol object

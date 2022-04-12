@@ -36,6 +36,8 @@ def run_rdkit_reaction(reactant_compounds, reaction_template):
 
     for product_set in product_sets:
         for product in product_set:
+            # The products are checked for chiral information which has been
+            # transferred to achiral carbons, which is removed.
             product = editing.incorrect_chiral_H_solve(product)
             Chem.SanitizeMol(product)
 
