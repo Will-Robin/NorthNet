@@ -51,7 +51,7 @@ class ModelWriter:
         # Reaction conditions details
         self.time = np.array([0.0])
         self.flow_profile_time = np.array([0.0])
-        self.flow_profiles = {}
+        self.flow_profiles = dict()
         self.sigma_flow = []
         self.reactor_volume = 1.0
 
@@ -59,12 +59,12 @@ class ModelWriter:
         self.observed_compounds = []
 
         # Model attributes
-        self.species = {}
-        self.rate_constants = {}
-        self.inputs = {}
-        self.outputs = {}
-        self.inflows = {}
-        self.outflows = {}
+        self.species = dict()
+        self.rate_constants = dict()
+        self.inputs = dict()
+        self.outputs = dict()
+        self.inflows = dict()
+        self.outflows = dict()
 
         if experiment is None:
             pass

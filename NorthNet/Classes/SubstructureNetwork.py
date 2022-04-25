@@ -48,11 +48,11 @@ class SubstructureNetwork:
         self.Name = name
         self.Description = description
 
-        self.SNetworkSubstructs = {}
+        self.SNetworkSubstructs = dict()
 
-        self.SNetworkTemplates = {}
+        self.SNetworkTemplates = dict()
 
-        self.SNetworkCompounds = {}
+        self.SNetworkCompounds = dict()
 
         if len(reactions) == 0:
             pass

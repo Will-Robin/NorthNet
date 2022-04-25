@@ -7,7 +7,7 @@ class Reaction:
     A class representing chemical reactions
     """
 
-    def __init__(self, reaction_smiles, reaction_template=None, info={}):
+    def __init__(self, reaction_smiles, reaction_template=None, info=dict()):
         """
         Parameters
         ----------

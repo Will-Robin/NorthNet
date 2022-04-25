@@ -45,17 +45,17 @@ class Network:
         self.Name = name
         self.Description = description
 
-        self.NetworkReactions = {}
+        self.NetworkReactions = dict()
 
-        self.NetworkCompounds = {}
+        self.NetworkCompounds = dict()
 
-        self.NetworkInputs = {}
+        self.NetworkInputs = dict()
 
-        self.NetworkOutputs = {}
+        self.NetworkOutputs = dict()
 
-        self.InputProcesses = {}
+        self.InputProcesses = dict()
 
-        self.OutputProcesses = {}
+        self.OutputProcesses = dict()
 
         if len(reactions) == 0:
             pass

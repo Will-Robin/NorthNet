@@ -23,12 +23,12 @@ class DataReport:
         """
         self.filename = "not specified"
         self.experiment_code = "not specified"
-        self.conditions = {}
-        self.analysis_details = {}
+        self.conditions = dict()
+        self.analysis_details = dict()
         self.series_values = np.array([])
         self.series_unit = "not specified"
-        self.data = {}
-        self.errors = {}
+        self.data = dict()
+        self.errors = dict()
 
         if file == "":
             pass
@@ -93,7 +93,7 @@ class DataReport:
         dataset = self.import_file_section(file, "start_data", "end_data")
 
         transposed_datalines = [list(i) for i in zip(*dataset)]
-        d_out = {}
+        d_out = dict()
         for s in transposed_datalines:
             d_out[s[0]] = np.array([0 if x == "nan" else float(x) for x in s[1:]])
 
@@ -110,7 +110,7 @@ class DataReport:
             self.errors = {d: np.zeros(len(self.series_values)) for d in self.data}
         else:
             transposed_error_lines = [list(i) for i in zip(*errors)]
-            errors_out = {}
+            errors_out = dict()
             for s in transposed_error_lines:
                 errors_out[s[0]] = np.array(
                     [0 if x == "nan" else float(x) for x in s[1:]]
@@ -321,7 +321,7 @@ class DataSet:
         data_reports: list of NorthNet DataReport objects
             data reports to create the data set
         """
-        self.data_reports = {}
+        self.data_reports = dict()
         self.compounds = []
 
         if len(data_reports) == 0:
