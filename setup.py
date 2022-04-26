@@ -9,7 +9,7 @@ setup(
         "networkx >= 2.6.3",
         "numpy >= 1.21.5",
         "rdkit >= 2021.09.4",
-        "scipy >= 1.7.3"
+        "scipy >= 1.7.3",
         "yaml >= 5.4.1"
     ],
 )
