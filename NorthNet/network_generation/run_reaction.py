@@ -1,7 +1,7 @@
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from NorthNet import Classes
-from NorthNet.network_generation.molecule_operations import editing
+import NorthNet.molecule_operations as mol_ops
 
 
 def run_rdkit_reaction(reactant_compounds, reaction_template):
@@ -38,7 +38,7 @@ def run_rdkit_reaction(reactant_compounds, reaction_template):
         for product in product_set:
             # The products are checked for chiral information which has been
             # transferred to achiral carbons, which is removed.
-            product = editing.incorrect_chiral_H_solve(product)
+            product = mol_ops.incorrect_chiral_H_solve(product)
             Chem.SanitizeMol(product)
 
         rxn = AllChem.ChemicalReaction()  # Create an empty chemical reaction
