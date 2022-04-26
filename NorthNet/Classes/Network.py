@@ -254,10 +254,13 @@ class Network:
                     self.InputProcesses[input_addition.token] = input_addition
 
                     if input_addition.InputID not in self.NetworkInputs:
-                        self.NetworkInputs[input_addition.InputID] = Classes.NetworkInput(input_addition.InputID)
+                        self.NetworkInputs[
+                            input_addition.InputID
+                        ] = Classes.NetworkInput(input_addition.InputID)
 
-                    self.NetworkInputs[input_addition.InputID].Out.append(input_addition.token)
-
+                    self.NetworkInputs[input_addition.InputID].Out.append(
+                        input_addition.token
+                    )
 
     def add_input_processes(self, inputs):
         """
@@ -306,14 +309,15 @@ class Network:
             self.NetworkCompounds[output.OutputCompound].Out.append(output.token)
 
             if output.OutputID not in self.NetworkOutputs:
-                self.NetworkOutputs[output.OutputID] = Classes.NetworkOutput(output.OutputID)
+                self.NetworkOutputs[output.OutputID] = Classes.NetworkOutput(
+                    output.OutputID
+                )
 
             self.NetworkOutputs[output.OutputID].In.append(output.token)
 
         else:
             # The output compound is not in the network, so cannot be an output
             pass
-
 
     def add_output_processes(self, outputs):
         """

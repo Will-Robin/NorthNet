@@ -26,4 +26,3 @@ class ReactionInput:
         self.InputCompound = token_sides[1].split(".")
 
         self.Out = []
-

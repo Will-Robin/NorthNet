@@ -183,7 +183,6 @@ class ModelWriter:
             output = Classes.ReactionOutput(f"{comp}>>#0")
             self.network.add_output_process(output)
 
-
     def write_flow_profile_text(self, indentation=""):
         """
         Write a series of concentration profiles for each input and a total
@@ -224,9 +223,9 @@ class ModelWriter:
         # output channels.
         partitioned_flow = self.sigma_flow / len(self.outflows)
         for c, out in enumerate(self.outflows):
-            total_flows[c] = partitioned_flow/self.reactor_volume
+            total_flows[c] = partitioned_flow / self.reactor_volume
 
-        # Write concentration array
+        # Write concentration array
         text = f"{indentation}F_in = np.array(\n"
         text += indentation
         array_text = np.array2string(

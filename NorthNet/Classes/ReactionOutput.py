@@ -25,4 +25,3 @@ class ReactionOutput:
         self.OutputCompound = token_sides[0]
 
         self.In = []
-

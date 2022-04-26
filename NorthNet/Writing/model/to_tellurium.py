@@ -30,15 +30,15 @@ def to_tellurium(model):
     # List of reactions and reaction rates
     tellurium_text += "\n"
     tellurium_text += "# List of reactions and rate equations\n"
-    for c,rxn in enumerate(network.NetworkReactions, 1):
+    for c, rxn in enumerate(network.NetworkReactions, 1):
 
         reaction = network.NetworkReactions[rxn]
 
         reactants = [comp_token(r) for r in reaction.Reactants]
-        products  = [comp_token(p) for p in reaction.Products]
+        products = [comp_token(p) for p in reaction.Products]
 
         lhs = " + ".join(reactants)
-        rhs =  " + ".join(products)
+        rhs = " + ".join(products)
 
         equation = f"k{c}*" + "*".join(reactants)
 
@@ -57,7 +57,7 @@ def to_tellurium(model):
     # Values of kinetic parameters
     tellurium_text += "\n"
     tellurium_text += "# Values of kinetic parameters\n"
-    for c,_ in enumerate(network.NetworkReactions, 1):
+    for c, _ in enumerate(network.NetworkReactions, 1):
         tellurium_text += f"k{c} = 1.0;\n"
 
     return tellurium_text

@@ -1,4 +1,3 @@
-
 class NetworkInput:
     """
     Class to store inputs into reaction network
@@ -22,4 +21,3 @@ class NetworkInput:
 
         self.token = net_input
         self.Out = []
-
