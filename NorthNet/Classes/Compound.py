@@ -1,4 +1,5 @@
 from rdkit import Chem
+import NorthNet.molecule_operations as mol_ops
 
 
 class Compound:
@@ -19,10 +20,10 @@ class Compound:
         ), "class Compound: argument should be a SMILES string."
 
         self.Mol = Chem.MolFromSmiles(SMILES)
-        if self.Mol is None:
-            self.SMILES = SMILES
-        else:
-            self.SMILES = Chem.MolToSmiles(self.Mol)
+
+        canonical_smiles = mol_ops.canonicalise(SMILES)
+
+        self.SMILES = canonical_smiles
 
         self.In = []
         self.Out = []
