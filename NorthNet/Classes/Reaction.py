@@ -1,5 +1,6 @@
 from NorthNet import Classes
 from NorthNet.text_parsing import conversions as conv
+from NorthNet import reaction_operations as reac_ops
 
 
 class Reaction:
@@ -43,7 +44,9 @@ class Reaction:
 
         assert isinstance(info, dict), """class Reaction: info arg should be a dict."""
 
-        self.ReactionSMILES = reaction_smiles
+        canonical_rxn_smiles = reac_ops.canonicalise_reaction_smiles(reaction_smiles)
+
+        self.ReactionSMILES = canonical_rxn_smiles
 
         if reaction_template is None:
             self.ReactionTemplate = Classes.ReactionTemplate("none", "", [], [])
@@ -52,4 +55,4 @@ class Reaction:
 
         self.Data = info
 
-        self.Reactants, self.Products = conv.reaction_smiles_split(reaction_smiles)
+        self.Reactants, self.Products = conv.reaction_smiles_split(canonical_rxn_smiles)
