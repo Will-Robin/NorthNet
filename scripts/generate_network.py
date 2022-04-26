@@ -1,4 +1,3 @@
-import sys
 import yaml
 from rdkit import Chem
 
@@ -8,13 +7,33 @@ from NorthNet import network_generation as n_gen
 
 
 def generate_epimers(network, deprotonation_rules=[], protonation_rules=[]):
+    """
+    A function to generate all of the epimers of a sugar: over-iterates
+    multiple times through a series of protonation/deprotonation reactions.
+
+    Parameters
+    ----------
+    network: NorthNet.Network
+
+    deprotonation_rules: list[NorthNet.ReactionTemplate]
+
+    protonation_rules: list[NorthNet.ReactionTemplate]
+
+    Returns
+    -------
+    None
+    """
+
+    hydroxide = Classes.Compound("[OH-]")
+    water = Classes.Compound("O")
+
     i = 0
     reaction_number = len(network.NetworkReactions)
     while i < 0:
-        for d_rule in deprot_rules:
+        for d_rule in deprotonation_rules:
             n_gen.extend_network_specific(network, [hydroxide], d_rule)
 
-        for p_rule in prot_rules:
+        for p_rule in protonation_rules:
             n_gen.extend_network_specific(network, [water], p_rule)
 
         new_reaction_number = len(network.NetworkReactions)
