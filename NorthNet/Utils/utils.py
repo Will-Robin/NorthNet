@@ -1,4 +1,27 @@
+import hashlib
 import numpy as np
+
+
+def sha1_hash(text, num_chars=7):
+    """
+    Generate a SHA1 hash of a string with a defined length (<= 40 chars).
+
+    Parameters
+    ----------
+    text: string
+
+    length: int
+
+    Returns
+    -------
+    sha1_hash: str
+    """
+
+    full_hash = hashlib.sha1(str.encode(text)).hexdigest()
+
+    first_n_chars = full_hash[:num_chars]
+
+    return first_n_chars
 
 
 def is_float(thing):
