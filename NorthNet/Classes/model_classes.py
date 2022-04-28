@@ -554,13 +554,13 @@ class ModelWriter:
 
         return mat_text
 
-    def to_tellurium_model(self):
+    def to_tellurium_model(self, hash_tokens=False):
         """
         Write the model in a format for use with tellurium.
         """
 
         from NorthNet.Writing import model_to_tellurium
 
-        tellurium_text = model_to_tellurium(self)
+        tellurium_text = model_to_tellurium(self, hash_tokens=hash_tokens)
 
         return tellurium_text
