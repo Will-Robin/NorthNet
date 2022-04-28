@@ -1,6 +1,7 @@
 from NorthNet.text_parsing import conversions as conv
 from NorthNet import molecule_operations as mol_ops
 
+
 def canonicalise_reaction_smiles(reaction_smiles):
     """
     Canonicalise the consituent SMILES of a reaction SMILES string.
