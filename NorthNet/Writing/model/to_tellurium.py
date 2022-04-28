@@ -1,23 +1,42 @@
-def to_tellurium(model):
+from NorthNet.Utils import utils
+
+
+def to_tellurium(model, hash_tokens=False):
     """
     Write a model formatted for use with tellurium.
 
     Parameters
     ----------
     model: Classes.ModelWriter
+        Model object containing information.
+
+    hash_tokens: bool
+        Whether to use the SHA1 hashes (up to 7 chars) of the reaction network
+        tokens.
 
     Returns
     -------
     tellurium_text: str
+        tellurium model.
     """
 
     reaction_arrow = "=>"
     network = model.network
 
-    comp_token = lambda x: x
-    rxn_token = lambda x: x
+    compound_tokens = {}
+    rxn_tokens = {}
+    if hash_tokens:
+        for smiles in network.NetworkCompounds:
+            compound_tokens[smiles] = utils.sha1_hash(smiles, num_chars=7)
+        for reaction in network.NetworkReactions:
+            rxn_tokens[reaction] = utils.sha1_hash(reaction, num_chars=7)
+    else:
+        for smiles in network.NetworkCompounds:
+            compound_tokens[smiles] = smiles
+        for reaction in network.NetworkReactions:
+            rxn_tokens[reaction] = reaction
 
-    compounds = [comp_token(c) for c in network.NetworkCompounds]
+    compounds = [compound_tokens[c] for c in network.NetworkCompounds]
 
     # List of species
     tellurium_text = "\n"
@@ -34,15 +53,15 @@ def to_tellurium(model):
 
         reaction = network.NetworkReactions[rxn]
 
-        reactants = [comp_token(r) for r in reaction.Reactants]
-        products = [comp_token(p) for p in reaction.Products]
+        reactants = [compound_tokens[r] for r in reaction.Reactants]
+        products = [compound_tokens[p] for p in reaction.Products]
 
         lhs = " + ".join(reactants)
         rhs = " + ".join(products)
 
         equation = f"k{c}*" + "*".join(reactants)
 
-        reaction_string = f"{rxn_token(rxn)}: "
+        reaction_string = f"{rxn_tokens[rxn]}: "
         reaction_string += f"{lhs} {reaction_arrow} {rhs}; "
         reaction_string += f"{equation}"
 
@@ -52,7 +71,7 @@ def to_tellurium(model):
     tellurium_text += "\n"
     tellurium_text += "# Initial concentration state variables\n"
     for comp in compounds:
-        tellurium_text += f"{comp_token(comp)} = 0.0;\n"
+        tellurium_text += f"{comp} = 0.0;\n"
 
     # Values of kinetic parameters
     tellurium_text += "\n"
