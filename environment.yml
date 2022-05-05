@@ -17,4 +17,3 @@ dependencies:
   - pip:
     - networkx==2.5.1
     - pygraphviz==1.7
-    - python-graphviz==0.16
