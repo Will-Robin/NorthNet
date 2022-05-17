@@ -2,6 +2,8 @@
 
 A Python package which aims to provide tools in understanding chemical reactions at the network level.
 
+Have a look in the scripts folder for examples of how to use NorthNet.
+
 ## Core functionality
 
 - Reaction-rule based network generation
@@ -12,7 +14,7 @@ A Python package which aims to provide tools in understanding chemical reactions
 
 ## Installation
 
-The programs contained in this repository require Python 3.9.2 and the rdkit, numpy, scipy, networkx and pandas matplotlib and sklearn libraries.
+The programs contained in this repository require Python 3.9.2 and the rdkit, numpy, scipy, networkx, pandas, matplotlib and sklearn libraries (see `environment.yml`).
 
 This software should work on all systems capable of installing the dependencies described above. It has been run successfully on MacOS (10.15) and Windows (Windows 10) machines.
 
@@ -68,6 +70,7 @@ e.g. using conda:
 - `conda install -c rdkit`
 
 ### Install NorthNet
+
 In command line/terminal, navigate to the folder containing the NorthNet code, then type:
 
 conda:
