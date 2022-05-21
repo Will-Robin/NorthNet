@@ -2,7 +2,7 @@
 
 A Python package which aims to provide tools in understanding chemical reactions at the network level.
 
-Have a look in the scripts folder for examples of how to use NorthNet.
+Have a look in the scripts folder for examples of how to use NorthNet (there is a walkthrough in `NetworkGeneration.ipynb`).
 
 ## Core functionality
 
