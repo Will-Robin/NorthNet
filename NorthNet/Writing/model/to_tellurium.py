@@ -49,7 +49,51 @@ def write_compounds_text(compounds):
     return species_text
 
 
-def write_reactions_text(network, compound_tokens, rxn_tokens, reaction_arrow="=>"):
+def write_inputs_outputs_text(network, input_tokens, output_tokens):
+    """
+    Write the text for reaction inputs and outputs.
+
+    Parameters
+    ----------
+    network: NorthNet.Classes.Network
+    input_tokens: dict()
+    output_tokens: dict()
+
+    Returns
+    -------
+    io_text: string
+    """
+
+    inputs = [input_tokens[i] for i in network.NetworkInputs]
+    outputs = [output_tokens[i] for i in network.NetworkOutputs]
+
+    io_text = "\n"
+    io_text += "# List of inputs\n"
+
+    io_text += "inputs "
+    io_text += " ".join(inputs)
+    io_text += ";\n"
+
+    io_text += "\n"
+    io_text += "# List of outputs\n"
+
+    io_text += "outputs "
+    io_text += " ".join(outputs)
+    io_text += ";\n"
+
+    return io_text
+
+
+def write_reactions_text(
+    network,
+    compound_tokens,
+    rxn_tokens,
+    input_tokens,
+    input_process_tokens,
+    output_tokens,
+    output_process_tokens,
+    reaction_arrow="=>",
+):
     """
     Write the tellurium model reactions lines.
 
@@ -60,6 +104,10 @@ def write_reactions_text(network, compound_tokens, rxn_tokens, reaction_arrow="=
     compound_tokens: dict
 
     rxn_tokens: dict
+
+    input_tokens: dict
+
+    output_tokens: dict
 
     reaction_arrow: string
         "=>" or "->"
@@ -88,6 +136,44 @@ def write_reactions_text(network, compound_tokens, rxn_tokens, reaction_arrow="=
         reaction_string += f"{equation}"
 
         reactions_text += f"{reaction_string}\n"
+
+    reactions_text += "# Reaction inputs\n"
+    for c, input in enumerate(network.InputProcesses, c + 1):
+
+        process = network.InputProcesses[input]
+
+        input_source = input_tokens[process.InputID]
+        input_compound = [compound_tokens[c] for c in process.InputCompound]
+
+        lhs = input_source
+        rhs = ".".join(input_compound)
+
+        equation = f"k{c}*{input_source}"
+
+        input_string = f"{input_process_tokens[input]}: "
+        input_string += f"{lhs} {reaction_arrow} {rhs}; "
+        input_string += f"{equation}"
+
+        reactions_text += f"{input_string}\n"
+
+    reactions_text += "# Reaction outputs\n"
+    for c, output in enumerate(network.OutputProcesses, c + 1):
+
+        process = network.OutputProcesses[output]
+
+        output_source = output_tokens[process.OutputID]
+        output_compound = compound_tokens[process.OutputCompound]
+
+        lhs = output_source
+        rhs = output_compound
+
+        equation = f"k{c}*{output_compound}"
+
+        output_string = f"{output_process_tokens[output]}: "
+        output_string += f"{lhs} {reaction_arrow} {rhs}; "
+        output_string += f"{equation}"
+
+        reactions_text += f"{output_string}\n"
 
     return reactions_text
 
@@ -133,6 +219,7 @@ def write_rate_constant_text(reactions):
 
     return k_text
 
+
 def write_flow_profile(model):
     """
     Write tellurium formatted flow profile.
@@ -146,7 +233,6 @@ def write_flow_profile(model):
     flow_text: string
     """
     return ""
-
 
 
 def to_tellurium(model, hash_tokens=False):
@@ -177,14 +263,33 @@ def to_tellurium(model, hash_tokens=False):
 
     rxn_tokens = create_token_table(network.NetworkReactions, hash_tokens=hash_tokens)
 
+    input_tokens = create_token_table(network.NetworkInputs, hash_tokens=hash_tokens)
+    input_process_tokens = create_token_table(
+        network.InputProcesses, hash_tokens=hash_tokens
+    )
+
+    output_tokens = create_token_table(network.NetworkOutputs, hash_tokens=hash_tokens)
+    output_process_tokens = create_token_table(
+        network.OutputProcesses, hash_tokens=hash_tokens
+    )
+
     compounds = list(compound_tokens.values())
 
     # List of species
     tellurium_text = write_compounds_text(compounds)
 
+    tellurium_text += write_inputs_outputs_text(network, input_tokens, output_tokens)
+
     # List of reactions and reaction rates
     tellurium_text += write_reactions_text(
-        network, compound_tokens, rxn_tokens, reaction_arrow=reaction_arrow
+        network,
+        compound_tokens,
+        rxn_tokens,
+        input_tokens,
+        input_process_tokens,
+        output_tokens,
+        output_process_tokens,
+        reaction_arrow=reaction_arrow,
     )
 
     # Initial concentration state variables
