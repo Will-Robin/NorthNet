@@ -61,6 +61,9 @@ def write_reactions_text(network, compound_tokens, rxn_tokens, reaction_arrow="=
 
     rxn_tokens: dict
 
+    reaction_arrow: string
+        "=>" or "->"
+
     Returns
     -------
     reactions_text: str
@@ -129,6 +132,21 @@ def write_rate_constant_text(reactions):
         k_text += f"k{c} = 1.0;\n"
 
     return k_text
+
+def write_flow_profile(model):
+    """
+    Write tellurium formatted flow profile.
+
+    Parameters
+    ----------
+    model: Classes.ModelWriter
+
+    Returns
+    -------
+    flow_text: string
+    """
+    return ""
+
 
 
 def to_tellurium(model, hash_tokens=False):
