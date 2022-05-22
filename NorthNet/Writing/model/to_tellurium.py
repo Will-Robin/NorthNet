@@ -156,7 +156,7 @@ def write_reactions_text(
 
         reactions_text += f"{input_string}\n"
 
-    reactions_text += "# Reaction outputs\n"
+    reactions_text += "# Reaction outputs\n"
     for c, output in enumerate(network.OutputProcesses, c + 1):
 
         process = network.OutputProcesses[output]
@@ -220,19 +220,57 @@ def write_rate_constant_text(reactions):
     return k_text
 
 
-def write_flow_profile(model):
+def write_flow_profile_text(model, input_tokens):
     """
-    Write tellurium formatted flow profile.
+    Write the flow profile for a model in tellurium format.
 
     Parameters
     ----------
-    model: Classes.ModelWriter
+    model: NorthNet.Classes.ModelWriter
 
     Returns
     -------
-    flow_text: string
+    flow_profile_text: str
     """
-    return ""
+
+    flow_profile_text = "\n"
+
+    flow_profile_text += "time: "
+    for x in range(0, len(model.flow_profile_time)):
+        flow_profile_text += f"{model.flow_profile_time[x]},"
+
+    flow_profile_text = flow_profile_text.strip(",")
+    flow_profile_text += "\n\n"
+
+    t0 = model.flow_profile_time[0]
+    for x in range(0, len(model.flow_profile_time)):
+
+        t1 = model.flow_profile_time[x]
+        flow_profile_text += f"at ({t0} < time < {t1}): "
+
+        t0 = model.flow_profile_time[x]
+
+        for flow in model.flow_profiles:
+            flow_token = flow + "_#0"
+            input = input_tokens[flow_token]
+            flow_value = model.reactor_volume / model.flow_profiles[flow][x]
+            flow_profile_text += f"{input}={flow_value},"
+
+        flow_profile_text = flow_profile_text.strip(",")
+        flow_profile_text += ";\n"
+
+    flow_profile_text += f"at ({t0} < time): "
+
+    for flow in model.flow_profiles:
+        flow_token = flow + "_#0"
+        input = input_tokens[flow_token]
+        flow_value = model.flow_profiles[flow][x] / model.sigma_flow[x]
+        flow_profile_text += f"{input}={flow_value},"
+
+    flow_profile_text = flow_profile_text.strip(",")
+    flow_profile_text += ";\n"
+
+    return flow_profile_text
 
 
 def to_tellurium(model, hash_tokens=False):
@@ -268,6 +306,13 @@ def to_tellurium(model, hash_tokens=False):
         network.InputProcesses, hash_tokens=hash_tokens
     )
 
+    experimental_inputs = create_token_table(
+        [*model.flow_profiles], hash_tokens=hash_tokens
+    )
+
+    for e in experimental_inputs:
+        input_tokens[e + "_#0"] = experimental_inputs[e]
+
     output_tokens = create_token_table(network.NetworkOutputs, hash_tokens=hash_tokens)
     output_process_tokens = create_token_table(
         network.OutputProcesses, hash_tokens=hash_tokens
@@ -297,5 +342,7 @@ def to_tellurium(model, hash_tokens=False):
 
     # Values of kinetic parameters
     tellurium_text += write_rate_constant_text(network.NetworkReactions)
+
+    tellurium_text += write_flow_profile_text(model, input_tokens)
 
     return tellurium_text
