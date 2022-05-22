@@ -6,6 +6,7 @@ from NorthNet.simulation.integration import integrate_model
 
 import model_func as currentModel
 
+
 def run_integration(S0, rate_constants, max_time, time_step):
 
     integrator = ode(currentModel.model_func).set_integrator("lsoda")
@@ -33,7 +34,7 @@ def main(S, rate_constants, max_time, time_step):
     fig, ax = plt.subplots()
 
     for x in range(0, len(compound_traces)):
-        ax.plot(time, compound_traces[x], label = species_names[x])
+        ax.plot(time, compound_traces[x], label=species_names[x])
 
     ax.set_xlabel("time/ s")
     ax.set_ylabel("conc./ M")
@@ -46,29 +47,29 @@ def main(S, rate_constants, max_time, time_step):
 if __name__ == "__main__":
 
     species = {
-    'O=C(CO)CO':0,
-    'OC=C(O)CO':1,
-    'O=C[C@@](O)(CO)C(O)(CO)CO':2,
-    '[OH-]':3,
-    'O=C[C@H](O)CO':4,
-    'O=C(CO)[C@H](O)[C@H](O)[C@H](O)CO':5,
-    'O=C[C@@](O)(CO)[C@@H](O)[C@H](O)CO':6,
-    'O':7,
+        "O=C(CO)CO": 0,
+        "OC=C(O)CO": 1,
+        "O=C[C@@](O)(CO)C(O)(CO)CO": 2,
+        "[OH-]": 3,
+        "O=C[C@H](O)CO": 4,
+        "O=C(CO)[C@H](O)[C@H](O)[C@H](O)CO": 5,
+        "O=C[C@@](O)(CO)[C@@H](O)[C@H](O)CO": 6,
+        "O": 7,
     }
 
     species_names = [*species]
 
     reactions = {
-    'O=C(CO)CO.OC=C(O)CO>>O=C[C@@](O)(CO)C(O)(CO)CO':0,
-    'O=C(CO)CO.[OH-]>>OC=C(O)CO.[OH-]':1,
-    'O=C[C@H](O)CO.OC=C(O)CO>>O=C(CO)[C@H](O)[C@H](O)[C@H](O)CO':2,
-    'O=C[C@H](O)CO.OC=C(O)CO>>O=C[C@@](O)(CO)[C@@H](O)[C@H](O)CO':3,
-    'O.OC=C(O)CO>>O.O=C[C@H](O)CO':4,
+        "O=C(CO)CO.OC=C(O)CO>>O=C[C@@](O)(CO)C(O)(CO)CO": 0,
+        "O=C(CO)CO.[OH-]>>OC=C(O)CO.[OH-]": 1,
+        "O=C[C@H](O)CO.OC=C(O)CO>>O=C(CO)[C@H](O)[C@H](O)[C@H](O)CO": 2,
+        "O=C[C@H](O)CO.OC=C(O)CO>>O=C[C@@](O)(CO)[C@@H](O)[C@H](O)CO": 3,
+        "O.OC=C(O)CO>>O.O=C[C@H](O)CO": 4,
     }
 
-    k = np.zeros(max(reactions.values())+1) # rate constants
+    k = np.zeros(max(reactions.values()) + 1)  # rate constants
 
-    S = np.zeros(len(species)) # initial concentrations
+    S = np.zeros(len(species))  # initial concentrations
 
     S0 = np.zeros(S.shape)
 

@@ -42,11 +42,12 @@ def generate_epimers(network, deprotonation_rules=[], protonation_rules=[]):
 
         reaction_number = new_reaction_number
 
+
 # Load in some variables
-with open('params.yaml', 'r') as file:
+with open("params.yaml", "r") as file:
     text = file.read()
 
-info = yaml.load(text, Loader = yaml.FullLoader)
+info = yaml.load(text, Loader=yaml.FullLoader)
 
 """Get reaction components"""
 # there may be an error such as:
