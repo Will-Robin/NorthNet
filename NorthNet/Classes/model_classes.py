@@ -8,6 +8,7 @@ class ModelWriter:
     A class designed to generate modelling apparatus by combining a Network
     structure and experimental conditions.
     """
+
     def __init__(
         self,
         network=None,
