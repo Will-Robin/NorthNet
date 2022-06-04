@@ -10,15 +10,41 @@ class Network:
     def __init__(self, reactions, name, description):
         """
         The Network object is initialised with a list of Reaction objects. If
-        the list is empty, then the netwurk is initialised as an empty network.
+        the list is empty, then the network is initialised as an empty network.
 
         Parameters
         ----------
-        reactions: list of NorthNet Reaction objects
+        reactions: list[NorthNet.Classes.Reaction]
+            List of reactions to create the network.
         name: string
             A label name for the network.
         description: string
             A description for the network.
+
+        Attributes
+        ----------
+        Name: str
+            A name for the network.
+        Description: str
+            A description of the network.
+        NetworkReactions: dict
+            A dictionary containing the NorthNet.Classes.Reaction objects keyed
+            by their reaction SMILES: {reactionSMILES: NorthNet.Classes.Reaction}
+        NetworkCompounds: dict
+            A dictionary containing the NorthNet.Classes.Compound objects keyed
+            by their SMILES: {SMILES: NorthNet.Classes.Compound}
+        NetworkInputs: dict
+            A dictionary containing the NorthNet.Classes.NetworkInput objects keyed
+            by their tokens: {token: NorthNet.Classes.NetworkInput}
+        NetworkOutputs: dict
+            A dictionary containing the NorthNet.Classes.NetworkOutput objects keyed
+            by their tokens: {token: NorthNet.Classes.NetworkOutput}
+        InputProcesses: dict
+            A dictionary containing the NorthNet.Classes.ReactionInput objects keyed
+            by their tokens: {token: NorthNet.Classes.ReactionInput}
+        OutputProcesses: dict
+            A dictionary containing the NorthNet.Classes.ReactionOutput objects keyed
+            by their tokens: {token: NorthNet.Classes.ReactionOutput}
         """
 
         if isinstance(reactions, list):
@@ -65,7 +91,14 @@ class Network:
     def add_compound(self, compound):
         """
         Add a compound to the network.
-        compoud: NorthNet Compound object
+
+        Parameters
+        ----------
+        compound: NorthNet.Classes.Compound
+
+        Returns
+        -------
+        None
         """
 
         assert isinstance(
@@ -82,8 +115,12 @@ class Network:
 
         Parameters
         ----------
-        compounds: list of NorthNet Compound objects
+        compounds: list[NorthNet.Classes.Compound]
             compounds to be added
+
+        Returns
+        -------
+        None
         """
         if isinstance(compounds, list):
             check_cpds = [isinstance(c, Classes.Compound) for c in compounds]
@@ -107,8 +144,12 @@ class Network:
 
         Parameters
         ----------
-        compounds: list of NorthNet Compound objects
+        compounds: list[NorthNet.Classes.Compound]
             compounds to be removed
+
+        Returns
+        -------
+        None
         """
 
         if isinstance(compounds, list):
@@ -142,8 +183,12 @@ class Network:
 
         Parameters
         ----------
-        reaction: NorthNet Reaction object
+        reaction: NorthNet.Classes.Reaction
             reaction to be added
+
+        Returns
+        -------
+        None
         """
         assert isinstance(
             reaction, Classes.Reaction
@@ -176,8 +221,12 @@ class Network:
 
         Parameters
         ----------
-        reactions: list of NorthNet Reaction objects
+        reactions: list[NorthNet.Classes.Reaction]
             reactions to be added to the Network
+
+        Returns
+        -------
+        None
         """
         if isinstance(reactions, list):
             check_reactions = [isinstance(c, Classes.Reaction) for c in reactions]
@@ -200,9 +249,13 @@ class Network:
 
         Parameters
         ----------
-        remove_reactions: list of NorthNet Reaction objects or
-                          valid reaction SMILES
-            reactions to be removed.
+        remove_reactions: list[NorthNet.Classes.Reaction] or list[str]
+            reactions to be removed (either in reaction SMILES format or as
+                NorthNet.Classes.Reaction).
+
+        Returns
+        -------
+        None
         """
 
         assertion_msg = """Network.remove_reactions():
@@ -237,8 +290,12 @@ class Network:
 
         Parameters
         ----------
-        input: NorthNet ReactionInput object
-            Input to be added
+        input_addition: NorthNet.Classes.ReactionInput
+            Input to be added.
+
+        Returns
+        -------
+        None
         """
 
         assert isinstance(
@@ -268,8 +325,12 @@ class Network:
 
         Parameters
         ----------
-        inputs: list of NortNet NetworkInput objects
-            Inputs to be added to the network
+        inputs: list[NortNet.Classes.NetworkInput]
+            Inputs to be added to the network.
+
+        Returns
+        -------
+        None
         """
 
         if isinstance(inputs, list):
@@ -294,8 +355,12 @@ class Network:
 
         Parameters
         ----------
-        output ReactionOutput object
+        output NorthNet.Classes.ReactionOutput
             Output to be added
+
+        Returns
+        -------
+        None
         """
         assert isinstance(
             output, Classes.ReactionOutput
@@ -325,8 +390,12 @@ class Network:
 
         Parameters
         ----------
-        outputs: list of NortNet NetworkOutput objects
+        outputs: list[NortNet.Classes.NetworkOutput]
             Outputs to be added to the network
+
+        Returns
+        -------
+        None
         """
         if isinstance(outputs, list):
             check_inputs = [isinstance(i, Classes.NetworkOutput) for i in outputs]
@@ -354,9 +423,7 @@ class Network:
 
         Returns
         -------
-        NorthNet Reaction object
-        or
-        None
+        NorthNet.Classes.Reaction or None
         """
 
         assert isinstance(
@@ -373,10 +440,15 @@ class Network:
     def get_reactants(self, reaction):
         """
         Conveniently get the reactants of a reaction
+
         Parameters
         ----------
         reaction: str
             Key in self.NetworkReactions
+
+        Returns
+        -------
+        None
         """
         assert isinstance(
             reaction, str
@@ -393,10 +465,15 @@ class Network:
     def get_products(self, reaction):
         """
         Conveniently get the products of a reaction
+
         Parameters
         ----------
         reaction: str
             Key in self.NetworkReactions
+
+        Returns
+        -------
+        None
         """
         assert isinstance(
             reaction, str
@@ -413,10 +490,15 @@ class Network:
     def get_reaction_template(self, reaction):
         """
         Conveniently get the ReactionTemplate of a reaction
+
         Parameters
         ----------
         reaction: str
             Key in self.NetworkReactions
+
+        Returns
+        -------
+        None
         """
         assert isinstance(
             reaction, str
@@ -433,10 +515,15 @@ class Network:
     def get_reaction_SMARTS(self, reaction):
         """
         Conveniently get the Reaction SMARTS of a reaction
+
         Parameters
         ----------
         reaction: str
             Key in self.NetworkReactions
+
+        Returns
+        -------
+        None
         """
         assert isinstance(
             reaction, str
@@ -457,10 +544,15 @@ class Network:
     def get_reaction_name(self, reaction):
         """
         Conveniently get the Name of a reaction
+
         Parameters
         ----------
         reaction: str
             Key in self.NetworkReactions
+
+        Returns
+        -------
+        None
         """
         assert isinstance(
             reaction, str
@@ -482,9 +574,12 @@ class Network:
         """
         Converts NorthNet network object to networkx object.
 
+        Parameters
+        ----------
+
         Returns
         -------
-        G: networkx DiGraph object
+        G: networkx.DiGraph
             Networkx version of the NorthNet network.
         """
         import networkx as nx

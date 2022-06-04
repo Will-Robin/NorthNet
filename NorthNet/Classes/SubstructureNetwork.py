@@ -15,6 +15,9 @@ class SubstructureNetwork:
 
     def __init__(self, reactions, name, description):
         """
+
+        Parameters
+        ----------
         reactions: list
             List of NortNet Reaction objects with extracted functional group
             transformations.
@@ -22,6 +25,22 @@ class SubstructureNetwork:
             A name for the network.
         description: str
             A description of the network.
+
+        Attributes
+        ----------
+        Name: str
+            A name for the network.
+        Description: str
+            A description of the network.
+        SNetworkSubstructs: dict
+            Dictionary containing NorthNet.Classes.Substructure objects keyed
+            by SMARTS.
+        SNetworkTemplates: dict
+            Dictionary containing NorthNet.Classes.ReactionTemplate objects keyed
+            by reaction SMARTS.
+        SNetworkCompounds: dict
+            Dictionary containing NorthNet.Classes.Compound objects keyed
+            by SMILES.
         """
 
         if isinstance(reactions, list):
@@ -66,7 +85,12 @@ class SubstructureNetwork:
         Parameters
         ----------
         reactions: NorthNet Reaction object
+
+        Returns
+        -------
+        None
         """
+
         assert isinstance(
             reaction, Classes.Reaction
         ), """SubstructureNetwork.add_reaction:
@@ -136,6 +160,10 @@ class SubstructureNetwork:
         Parameters
         ----------
         reactions: list of NorthNet Reaction objects
+
+        Returns
+        -------
+        None
         """
 
         if isinstance(reactions, list):
@@ -164,6 +192,7 @@ class SubstructureNetwork:
 
         Parameters
         ----------
+
         Returns
         -------
         G: networkx DiGraph object

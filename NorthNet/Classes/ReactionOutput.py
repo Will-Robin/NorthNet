@@ -9,10 +9,21 @@ class ReactionOutput:
         Parameters
         ----------
         reaction_input_string: str
-            token for reaction input
-            should follow the convention
-            SMILES>>#0
+            A token for reaction output should follow the convention
+            `SMILES>>#0`
+
+        Attributes
+        ----------
+        token: string
+            Token for the output.
+        OutputID: str
+            ID for the output.
+        OutputCompound: str
+            The compound associated with the output.
+        In: list[str]
+            List of processes connected to the output.
         """
+
         assert isinstance(
             reaction_output_string, str
         ), """class ReactionOutput:

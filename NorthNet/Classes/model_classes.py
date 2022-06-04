@@ -4,6 +4,10 @@ from NorthNet import Classes
 
 
 class ModelWriter:
+    """
+    A class designed to generate modelling apparatus by combining a Network
+    structure and experimental conditions.
+    """
     def __init__(
         self,
         network=None,
@@ -13,17 +17,30 @@ class ModelWriter:
     ):
         """
 
-        A class designed to generate modelling apparatus by combining a Network
-        structure and experimental conditions.
-
         Parameters
         ----------
-        network: NorthNet Network
+        network: NorthNet.Classes.Network
 
-        experiment: NorthNet DataReport
+        experiment: NorthNet.Classes.DataReport
 
-        conditions: NorthNet ExperimentConditions
+        conditions: NorthNet.Classes.ExperimentConditions
 
+        Attributes
+        ----------
+        name: str
+        network: NorthNet.Classes.Network
+        time: numpy.ndarray[np.float64]
+        flow_profile_time: numpy.ndarray[np.float64]
+        flow_profiles: dict
+        sigma_flow: numpy.ndarray[np.float64]
+        reactor_volume: float
+        observed_compounds: list[str]
+        species: dict
+        rate_constants: dict
+        inputs: dict
+        outputs: dict
+        inflows: dict
+        outflows: dict
         """
 
         if network:
@@ -85,6 +102,13 @@ class ModelWriter:
         """
         Get dictionaries of tokens for the compounds, reactions, inputs,
         inflows, outflows
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+        None
         """
 
         # shorthand for the network
@@ -136,7 +160,7 @@ class ModelWriter:
 
         Parameters
         ----------
-        conditions: Classes.DataReport
+        data_report: NorthNet.Classes.DataReport
 
         Returns
         -------
@@ -347,7 +371,6 @@ class ModelWriter:
         Returns
         -------
         lines: list[str]
-
         """
 
         get_index = lambda x: int(x[x.find("[") + 1 : x.find("]")])
@@ -385,7 +408,7 @@ class ModelWriter:
 
         Parameters
         ----------
-        numba_decoration: str
+        numba_decoration: str or None
             Which numba decoration to add.
             "jit": Decoration for just in time compilation.
             "compile": Decoration for ahead of time compilation
@@ -464,7 +487,6 @@ class ModelWriter:
 
     def write_model_matrix_text(self):
         """
-
         Prototype for writing the model as an array.
 
         Parameters
@@ -557,6 +579,14 @@ class ModelWriter:
     def to_tellurium_model(self, hash_tokens=False):
         """
         Write the model in a format for use with tellurium.
+
+        Parameters
+        ----------
+        hash_tokens: bool
+
+        Returns
+        -------
+        tellurium_text: str
         """
 
         from NorthNet.Writing import model_to_tellurium

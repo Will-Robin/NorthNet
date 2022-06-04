@@ -22,12 +22,16 @@ class Reaction:
 
         Attributes
         ----------
-        self.ReactionSMILES: str
+        ReactionSMILES: str
             Reaction SMILES string
-        self.Reaction_Template: NorthNet ReactionTemplate or None
+        Reaction_Template: NorthNet ReactionTemplate or None
             Reaction template for the reaction. Defaults to None
-        self.info: dict
+        Data: dict
             Dictionary of information (e.g. database entries)
+        Reactants: list[str]
+            List of reactant SMILES tokens.
+        Products: list[str]
+            List of product SMILES tokens.
         """
 
         assert isinstance(

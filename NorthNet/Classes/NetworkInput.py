@@ -8,10 +8,15 @@ class NetworkInput:
 
         Parameters
         ----------
-        id: str
-            token for reaction input
-            should follow the convention
-            SMILES_#0
+        net_input: str
+            A token for reaction input. It should follow the convention
+            `SMILES_#0`.
+
+        Attributes
+        ----------
+        token: str
+        Out: list[str]
+            List of reaction input tokens which this NetworkInput feeds into.
         """
 
         assert isinstance(

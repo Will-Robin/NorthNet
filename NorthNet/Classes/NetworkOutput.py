@@ -8,10 +8,15 @@ class NetworkOutput:
 
         Parameters
         ----------
-        id: str
-            token for reaction input
-            should follow the convention
-            SMILES_#0
+        output: str
+            A token for reaction input should follow the convention `SMILES_#0`
+
+        Attributes
+        ----------
+        token: str
+
+        In: list[str]
+            List of Reaction Output processes connected to the output.
         """
 
         assert isinstance(

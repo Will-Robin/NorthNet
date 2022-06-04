@@ -2,10 +2,11 @@ from pathlib import Path
 
 
 class ExperimentConditions:
+    """
+    A container for experimental information.
+    """
     def __init__(self):
         """
-        A container for experimental information.
-
         Attributes
         ----------
         self.experiment_code: str

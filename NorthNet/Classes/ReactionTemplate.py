@@ -13,13 +13,19 @@ class ReactionTemplate:
         name: str
             name for reaction.
         reaction_SMARTS: str
-            reaction SMARTS string.
-
-        reactant_substructs: list of strings
+            reaction string.
+        reactant_substructs: list[str]
             reacting substructures
-
-        product_substructs: list of strings
+        product_substructs: list[str]
             substructures to which reactant substructures are converted.
+
+        Attributes
+        ----------
+        Name: str
+        Reaction: rdkit.Chem.AllChem.Reaction
+        ReactionSMARTS: str
+        ReactantSubstructures: list[str]
+        ProductSubstructures: list[str]
         """
 
         assert isinstance(

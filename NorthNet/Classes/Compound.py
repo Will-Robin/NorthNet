@@ -4,15 +4,27 @@ import NorthNet.molecule_operations as mol_ops
 
 class Compound:
     """
-    Class to store compound information.
+    A class to store compound information.
     """
 
     def __init__(self, SMILES):
         """
         Parameters
         ----------
-        mol: str
+        SMILES: str
             SMILES corresponding to compound.
+
+        Attributes
+        ----------
+        Mol: rdkit.Chem.rdchem.Mol
+            RDKit representation of the compound to allow for chemoinformatics
+            operations.
+        In: list[str]
+            List of reaction tokens for which the compound is a product.
+        Out: list[str]
+            List of reaction tokens for which the compound is a reactant.
+        ReactiveSubstructures: None
+            Placeholder
         """
 
         assert isinstance(

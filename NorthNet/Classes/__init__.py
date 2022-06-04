@@ -1,3 +1,8 @@
+"""
+Classes which encapsulate chemical, experiment and model information for
+chemical reaction networks.
+"""
+
 from NorthNet.Classes.Substructure import Substructure
 from NorthNet.Classes.Compound import Compound
 from NorthNet.Classes.ReactionTemplate import ReactionTemplate

@@ -9,9 +9,17 @@ class ReactionInput:
         Parameters
         ----------
         reaction_input_string: str
-            token for reaction input
-            should follow the convention
-            SMILES_#0>>SMILES
+            A token for reaction input should follow the convention
+            `SMILES_#0>>SMILES`
+
+        Attributes
+        ----------
+        InputID: str
+            ID for the input.
+        InputCompound: str
+            Compound parameters associated with the input.
+        Out: list[str]
+            List of compounds arising from the input.
         """
 
         assert isinstance(

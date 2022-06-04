@@ -12,6 +12,15 @@ class Substructure:
         ----------
         SMARTS: str
             SMARTS corresponding to substructure.
+
+        Attributes
+        ----------
+        Mol: rdkit.Chem.rdchem.Mol
+        SMARTS: str
+        In: list[str]
+            List of reaction tokens for which the substructure is a product.
+        Out: list[str]
+            List of reaction tokens for which the substructure is a reactant.
         """
 
         assert isinstance(
