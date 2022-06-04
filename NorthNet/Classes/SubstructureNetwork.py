@@ -15,12 +15,10 @@ class SubstructureNetwork:
 
     def __init__(self, reactions, name, description):
         """
-
         Parameters
         ----------
-        reactions: list
-            List of NortNet Reaction objects with extracted functional group
-            transformations.
+        reactions: list[NorthNet.Classes.Reaction]
+            List of reactions containing NorthNet.Classes.ReactionTemplates.
         name: str
             A name for the network.
         description: str
@@ -43,18 +41,6 @@ class SubstructureNetwork:
             by SMILES.
         """
 
-        if isinstance(reactions, list):
-            check_reactions = [isinstance(r, Classes.Reaction) for r in reactions]
-            assert all(
-                check_reactions
-            ), """class SubstructureNetwork:
-                reactions arg must be a list of NorthNet Reaction objects."""
-        else:
-            assert isinstance(
-                reactions, list
-            ), """class SubstructureNetwork:
-                reactions arg must be a list of NorthNet Reaction objects."""
-
         assert isinstance(
             name, str
         ), """class SubstructureNetwork:
@@ -66,11 +52,8 @@ class SubstructureNetwork:
 
         self.Name = name
         self.Description = description
-
         self.SNetworkSubstructs = dict()
-
         self.SNetworkTemplates = dict()
-
         self.SNetworkCompounds = dict()
 
         if len(reactions) == 0:
@@ -78,13 +61,307 @@ class SubstructureNetwork:
         else:
             self.add_reactions(reactions)
 
+    def add_compound(self, compound):
+        """
+        Add a compound to the SubstructureNetwork.
+
+        Parameters
+        ----------
+        compound: NorthNet.Classes.Compound
+
+        Returns
+        -------
+        None
+        """
+
+        assert isinstance(
+            compound, Classes.Compound
+        ), """SubstructureNetwork.add_compound():
+                compound arg should be a NorthNet Compound object"""
+
+        if compound.SMILES not in self.SNetworkCompounds:
+            self.SNetworkCompounds[compound.SMILES] = compound
+
+    def add_compounds(self, compounds):
+        """
+        Add list of NorthNet Compound objects to the SubstructureNetwork
+
+        Parameters
+        ----------
+        compounds: list[NorthNet.Classes.Compound]
+            compounds to be added
+
+        Returns
+        -------
+        None
+        """
+        if isinstance(compounds, list):
+            check_cpds = [isinstance(c, Classes.Compound) for c in compounds]
+            assert all(
+                check_cpds
+            ), """SNetwork.add_compounds():
+                    compounds arg should be list of NorthNet Compound objects"""
+        else:
+            assert isinstance(
+                compounds, list
+            ), """SNetwork.add_compounds():
+                    compounds arg should be list of NorthNet Compound objects"""
+
+        for compound in compounds:
+            self.add_compound(compound)
+
+    def remove_compounds(self, compounds):
+        """
+        Remove list of compounds from the SubstructureNetwork.
+
+        Parameters
+        ----------
+        compounds: list[NorthNet.Classes.Compound]
+            compounds to be removed
+
+        Returns
+        -------
+        None
+        """
+
+        if isinstance(compounds, list):
+            check_cpds = [isinstance(c, Classes.Compound) for c in compounds]
+            assert all(
+                check_cpds
+            ), """Network.remove_compounds():
+                compounds arg should be a list of NorthNet Compound objects"""
+        else:
+            assert isinstance(
+                compounds, list
+            ), """Network.remove_compounds():
+                compounds arg should be a list of NorthNet Compound objects"""
+
+        check_substructs = []
+        for compound in compounds:
+            for substruct in self.SNetworkCompounds[compound].In:
+                self.SNetworkSubstructs[substruct].Out.remove(compound)
+                check_substructs.append(substruct)
+            for substruct in self.SNetworkCompounds[compound].Out:
+                self.SNetworkSubstructs[substruct].In.remove(compound)
+                check_substructs.append(substruct)
+
+        for substruct in check_substructs:
+
+            substr_obj = self.SNetworkSubstructs[substruct]
+
+            if len(substr_obj.Out) == 0 and len(substr_obj.In) == 0:
+                remove_templates = []
+
+                for r_t in substr_obj.In:
+                    remove_templates.append(self.SNetworkTemplates[r_t])
+                for r_t in substr_obj.Out:
+                    remove_templates.append(self.SNetworkTemplates[r_t])
+
+                remove_templates = list(set(remove_templates))
+                templ_removals = [self.SNetworkTemplates[t] for t in remove_templates]
+
+                self.remove_substructure(substr_obj)
+                self.remove_templates(templ_removals)
+
+        for compound in compounds:
+            del self.SNetworkCompounds[compound.SMILES]
+
+    def remove_substructure(self, substructure):
+        """
+        Remove a substructure from the SubstructureNetwork.
+
+        Parameters
+        ----------
+        substructure: NorthNet.Classes.Substructure
+
+        Returns
+        -------
+        None
+        """
+
+        assert isinstance(
+            substructure, Classes.Substructure
+        ), """SubstructureNetwork.remove_substructure:
+            substructure arg should be a NorthNet Substructure object."""
+
+        del self.SNetworkSubstructs[substructure.SMARTS]
+
+    def remove_substructures(self, substructures):
+        """
+        Remove a list of substructures from the SubstructureNetwork.
+
+        Parameters
+        ----------
+        substructures: list[NorthNet.Classes.Substructure]
+
+        Returns
+        -------
+        None
+        """
+
+        if isinstance(substructures, list):
+            check_subtructures = [
+                isinstance(c, Classes.Substructure) for c in substructures
+            ]
+            assert all(
+                check_subtructures
+            ), """SubstructureNetwork.remove_substructures():
+                substructures arg should be a list of NorthNet Substructure objects"""
+        else:
+            assert isinstance(
+                substructures, list
+            ), """SubstructureNetwork.remove_substructures():
+                substructures arg should be a list of NorthNet Substructure objects"""
+
+        for substruct in substructures:
+            self.remove_substructure(substruct)
+
+    def add_template(self, template):
+        """
+        Add a reaction template to the network.
+
+        Parameters
+        ----------
+        template: NorthNet.Classes.ReactionTemplate
+
+        Returns
+        -------
+        None
+        """
+
+        assert isinstance(
+            template, Classes.ReactionTemplate
+        ), """SubstructureNetwork.add_template:
+            template arg should be a NorthNet ReactionTemplate object."""
+
+        r_key = template.ReactionSMARTS
+
+        for r_subst in template.ReactantSubstructures:
+            # connect to reaction
+            if r_subst in self.SNetworkSubstructs:
+                pass
+            else:
+                self.SNetworkSubstructs[r_subst] = Classes.Substructure(r_subst)
+
+            self.SNetworkSubstructs[r_subst].Out.append(r_key)
+
+            working_substruct = self.SNetworkSubstructs[r_subst].Mol
+
+            # connect to compounds
+            for comp in self.SNetworkCompounds:
+                compound = self.SNetworkCompounds[comp].Mol
+                if compound.HasSubstructMatch(working_substruct):
+                    self.SNetworkCompounds[comp].In.append(r_subst)
+                    self.SNetworkSubstructs[r_subst].Out.append(comp)
+
+        for p_substruct in template.ProductSubstructures:
+            # connect to reaction
+            if p_substruct in self.SNetworkSubstructs:
+                pass
+            else:
+                self.SNetworkSubstructs[p_substruct] = Classes.Substructure(p_substruct)
+
+            self.SNetworkSubstructs[p_substruct].In.append(r_key)
+
+            working_substruct = self.SNetworkSubstructs[p_substruct].Mol
+
+            # connect to compounds
+            for comp in self.SNetworkCompounds:
+                compound = self.SNetworkCompounds[comp].Mol
+                if compound.HasSubstructMatch(working_substruct):
+                    self.SNetworkCompounds[comp].Out.append(p_substruct)
+                    self.SNetworkSubstructs[p_substruct].In.append(comp)
+
+    def add_templates(self, templates):
+        """
+        Add reaction templates to the network.
+
+        Parameters
+        ----------
+        reactions: list[NorthNet.Classes.ReactionTemplate]
+
+        Returns
+        -------
+        None
+        """
+
+        if isinstance(templates, list):
+            check_templates = [
+                isinstance(c, Classes.ReactionTemplate) for c in templates
+            ]
+            assert all(
+                check_templates
+            ), """SubstructureNetwork.add_templates():
+                templates arg should be a list of NorthNet ReactionTemplate objects"""
+        else:
+            assert isinstance(
+                templates, list
+            ), """SubstructureNetwork.add_templates():
+                templates arg should be a list of NorthNet ReactionTemplate objects"""
+
+        for t in templates:
+            if t.ReactionSMARTS in self.SNetworkTemplates:
+                pass
+            else:
+                self.add_template(t)
+
+    def remove_template(self, template):
+        """
+        Remove a reaction template from a SubstructureNetwork.
+
+        Parameters
+        ----------
+        template: NorthNet.Classes.ReactionTemplate
+
+        Returns
+        -------
+        None
+        """
+
+        assert isinstance(
+            template, Classes.ReactionTemplate
+        ), """SubstructureNetwork.remove_template:
+            template arg should be a NorthNet ReactionTemplate object."""
+
+        del self.SNetworkTemplates[template.ReactionSMARTS]
+
+    def remove_templates(self, templates):
+        """
+        Remove a list of ReactionTemplates from the SubstructureNetwork.
+
+        Parameters
+        ----------
+        templates: list[NorthNet.Classes.ReactionTemplate]
+
+        Returns
+        -------
+        None
+        """
+
+        if isinstance(templates, list):
+            check_templates = [
+                isinstance(c, Classes.ReactionTemplate) for c in templates
+            ]
+            assert all(
+                check_templates
+            ), """SubstructureNetwork.remove_templates():
+                templates arg should be a list of NorthNet ReactionTemplate objects"""
+        else:
+            assert isinstance(
+                templates, list
+            ), """SubstructureNetwork.remove_templates():
+                templates arg should be a list of NorthNet ReactionTemplate objects"""
+
+        for temp in templates:
+            self.remove_template(temp)
+
     def add_reaction(self, reaction):
         """
         Add a reaction to the network.
 
         Parameters
         ----------
-        reactions: NorthNet Reaction object
+        reaction: NorthNet.Classes.Reaction
 
         Returns
         -------
@@ -159,7 +436,7 @@ class SubstructureNetwork:
 
         Parameters
         ----------
-        reactions: list of NorthNet Reaction objects
+        reactions: list[NorthNet.Classes.Reaction]
 
         Returns
         -------
@@ -195,7 +472,7 @@ class SubstructureNetwork:
 
         Returns
         -------
-        G: networkx DiGraph object
+        G: networkx.DiGraph
             Networkx version of the NorthNet SNetwork.
         """
 
