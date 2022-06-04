@@ -12,6 +12,8 @@ Have a look in the scripts folder for examples of how to use NorthNet (there is 
 - Experimental reaction data integration with reaction networks
 - *Future* data manipulation guided by reaction networks.
 
+Documentation has been started [here](https://will-robin.github.io/NorthNet/).
+
 ## Installation
 
 The programs contained in this repository require Python 3.9.2 and the rdkit, numpy, scipy, networkx, pandas, matplotlib and sklearn libraries (see `environment.yml`).
