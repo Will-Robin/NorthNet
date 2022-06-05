@@ -8,9 +8,9 @@ def add_flow_inputs(network, inputs):
 
     Parameters
     ----------
-    network: NorthNet Network object
+    network: NorthNet.Classes.Network
         Network to add flow terms to.
-    inputs: list
+    inputs: list[str]
         List of input string tokens to add.
 
     Returns
@@ -45,7 +45,7 @@ def skip_compound(network, substructure):
 
     Parameters
     ----------
-    network: NorthNet Network object
+    network: NorthNet.Classes.Network
         Network to modify
 
     Returns

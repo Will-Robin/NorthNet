@@ -6,10 +6,15 @@ def load_network_from_reaction_list(reaction_list, name="", description=""):
     """
     Create a NorthNet Network from a list of reactions
 
-    reaction_list: list of reaction SMILES strings
+    Parameters
+    ----------
+    reaction_list: list[str]
+        list of reaction SMILES strings
         Format: e.g. C=O.OC=C(O)CO>>O=C([C@@H](CO)O)CO
 
-    network: NorthNet Network object
+    Returns
+    -------
+    network: NorthNet.Classes.Network
     """
 
     rxns = []
@@ -25,10 +30,14 @@ def node_edge_list_from_gdf(filename):
     """
     Get network edges and coordinates from .gdf file
 
+    Parameters
+    ----------
     file: str or pathlib Path
         Path to file
 
-    node_list, edge_list: list of dicts
+    Returns
+    -------
+    node_list, edge_list: list[dict]
 
     """
     with open(filename, "r") as file:

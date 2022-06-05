@@ -17,14 +17,14 @@ def run_rdkit_reaction(reactant_compounds, reaction_template):
 
     Parameters
     ----------
-    reactant_compounds: tuple
+    reactant_compounds: tuple[NorthNet.Classes.Compound]
         tuple of NorthNet Compound objects which take part in the reaction.
-    reaction_template: list
-        NorthNet Reaction_Template object.
+    reaction_template: list[NorthNet.Classes.ReactionTemplate]
+        NorthNet ReactionTemplate object.
 
     Returns
     -------
-    reactions: list
+    reactions: list[NorthNet.Classes.Reaction]
         A list of NorthNet Reaction objects.
     """
 

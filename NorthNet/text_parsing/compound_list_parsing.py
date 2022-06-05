@@ -14,7 +14,7 @@ def load_compounds_from_file(fname, name_col=0, SMILES_col=1, delimiter=","):
         Path to the file containing nformation.
     name_col: int
         Column in the file which will give the keys for the output dict
-    SMILES_col:
+    SMILES_col: int
         Column containing the compound SMILES
 
     Returns

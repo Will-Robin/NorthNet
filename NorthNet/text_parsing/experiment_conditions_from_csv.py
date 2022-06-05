@@ -4,9 +4,15 @@ from NorthNet.Utils import utils
 
 def experiment_conditions_from_csv(filename):
     """
+    Create a ExperimentConditions object from a .csv file.
+
     Parameters
     ----------
     filename: str or pathlib Path
+
+    Returns
+    -------
+    conditions: NorthNet.Classes.ExperimentConditions
     """
 
     conditions = Classes.ExperimentConditions()

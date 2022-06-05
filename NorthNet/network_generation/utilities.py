@@ -8,12 +8,12 @@ def cleanup(reactions):
 
     Parameters
     ----------
-    reactions: list
+    reactions: list[str]
         list of reaction SMILES strings
 
     Returns
     -------
-    reactions_out: list
+    reactions_out: list[str]
         list of cleaned reaction SMILES strings
     """
 
@@ -55,7 +55,7 @@ def remove_network_symmetry(network):
 
     Parameters
     ----------
-    network: NorthNet Network object
+    network: NorthNet.Classes.Network
 
     Returns
     -------

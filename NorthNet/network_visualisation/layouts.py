@@ -22,7 +22,7 @@ def generate_network_layout(network, render_engine="fdp"):
 
     Parameters
     ----------
-    network: NorthNet Network object
+    network: NorthNet.Classes.Network
         NorthNet Network to be represented.
     render_engine: str
         Layout render engine for graphviz.
@@ -76,7 +76,7 @@ def generate_networkx_layout(network, render_engine="fdp"):
 
     Parameters
     ----------
-    network: Networkx DiGraph
+    network: networkx.DiGraph
         Network to be represented.
     render_engine: str
         Layout render engine for graphviz.

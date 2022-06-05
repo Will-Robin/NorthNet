@@ -5,9 +5,9 @@ def remove_reactions_by_product_substruct(network, substruct):
 
     Parameters
     ----------
-    network: Classes.Network
+    network: NorthNet.Classes.Network
         Network to check and modify.
-    substruct: Classes.Substructure
+    substruct: NorthNet.Classes.Substructure
         Substructure to check for in products.
 
     Returns

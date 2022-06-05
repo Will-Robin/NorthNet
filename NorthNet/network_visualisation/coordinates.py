@@ -12,12 +12,12 @@ def set_network_coords(G, pos):
 
     Parameters
     ----------
-    G: networkx DiGraph
+    G: networkx.DiGraph
         Graph to extract nodes from.
 
     Returns
     -------
-    net_lines: numpy 2D array
+    net_lines: numpy.ndarray[numpy.ndarray]
         Coordinates for plotting a line plot of the network.
     """
 
@@ -38,12 +38,12 @@ def get_network_lineplot(G):
 
     Parameters
     ----------
-    G: networkx DiGraph
+    G: networkx.DiGraph
         Graph to extract nodes from.
 
     Returns
     -------
-    net_lines: numpy 2D array
+    net_lines: numpy.ndarray[numpy.ndarray]
         Coordinates for plotting a line plot of the network.
     """
 
@@ -66,12 +66,12 @@ def get_network_scatter(G):
 
     Parameters
     ----------
-    G: networkx DiGraph
+    G: networkx.DiGraph
         Graph to extract nodes from.
 
     Returns
     -------
-    net_lines: numpy 2D array
+    net_lines: numpy.ndarray[numpy.ndarray]
         Coordinates for plotting a line plot of the network.
     """
 
@@ -91,12 +91,12 @@ def normalise_network_coordinates(G):
 
     Parameters
     ----------
-    G: networkx DiGraph
+    G: networkx.DiGraph
         Graph to extract nodes from.
 
     Returns
     -------
-    G2: networkx DiGraph
+    G2: networkx.DiGraph
     """
 
     coords = coordinates.get_network_lineplot(G)
@@ -121,14 +121,14 @@ def rotate_network(G, radians):
 
     Parameters
     ----------
-    G: networkx DiGraph
+    G: networkx.DiGraph
         Graph to extract nodes from.
     radians: float
         rotation angle
 
     Returns
     -------
-    G2: networkx DiGraph
+    G2: networkx.DiGraph
     """
 
     xy = get_network_scatter(G)

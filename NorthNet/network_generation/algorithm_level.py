@@ -8,11 +8,11 @@ def extend_network_specific(network, reagents, reaction_template):
 
     Parameters
     ----------
-    network: NorthNet Network object
+    network: NorthNet.Classes.Network
         Network to be extrapolated from. Modified in place.
-    reagents: NorthNet Compound objects
+    reagents: list[NorthNet.Classes.Compound]
         Reagents to be applied to the network.
-    reaction_template: NorthNet Reaction_Template object.
+    reaction_template: NorthNet.Classes.Reaction_Template
         Reaction template to be used on the network.
 
     Returns
@@ -46,13 +46,13 @@ def extend_network_self(network, reaction_template):
 
     Parameters
     ----------
-    network: NorthNet Network object
+    network: NorthNet.Classes.Network
         Network to be extrapolated from. Modified in place.
-    reagents: NorthNet Compound objects
+    reagents: list[NorthNet.Classes.Compound]
         Reagents to be applied to the network.
-    reaction_template: NorthNet Reaction_Template object.
+    reaction_template: NorthNet.Classes.Reaction_Template
         Reaction template to be used on the network.
-    secondary_substructure: NorthNet/NetGen Substructure object
+    secondary_substructure: NorthNet.Classes.Substructure
         Substructure of the second reaction component.
 
     Returns
@@ -84,13 +84,13 @@ def extend_network_task(network, reaction_template):
 
     Parameters
     ----------
-    network: NorthNet Network object
+    network: NorthNet.Classes.Network
         Network to be extrapolated from. Modified in place.
-    reagents: NorthNet Compound objects
+    reagents: list[NorthNet.Classes.Compound]
         Reagents to be applied to the network.
-    reaction_template: NorthNet Reaction_Template object.
+    reaction_template: NorthNet.Classes.Reaction_Template
         Reaction template to be used on the network.
-    secondary_substructure: NorthNet Substructure object
+    secondary_substructure: NorthNet.Classes.Substructure
         Substructure of the second reaction component.
 
     Returns

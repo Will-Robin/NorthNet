@@ -8,16 +8,15 @@ def get_reactive_compounds(species_list, substructures):
 
     Parameters
     ----------
-    species_list: list
+    species_list: list[NorthNet.Classes.Compound]
         List of NorthNet Compound objects from which
         reactive molecules are extracted.
-
-    substructure: list of rdkit mol objects
+    substructure: list[rdkit.Chem.rdchem.Mol]
         Reactive substructures.
 
     Returns
     -------
-    matches: list
+    matches: list[NorthNet.Classes.Compound]
         List of NorthNet Compound objects which contain the substructure.
     """
     matches = []
