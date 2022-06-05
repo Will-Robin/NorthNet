@@ -67,12 +67,12 @@
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="sd">    Parameters</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="sd">    ----------</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="sd">    reactions: list</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="sd">    reactions: list[str]</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="sd">        list of reaction SMILES strings</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="sd">    Returns</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">    -------</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="sd">    reactions_out: list</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="sd">    reactions_out: list[str]</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">        list of cleaned reaction SMILES strings</span>
 </span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>
@@ -114,7 +114,7 @@
 </span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>
 </span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a><span class="sd">    Parameters</span>
 </span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a><span class="sd">    ----------</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a><span class="sd">    network: NorthNet Network object</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a><span class="sd">    network: NorthNet.Classes.Network</span>
 </span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>
 </span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a><span class="sd">    Returns</span>
 </span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a><span class="sd">    -------</span>
@@ -175,12 +175,12 @@
 </span><span id="cleanup-9"><a href="#cleanup-9"><span class="linenos"> 9</span></a>
 </span><span id="cleanup-10"><a href="#cleanup-10"><span class="linenos">10</span></a><span class="sd">    Parameters</span>
 </span><span id="cleanup-11"><a href="#cleanup-11"><span class="linenos">11</span></a><span class="sd">    ----------</span>
-</span><span id="cleanup-12"><a href="#cleanup-12"><span class="linenos">12</span></a><span class="sd">    reactions: list</span>
+</span><span id="cleanup-12"><a href="#cleanup-12"><span class="linenos">12</span></a><span class="sd">    reactions: list[str]</span>
 </span><span id="cleanup-13"><a href="#cleanup-13"><span class="linenos">13</span></a><span class="sd">        list of reaction SMILES strings</span>
 </span><span id="cleanup-14"><a href="#cleanup-14"><span class="linenos">14</span></a>
 </span><span id="cleanup-15"><a href="#cleanup-15"><span class="linenos">15</span></a><span class="sd">    Returns</span>
 </span><span id="cleanup-16"><a href="#cleanup-16"><span class="linenos">16</span></a><span class="sd">    -------</span>
-</span><span id="cleanup-17"><a href="#cleanup-17"><span class="linenos">17</span></a><span class="sd">    reactions_out: list</span>
+</span><span id="cleanup-17"><a href="#cleanup-17"><span class="linenos">17</span></a><span class="sd">    reactions_out: list[str]</span>
 </span><span id="cleanup-18"><a href="#cleanup-18"><span class="linenos">18</span></a><span class="sd">        list of cleaned reaction SMILES strings</span>
 </span><span id="cleanup-19"><a href="#cleanup-19"><span class="linenos">19</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="cleanup-20"><a href="#cleanup-20"><span class="linenos">20</span></a>
@@ -220,14 +220,14 @@ reaction outcomes. Not perfect.</p>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>reactions</strong> (list):
+<li><strong>reactions</strong> (list[str]):
 list of reaction SMILES strings</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong>reactions_out</strong> (list):
+<li><strong>reactions_out</strong> (list[str]):
 list of cleaned reaction SMILES strings</li>
 </ul>
 </div>
@@ -254,7 +254,7 @@ list of cleaned reaction SMILES strings</li>
 </span><span id="remove_network_symmetry-56"><a href="#remove_network_symmetry-56"><span class="linenos">56</span></a>
 </span><span id="remove_network_symmetry-57"><a href="#remove_network_symmetry-57"><span class="linenos">57</span></a><span class="sd">    Parameters</span>
 </span><span id="remove_network_symmetry-58"><a href="#remove_network_symmetry-58"><span class="linenos">58</span></a><span class="sd">    ----------</span>
-</span><span id="remove_network_symmetry-59"><a href="#remove_network_symmetry-59"><span class="linenos">59</span></a><span class="sd">    network: NorthNet Network object</span>
+</span><span id="remove_network_symmetry-59"><a href="#remove_network_symmetry-59"><span class="linenos">59</span></a><span class="sd">    network: NorthNet.Classes.Network</span>
 </span><span id="remove_network_symmetry-60"><a href="#remove_network_symmetry-60"><span class="linenos">60</span></a>
 </span><span id="remove_network_symmetry-61"><a href="#remove_network_symmetry-61"><span class="linenos">61</span></a><span class="sd">    Returns</span>
 </span><span id="remove_network_symmetry-62"><a href="#remove_network_symmetry-62"><span class="linenos">62</span></a><span class="sd">    -------</span>
@@ -304,7 +304,7 @@ defined for now as the last carbon in the canonicalised structure.</p>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>network</strong> (NorthNet Network object):</li>
+<li><strong>network</strong> (<a href="../Classes/Network.html">NorthNet.Classes.Network</a>):</li>
 </ul>
 
 <h6 id="returns">Returns</h6>

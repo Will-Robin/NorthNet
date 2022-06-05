@@ -67,9 +67,9 @@
 </span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a>
 </span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="sd">    Parameters</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="sd">    ----------</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="sd">    network: NorthNet Network object</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="sd">    network: NorthNet.Classes.Network</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="sd">        Network to add flow terms to.</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="sd">    inputs: list</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="sd">    inputs: list[str]</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="sd">        List of input string tokens to add.</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>
 </span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="sd">    Returns</span>
@@ -104,7 +104,7 @@
 </span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>
 </span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a><span class="sd">    Parameters</span>
 </span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a><span class="sd">    ----------</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a><span class="sd">    network: NorthNet Network object</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a><span class="sd">    network: NorthNet.Classes.Network</span>
 </span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a><span class="sd">        Network to modify</span>
 </span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>
 </span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a><span class="sd">    Returns</span>
@@ -207,9 +207,9 @@
 </span><span id="add_flow_inputs-9"><a href="#add_flow_inputs-9"><span class="linenos"> 9</span></a>
 </span><span id="add_flow_inputs-10"><a href="#add_flow_inputs-10"><span class="linenos">10</span></a><span class="sd">    Parameters</span>
 </span><span id="add_flow_inputs-11"><a href="#add_flow_inputs-11"><span class="linenos">11</span></a><span class="sd">    ----------</span>
-</span><span id="add_flow_inputs-12"><a href="#add_flow_inputs-12"><span class="linenos">12</span></a><span class="sd">    network: NorthNet Network object</span>
+</span><span id="add_flow_inputs-12"><a href="#add_flow_inputs-12"><span class="linenos">12</span></a><span class="sd">    network: NorthNet.Classes.Network</span>
 </span><span id="add_flow_inputs-13"><a href="#add_flow_inputs-13"><span class="linenos">13</span></a><span class="sd">        Network to add flow terms to.</span>
-</span><span id="add_flow_inputs-14"><a href="#add_flow_inputs-14"><span class="linenos">14</span></a><span class="sd">    inputs: list</span>
+</span><span id="add_flow_inputs-14"><a href="#add_flow_inputs-14"><span class="linenos">14</span></a><span class="sd">    inputs: list[str]</span>
 </span><span id="add_flow_inputs-15"><a href="#add_flow_inputs-15"><span class="linenos">15</span></a><span class="sd">        List of input string tokens to add.</span>
 </span><span id="add_flow_inputs-16"><a href="#add_flow_inputs-16"><span class="linenos">16</span></a>
 </span><span id="add_flow_inputs-17"><a href="#add_flow_inputs-17"><span class="linenos">17</span></a><span class="sd">    Returns</span>
@@ -238,9 +238,9 @@
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>network</strong> (NorthNet Network object):
+<li><strong>network</strong> (<a href="../Classes/Network.html">NorthNet.Classes.Network</a>):
 Network to add flow terms to.</li>
-<li><strong>inputs</strong> (list):
+<li><strong>inputs</strong> (list[str]):
 List of input string tokens to add.</li>
 </ul>
 
@@ -276,7 +276,7 @@ List of input string tokens to add.</li>
 </span><span id="skip_compound-46"><a href="#skip_compound-46"><span class="linenos"> 46</span></a>
 </span><span id="skip_compound-47"><a href="#skip_compound-47"><span class="linenos"> 47</span></a><span class="sd">    Parameters</span>
 </span><span id="skip_compound-48"><a href="#skip_compound-48"><span class="linenos"> 48</span></a><span class="sd">    ----------</span>
-</span><span id="skip_compound-49"><a href="#skip_compound-49"><span class="linenos"> 49</span></a><span class="sd">    network: NorthNet Network object</span>
+</span><span id="skip_compound-49"><a href="#skip_compound-49"><span class="linenos"> 49</span></a><span class="sd">    network: NorthNet.Classes.Network</span>
 </span><span id="skip_compound-50"><a href="#skip_compound-50"><span class="linenos"> 50</span></a><span class="sd">        Network to modify</span>
 </span><span id="skip_compound-51"><a href="#skip_compound-51"><span class="linenos"> 51</span></a>
 </span><span id="skip_compound-52"><a href="#skip_compound-52"><span class="linenos"> 52</span></a><span class="sd">    Returns</span>
@@ -372,7 +372,7 @@ the removed compounds are created to fill the gaps.</p>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>network</strong> (NorthNet Network object):
+<li><strong>network</strong> (<a href="../Classes/Network.html">NorthNet.Classes.Network</a>):
 Network to modify</li>
 </ul>
 

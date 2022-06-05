@@ -73,14 +73,14 @@
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>
 </span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="sd">    Parameters</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">    ----------</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="sd">    reactant_compounds: tuple</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="sd">    reactant_compounds: tuple[NorthNet.Classes.Compound]</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="sd">        tuple of NorthNet Compound objects which take part in the reaction.</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="sd">    reaction_template: list</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="sd">        NorthNet Reaction_Template object.</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="sd">    reaction_template: list[NorthNet.Classes.ReactionTemplate]</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="sd">        NorthNet ReactionTemplate object.</span>
 </span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>
 </span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="sd">    Returns</span>
 </span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="sd">    -------</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="sd">    reactions: list</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="sd">    reactions: list[NorthNet.Classes.Reaction]</span>
 </span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="sd">        A list of NorthNet Reaction objects.</span>
 </span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
@@ -136,14 +136,14 @@
 </span><span id="run_rdkit_reaction-18"><a href="#run_rdkit_reaction-18"><span class="linenos">18</span></a>
 </span><span id="run_rdkit_reaction-19"><a href="#run_rdkit_reaction-19"><span class="linenos">19</span></a><span class="sd">    Parameters</span>
 </span><span id="run_rdkit_reaction-20"><a href="#run_rdkit_reaction-20"><span class="linenos">20</span></a><span class="sd">    ----------</span>
-</span><span id="run_rdkit_reaction-21"><a href="#run_rdkit_reaction-21"><span class="linenos">21</span></a><span class="sd">    reactant_compounds: tuple</span>
+</span><span id="run_rdkit_reaction-21"><a href="#run_rdkit_reaction-21"><span class="linenos">21</span></a><span class="sd">    reactant_compounds: tuple[NorthNet.Classes.Compound]</span>
 </span><span id="run_rdkit_reaction-22"><a href="#run_rdkit_reaction-22"><span class="linenos">22</span></a><span class="sd">        tuple of NorthNet Compound objects which take part in the reaction.</span>
-</span><span id="run_rdkit_reaction-23"><a href="#run_rdkit_reaction-23"><span class="linenos">23</span></a><span class="sd">    reaction_template: list</span>
-</span><span id="run_rdkit_reaction-24"><a href="#run_rdkit_reaction-24"><span class="linenos">24</span></a><span class="sd">        NorthNet Reaction_Template object.</span>
+</span><span id="run_rdkit_reaction-23"><a href="#run_rdkit_reaction-23"><span class="linenos">23</span></a><span class="sd">    reaction_template: list[NorthNet.Classes.ReactionTemplate]</span>
+</span><span id="run_rdkit_reaction-24"><a href="#run_rdkit_reaction-24"><span class="linenos">24</span></a><span class="sd">        NorthNet ReactionTemplate object.</span>
 </span><span id="run_rdkit_reaction-25"><a href="#run_rdkit_reaction-25"><span class="linenos">25</span></a>
 </span><span id="run_rdkit_reaction-26"><a href="#run_rdkit_reaction-26"><span class="linenos">26</span></a><span class="sd">    Returns</span>
 </span><span id="run_rdkit_reaction-27"><a href="#run_rdkit_reaction-27"><span class="linenos">27</span></a><span class="sd">    -------</span>
-</span><span id="run_rdkit_reaction-28"><a href="#run_rdkit_reaction-28"><span class="linenos">28</span></a><span class="sd">    reactions: list</span>
+</span><span id="run_rdkit_reaction-28"><a href="#run_rdkit_reaction-28"><span class="linenos">28</span></a><span class="sd">    reactions: list[NorthNet.Classes.Reaction]</span>
 </span><span id="run_rdkit_reaction-29"><a href="#run_rdkit_reaction-29"><span class="linenos">29</span></a><span class="sd">        A list of NorthNet Reaction objects.</span>
 </span><span id="run_rdkit_reaction-30"><a href="#run_rdkit_reaction-30"><span class="linenos">30</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="run_rdkit_reaction-31"><a href="#run_rdkit_reaction-31"><span class="linenos">31</span></a>
@@ -186,16 +186,16 @@
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>reactant_compounds</strong> (tuple):
+<li><strong>reactant_compounds</strong> (tuple[<a href="../Classes/Compound.html">NorthNet.Classes.Compound</a>]):
 tuple of NorthNet Compound objects which take part in the reaction.</li>
-<li><strong>reaction_template</strong> (list):
-NorthNet Reaction_Template object.</li>
+<li><strong>reaction_template</strong> (list[<a href="../Classes/ReactionTemplate.html">NorthNet.Classes.ReactionTemplate</a>]):
+NorthNet ReactionTemplate object.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong>reactions</strong> (list):
+<li><strong>reactions</strong> (list[<a href="../Classes/Reaction.html">NorthNet.Classes.Reaction</a>]):
 A list of NorthNet Reaction objects.</li>
 </ul>
 </div>
