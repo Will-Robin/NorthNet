@@ -300,7 +300,7 @@ def reaction_score_layout(network):
     return layout
 
 
-from NorthNet import text_parsing as file_import
+from NorthNet import Loading as file_import
 
 reactions = """O=C(CO)CO.OC=C(O)CO>>O=C[C@@](O)(CO)C(O)(CO)CO
 O=C(CO)CO.[OH-]>>OC=C(O)CO.[OH-]

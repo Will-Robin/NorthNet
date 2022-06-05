@@ -2,7 +2,7 @@ from NorthNet import Classes
 from NorthNet.Utils import utils
 
 
-def experiment_conditions_from_csv(filename):
+def experimentconditions_from_csv(filename):
     """
     Create a ExperimentConditions object from a .csv file.
 

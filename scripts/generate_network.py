@@ -2,7 +2,7 @@ import yaml
 from rdkit import Chem
 
 from NorthNet import Classes
-from NorthNet import text_parsing as text_p
+from NorthNet import Loading
 from NorthNet import network_generation as n_gen
 
 
@@ -58,7 +58,7 @@ info = yaml.load(text, Loader=yaml.FullLoader)
 
 reaction_SMARTS_file = info["reaction-smarts-file"]
 
-reactions = text_p.load_reaction_templates_from_file(reaction_SMARTS_file)
+reactions = Loading.load_reaction_templates_from_file(reaction_SMARTS_file)
 
 C_patt = Chem.MolFromSmarts("[C]")
 count_carbons = lambda x: x.GetSubstructMatches(C_patt)

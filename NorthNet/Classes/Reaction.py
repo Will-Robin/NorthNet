@@ -1,5 +1,4 @@
 from NorthNet import Classes
-from NorthNet.text_parsing import conversions as conv
 from NorthNet import reaction_operations as reac_ops
 
 
@@ -59,4 +58,4 @@ class Reaction:
 
         self.Data = info
 
-        self.Reactants, self.Products = conv.reaction_smiles_split(canonical_rxn_smiles)
+        self.Reactants, self.Products = reac_ops.reaction_smiles_split(canonical_rxn_smiles)

@@ -4,7 +4,7 @@ from NorthNet.Classes import ReactionInput
 from NorthNet.Classes import ReactionOutput
 from NorthNet.Classes import Network
 from NorthNet.Classes import ModelWriter
-from NorthNet.text_parsing import load_network_from_reaction_list
+from NorthNet.Loading import load_network_from_reaction_list
 
 data = DataReport(file="exampleData.csv")
 

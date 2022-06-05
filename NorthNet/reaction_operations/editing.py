@@ -1,4 +1,4 @@
-from NorthNet.text_parsing import conversions as conv
+import NorthNet.reaction_operations.conversions as conv
 from NorthNet import molecule_operations as mol_ops
 
 

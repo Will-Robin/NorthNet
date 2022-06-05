@@ -1,5 +1,5 @@
 from NorthNet import Classes
-from NorthNet.text_parsing import conversions
+from NorthNet.reaction_operations import conversions
 
 
 def load_network_from_reaction_list(reaction_list, name="", description=""):

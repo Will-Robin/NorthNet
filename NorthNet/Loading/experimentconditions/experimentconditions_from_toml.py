@@ -2,7 +2,7 @@ import tomli
 from NorthNet import Classes
 
 
-def conditions_from_toml(filename):
+def experimentconditions_from_toml(filename):
     """
     Create a ExperimentConditions object from a .toml file.
 
