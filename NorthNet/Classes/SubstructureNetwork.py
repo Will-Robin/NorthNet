@@ -1,3 +1,24 @@
+"""
+This code is a model for a 'Substructure-Reaction Rule Network' in which
+reactive relationships are expressed as functional group interconversions,
+rather than as explicit reactions.
+
+Reaction rules (NorthNet.Classes.ReactionTemplate objects) connect to
+substructures (NorthNet.Classes.Substructure objects) as reactant substructures
+and product substructures. Compounds (NorthNet.Classes.Compound objects) which
+match substructures connect to them.
+
+Substructures are separate entities so that the 'meaning' of a reaction rule is
+preserved, even if there are no compounds matching a reactant or product
+substructure.
+
+It is possible to add and remove compounds, reactions and reaction rules.
+Adding substructures is meaningless (they are added in the process of adding a
+reaction or reaction rule). Compounds can only be added if they contain a
+substructure matching one already in the Substructure Network. There is no
+restriction on adding reactions and reaction rules.
+"""
+
 import networkx as nx
 from NorthNet import Classes
 
@@ -349,9 +370,7 @@ class SubstructureNetwork:
         """
 
         if isinstance(rules, list):
-            check_templates = [
-                isinstance(c, Classes.ReactionTemplate) for c in rules
-            ]
+            check_templates = [isinstance(c, Classes.ReactionTemplate) for c in rules]
             assert all(
                 check_templates
             ), """SubstructureNetwork.remove_templates():
