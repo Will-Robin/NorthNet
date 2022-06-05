@@ -24,28 +24,6 @@ Activate the virtual environment:
 
 `conda activate northnet-env`
 
-**Go to Install dependencies.**
-
-### Using pip:
-
-Create a virtual environment:
-
-`pip install virtualenv`
-
-`virtualenv northnet-env`
-
-Activate the virtual environment:
-
-Mac:
-
-`source northnet-env/bin/activate`
-
-Windows:
-
-`northnet-env\Scripts\activate`
-
-**Go to Install dependencies.**
-
 ## Install dependencies
 
 Use `pip` or `conda` to install the following dependencies.
