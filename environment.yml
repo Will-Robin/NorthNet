@@ -6,13 +6,9 @@ channels:
 dependencies:
   - numpy=1.20.2=py39h7eed0ac_0
   - rdkit=2021.03.1=py39h88273a1_0
-  - pandas=1.2.4=py39h23ab428_0
-  - matplotlib-base=3.4.1=py39hb07454d_0
   - pip=21.1.1=pyhd8ed1ab_0
   - python=3.9.2=h2502468_0_cpython
   - pyyaml=5.4.1=py39h9ed2024_1
-  - scikit-learn=0.24.2=py39h4b1dcc9_0
-  - scipy=1.6.3=py39h056f1c0_0
   - tomli=1.2.2=pyhd3eb1b0_0
   - pip:
     - networkx==2.5.1
