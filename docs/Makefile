@@ -13,7 +13,7 @@ RXN_OPS=$(ROOT)/reaction_operations/*.py
 SIM=$(ROOT)/simulation/*.py
 
 NORTHNET=$(CLASSES) $(LOADING) $(UTILS) $(WRITING) $(MOL_OPS) $(NET_GEN) \
-		 $(NETVIS) $(RXN_OPS) $(SIM)
+		 $(NETVIS) $(RXN_OPS) $(SIM) $(ROOT)
 
 all: index.html
 
