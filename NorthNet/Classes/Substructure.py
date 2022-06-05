@@ -17,10 +17,12 @@ class Substructure:
         ----------
         Mol: rdkit.Chem.rdchem.Mol
         SMARTS: str
-        In: list[str]
-            List of reaction tokens for which the substructure is a product.
-        Out: list[str]
+        MatchingCompounds: list[str]
+            Contextual list of compound tokens which contain this substructure.
+        ReactionParticipations: list[str]
             List of reaction tokens for which the substructure is a reactant.
+        ProducingReactions: list[str]
+            List of reaction tokens of which the substructure is a product.
         """
 
         assert isinstance(
@@ -35,5 +37,6 @@ class Substructure:
         else:
             self.SMARTS = Chem.MolToSmarts(self.Mol)
 
-        self.In = []
-        self.Out = []
+        self.MatchingCompounds = []
+        self.ReactionParticipations = []
+        self.ProducingReactions = []

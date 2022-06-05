@@ -23,8 +23,9 @@ class Compound:
             List of reaction tokens for which the compound is a product.
         Out: list[str]
             List of reaction tokens for which the compound is a reactant.
-        ReactiveSubstructures: None
-            Placeholder
+        ReactiveSubstructures: list[str]
+            List of keys to contextual reactive substructures which either
+            engage in, or are products of, reactions.
         """
 
         assert isinstance(
@@ -40,4 +41,4 @@ class Compound:
         self.In = []
         self.Out = []
 
-        self.ReactiveSubstructures = None
+        self.ReactiveSubstructures = []
