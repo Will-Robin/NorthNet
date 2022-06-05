@@ -113,3 +113,30 @@ compound_number = len(reaction_network.NetworkCompounds)
 reaction_number = len(reaction_network.NetworkReactions)
 
 print(f"Generated {compound_number} compounds and {reaction_number} reactions.")
+
+# save the reactions and their reaction rules
+header = [
+    "ReactionSMILES",
+    "reaction name",
+    "reactionSMARTS",
+    "reacting substructures",
+    "product substructures",
+]
+
+reaction_text = "\t".join(header) + "\n"
+for reaction in reaction_network.NetworkReactions:
+    rxn = reaction_network.NetworkReactions[reaction]
+    rule = rxn.ReactionTemplate
+    reaction_text += reaction + "\t"
+    reaction_text += rule.Name + "\t"
+
+    reaction_text += rule.ReactionSMARTS + "\t"
+    reaction_text += ".".join(rule.ReactantSubstructures) + "\t"
+    reaction_text += ".".join(rule.ProductSubstructures) + "\t"
+
+    reaction_text += "\n"
+
+
+filename = "reactions_and_rules.tsv"
+with open(filename, "w") as file:
+    file.write(reaction_text)
