@@ -111,8 +111,8 @@ class SubstructureNetwork:
 
             add_to_net = False  # changes to True if a match is found
             for substruct in self.Substructures:
-                substructure = self.Substructures[substruct].Mol
-                if compound.Mol.HasSubstructMatch(substructure):
+                substructure = self.Substructures[substruct]
+                if compound.Mol.HasSubstructMatch(substructure.Mol):
                     compound.ReactiveSubstructures.append(substruct)
                     substructure.MatchingCompounds.append(compound.SMILES)
                     if not add_to_net:
@@ -172,11 +172,14 @@ class SubstructureNetwork:
         ), """SubstructureNetwork.remove_compound:
             compound arg should be a NorthNet Compound object."""
 
+        compound_token = compound.SMILES
         # remove the compound connection to substructures
         for substruct in compound.ReactiveSubstructures:
-            self.Substructures[substruct].MatchingCompounds.remove(compound)
+            substructure = self.Substructures[substruct]
+            if compound_token in substructure.MatchingCompounds:
+                substructure.MatchingCompounds.remove(compound_token)
 
-        del self.Compounds[compound.SMILES]
+        del self.Compounds[compound_token]
 
     def remove_compounds(self, compounds):
         """
@@ -230,12 +233,13 @@ class SubstructureNetwork:
 
         rxn_key = rule.ReactionSMARTS
 
+        if rxn_key not in self.ReactionRules:
+            self.ReactionRules[rxn_key] = rule
+
         for rxn_substr in rule.ReactantSubstructures:
 
             # connect to reaction
-            if rxn_substr in self.Substructures:
-                pass
-            else:
+            if rxn_substr not in self.Substructures:
                 self.Substructures[rxn_substr] = Classes.Substructure(rxn_substr)
 
             self.Substructures[rxn_substr].ReactionParticipations.append(rxn_key)
@@ -252,9 +256,7 @@ class SubstructureNetwork:
         for p_substruct in rule.ProductSubstructures:
 
             # connect to reaction
-            if p_substruct in self.Substructures:
-                pass
-            else:
+            if p_substruct not in self.Substructures:
                 self.Substructures[p_substruct] = Classes.Substructure(p_substruct)
 
             self.Substructures[p_substruct].ProducingReactions.append(rxn_key)
@@ -321,12 +323,14 @@ class SubstructureNetwork:
         for substr in rule.ReactantSubstructures:
             substructure = self.Substructures[substr]
             rxn_partic = substructure.ReactionParticipations
-            rxn_partic.remove(rule.ReactionSMARTS)
+            if rule.ReactionSMARTS in rxn_partic:
+                rxn_partic.remove(rule.ReactionSMARTS)
 
         for substr in rule.ReactantSubstructures:
             substructure = self.Substructures[substr]
             prod_rxns = substructure.ProducingReactions
-            prod_rxns.remove(rule.ReactionSMARTS)
+            if rule.ReactionSMARTS in prod_rxns:
+                prod_rxns.remove(rule.ReactionSMARTS)
 
         # Check for disconnected substructures
         remove_substructs = []
@@ -403,6 +407,7 @@ class SubstructureNetwork:
             reaction arg should be a NorthNet Reaction object."""
 
         r_key = reaction.ReactionTemplate.ReactionSMARTS
+
         self.ReactionRules[r_key] = reaction
 
         for r_subst in reaction.ReactionTemplate.ReactantSubstructures:
@@ -424,9 +429,9 @@ class SubstructureNetwork:
                 else:
                     self.Compounds[reac] = Classes.Compound(reac)
 
-                compound = self.Compounds[reac].Mol
+                compound = self.Compounds[reac]
 
-                if compound.HasSubstructMatch(working_substruct):
+                if compound.Mol.HasSubstructMatch(working_substruct):
                     compound.ReactiveSubstructures.append(r_subst)
                     self.Substructures[r_subst].MatchingCompounds.append(reac)
                 else:
@@ -452,10 +457,10 @@ class SubstructureNetwork:
                 else:
                     self.Compounds[prod] = Classes.Compound(prod)
 
-                compound = self.Compounds[prod].Mol
+                compound = self.Compounds[prod]
 
-                if compound.HasSubstructMatch(working_substruct):
-                    self.Compounds[prod].ReactantSubstructures.append(p_substruct)
+                if compound.Mol.HasSubstructMatch(working_substruct):
+                    self.Compounds[prod].ReactiveSubstructures.append(p_substruct)
                     self.Substructures[p_substruct].MatchingCompounds.append(prod)
                 else:
                     pass
@@ -486,7 +491,7 @@ class SubstructureNetwork:
                 reactions arg should be a list of NorthNet Reaction objects"""
 
         for r in reactions:
-            if r.ReactionTemplate is None:
+            if r.ReactionTemplate.Name == "none":
                 pass
             elif r.ReactionTemplate.ReactionSMARTS in self.ReactionRules:
                 pass
@@ -510,7 +515,7 @@ class SubstructureNetwork:
 
         # create some aliases for the substructures
         # (they cannot be SMARTS strings) used as node names
-        substructure_aliases = {s: c for c, s in enumerate(self.Substructures)}
+        substructure_aliases = {s: str(c) for c, s in enumerate(self.Substructures)}
 
         for c in self.Compounds:
             compound_alias = self.Compounds[c].SMILES
