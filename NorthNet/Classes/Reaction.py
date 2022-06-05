@@ -15,7 +15,7 @@ class Reaction:
         reaction_smiles: str
             Reaction object for the reaction. Please provide a valid reaction
             SMILES string with canonicalised SMILES reactants and products.
-        reaction_template: NorthNet Reaction_Template object
+        reaction_template: NorthNet.Classes.ReactionTemplate object
             Reaction template which created the reaction.
         info: dict
             Dictionary of information (e.g. database entries)
