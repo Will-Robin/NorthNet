@@ -34,10 +34,10 @@ def remove_invalid_reactions(reactions, invalid_substructures):
 
     Parameters
     ----------
-    reactions: list
-        List of NorthNet Generated_Reaction objects.
-    invalid_substructures: list
-        list of NorthNet Substructure objects.
+    reactions: list[NorthNet.Classes.Reaction]
+        List of Reactions
+    invalid_substructures: list[NorthNet.Classes.Substructure]
+        list of invalid Substructures.
 
     Returns
     -------
@@ -76,9 +76,9 @@ def check_reaction_input(reactant_list, reactive_substructs):
 
     Parameters
     ----------
-    reactant_list: NorthNet Compound Object
+    reactant_list: NorthNet.Classes.Compound
 
-    reaction_template: NorthNet ReactionTemplate object
+    reaction_template: NorthNet.Classes.ReactionTemplate
 
     Returns
     -------
@@ -94,35 +94,29 @@ def check_reaction_input(reactant_list, reactive_substructs):
     return all(test_list)
 
 
-def check_reaction_occurence(reactants, network, reaction_template):
+def check_reaction_occurence(compound, network, reaction_template):
     """
     Check if a reaction template has already been applied to a compound in a
     reaction network.
 
     Parameters
     ----------
-    reactants: list or tuple of NorthNet Compound objects
-    network: NorthNet Network object
-    reaction_template: NorthNet ReactionTemplate object
+    compound: NorthNet.Classes.Compound
+    network: NorthNet.Classes.Network
+    reaction_template: NorthNet.Classes.ReactionTemplate
 
     Returns
     -------
-    bool
+    reaction_performed: bool
         Whether reaction type has been applied to the compound or not.
     """
-
-    if not isinstance(reactants, tuple):
-        # Written since Python was passing in the variable
-        # inside tuples of length 1, rather than the tuple.
-        reactants = (reactants,)
 
     reaction_name = reaction_template.Name
 
     result = []
-    for reactant in reactants:
-        used_reactions = reactant.Out
-        used_classes = [network.get_reaction_name(r) for r in used_reactions]
-        reaction_performed = reaction_name in used_classes
-        result.append(reaction_performed)
 
-    return all(result)
+    used_reactions = compound.Out
+    used_classes = [network.get_reaction_name(r) for r in used_reactions]
+    reaction_performed = reaction_name in used_classes
+
+    return reaction_performed
