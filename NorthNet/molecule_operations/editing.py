@@ -52,7 +52,7 @@ def mirror(compound):
 
     Parameters
     ----------
-    compound: NorthNet compound object
+    compound: NorthNet.Classes.Compound
         Compound to be mirrored. Modifed in place.
     Returns
     -------
@@ -80,11 +80,11 @@ def incorrect_chiral_H_solve(mol):
 
     Parameters
     ----------
-    mol: rdkit mol object
+    mol: rdkit.Chem.rdchem.Mol
         Molecule to be corrected.
     Returns
     -------
-    mol: rdkit mol object
+    mol: rdkit.Chem.rdchem.Mol
         Cleaned molecule
     """
     mol.UpdatePropertyCache(strict=False)
