@@ -408,7 +408,7 @@ class SubstructureNetwork:
 
         r_key = reaction.ReactionTemplate.ReactionSMARTS
 
-        self.ReactionRules[r_key] = reaction
+        self.ReactionRules[r_key] = reaction.ReactionTemplate
 
         for r_subst in reaction.ReactionTemplate.ReactantSubstructures:
             # connect to reaction
@@ -528,7 +528,6 @@ class SubstructureNetwork:
         for r in self.ReactionRules:
 
             template = self.ReactionRules[r]
-            print(type(template))
 
             for reac in template.ReactantSubstructures:
                 G.add_edge(substructure_aliases[reac], template_aliases[r])
