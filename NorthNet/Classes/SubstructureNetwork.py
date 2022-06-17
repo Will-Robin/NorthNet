@@ -510,12 +510,14 @@ class SubstructureNetwork:
         G: networkx.DiGraph
             Networkx version of the NorthNet SNetwork.
         """
+        from NorthNet.Utils import sha1_hash
 
         G = nx.DiGraph()
 
         # create some aliases for the substructures
         # (they cannot be SMARTS strings) used as node names
-        substructure_aliases = {s: str(c) for c, s in enumerate(self.Substructures)}
+        substructure_aliases = {s: sha1_hash(s) for s in self.Substructures}
+        template_aliases = {s: sha1_hash(s) for s in self.ReactionRules}
 
         for c in self.Compounds:
             compound_alias = self.Compounds[c].SMILES
@@ -525,14 +527,13 @@ class SubstructureNetwork:
 
         for r in self.ReactionRules:
 
-            template = self.ReactionRules[r].ReactionTemplate
-
-            transform_alias = template.Name
+            template = self.ReactionRules[r]
+            print(type(template))
 
             for reac in template.ReactantSubstructures:
-                G.add_edge(substructure_aliases[reac], transform_alias)
+                G.add_edge(substructure_aliases[reac], template_aliases[r])
 
             for prod in template.ProductSubstructures:
-                G.add_edge(transform_alias, substructure_aliases[prod])
+                G.add_edge(template_aliases[r], substructure_aliases[prod])
 
         return G
