@@ -204,6 +204,8 @@ class Network:
                 if reactant not in self.NetworkCompounds:
                     new_compound = Classes.Compound(reactant)
                     self.add_compound(new_compound)
+                    reactant = new_compound.SMILES
+
                 if reaction_smiles not in self.NetworkCompounds[reactant].Out:
                     self.NetworkCompounds[reactant].Out.append(reaction_smiles)
 
@@ -211,6 +213,8 @@ class Network:
                 if product not in self.NetworkCompounds:
                     new_compound = Classes.Compound(product)
                     self.add_compound(new_compound)
+                    product = new_compound.SMILES
+
                 if reaction_smiles not in self.NetworkCompounds[product].In:
                     self.NetworkCompounds[product].In.append(reaction_smiles)
 
