@@ -58,4 +58,6 @@ class Reaction:
 
         self.Data = info
 
-        self.Reactants, self.Products = reac_ops.reaction_smiles_split(canonical_rxn_smiles)
+        self.Reactants, self.Products = reac_ops.reaction_smiles_split(
+            canonical_rxn_smiles
+        )
