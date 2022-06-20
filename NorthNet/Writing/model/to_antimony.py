@@ -273,7 +273,7 @@ def write_flow_profile_text(model, input_tokens):
     return flow_profile_text
 
 
-def to_tellurium(model, hash_tokens=False):
+def to_antimony(model, hash_tokens=False):
     """
     Write a model formatted for use with tellurium.
 
@@ -288,8 +288,8 @@ def to_tellurium(model, hash_tokens=False):
 
     Returns
     -------
-    tellurium_text: str
-        tellurium model.
+    antimony_text: str
+        antimony model.
     """
 
     reaction_arrow = "=>"
@@ -321,12 +321,12 @@ def to_tellurium(model, hash_tokens=False):
     compounds = list(compound_tokens.values())
 
     # List of species
-    tellurium_text = write_compounds_text(compounds)
+    antimony_text = write_compounds_text(compounds)
 
-    tellurium_text += write_inputs_outputs_text(network, input_tokens, output_tokens)
+    antimony_text += write_inputs_outputs_text(network, input_tokens, output_tokens)
 
     # List of reactions and reaction rates
-    tellurium_text += write_reactions_text(
+    antimony_text += write_reactions_text(
         network,
         compound_tokens,
         rxn_tokens,
@@ -338,11 +338,11 @@ def to_tellurium(model, hash_tokens=False):
     )
 
     # Initial concentration state variables
-    tellurium_text += initial_concentrations_text(compounds)
+    antimony_text += initial_concentrations_text(compounds)
 
     # Values of kinetic parameters
-    tellurium_text += write_rate_constant_text(network.NetworkReactions)
+    antimony_text += write_rate_constant_text(network.NetworkReactions)
 
-    tellurium_text += write_flow_profile_text(model, input_tokens)
+    antimony_text += write_flow_profile_text(model, input_tokens)
 
-    return tellurium_text
+    return antimony_text

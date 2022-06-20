@@ -577,9 +577,9 @@ class ModelWriter:
 
         return mat_text
 
-    def to_tellurium_model(self, hash_tokens=False):
+    def to_antimony_model(self, hash_tokens=False):
         """
-        Write the model in a format for use with tellurium.
+        Write the model in antimony format.
 
         Parameters
         ----------
@@ -587,11 +587,11 @@ class ModelWriter:
 
         Returns
         -------
-        tellurium_text: str
+        antimony_text: str
         """
 
-        from NorthNet.Writing import model_to_tellurium
+        from NorthNet.Writing import model_to_antimony
 
-        tellurium_text = model_to_tellurium(self, hash_tokens=hash_tokens)
+        antimony_text = model_to_antimony(self, hash_tokens=hash_tokens)
 
-        return tellurium_text
+        return antimony_text

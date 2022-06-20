@@ -16,6 +16,6 @@ experiment = DataReport(file=data_file)
 
 model = ModelWriter(network=network, experiment=experiment)
 
-tellurium_model = model.to_tellurium_model()
+antimony_model = model.to_antimony_model()
 
-print(tellurium_model)
+print(antimony_model)

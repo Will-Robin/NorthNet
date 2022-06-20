@@ -1,1 +1,1 @@
-from .model.to_tellurium import to_tellurium as model_to_tellurium
+from .model.to_antimony import to_antimony as model_to_antimony
