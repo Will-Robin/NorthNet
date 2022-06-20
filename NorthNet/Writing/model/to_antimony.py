@@ -31,7 +31,7 @@ def create_token_table(tokens, token_type="SMILES"):
 
 def write_compounds_text(compounds):
     """
-    Write the tellurium model species line.
+    Write the antimony model species line.
 
     Parameters
     ----------
@@ -98,7 +98,7 @@ def write_reactions_text(
     reaction_arrow="=>",
 ):
     """
-    Write the tellurium model reactions lines.
+    Write the antimony model reactions lines.
 
     Parameters
     ----------
@@ -183,7 +183,7 @@ def write_reactions_text(
 
 def initial_concentrations_text(compounds):
     """
-    Write the tellurium model compound initialisations.
+    Write the antimony model compound initialisations.
 
     Parameters
     ----------
@@ -204,7 +204,7 @@ def initial_concentrations_text(compounds):
 
 def write_rate_constant_text(reactions):
     """
-    Write the tellurium model rate constant text.
+    Write the antimony model rate constant text.
 
     Parameters
     ----------
@@ -225,7 +225,7 @@ def write_rate_constant_text(reactions):
 
 def write_flow_profile_text(model, input_tokens):
     """
-    Write the flow profile for a model in tellurium format.
+    Write the flow profile for a model in antimony format.
 
     Parameters
     ----------
@@ -278,7 +278,7 @@ def write_flow_profile_text(model, input_tokens):
 
 def to_antimony(model, tokens="SMILES"):
     """
-    Write a model formatted for use with tellurium.
+    Write a model formatted in antimony.
 
     Parameters
     ----------
