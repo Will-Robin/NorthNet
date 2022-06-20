@@ -1,7 +1,7 @@
 from NorthNet.Utils import utils
 
 
-def create_token_table(tokens, hash_tokens=False):
+def create_token_table(tokens, token_type="SMILES"):
     """
     Create key value pairs of tokens as unmodified of as SHA1 hashes.
 
@@ -14,9 +14,12 @@ def create_token_table(tokens, hash_tokens=False):
     token_table: dict
     """
 
-    if hash_tokens:
+    if token_type == "hash":
         token_conversion = lambda x: utils.sha1_hash(x, num_chars=7)
+    elif token_type == "SMILES":
+        token_conversion = lambda x: x
     else:
+        print(f"{token_type} not supported, using SMILES.")
         token_conversion = lambda x: x
 
     token_table = {}
@@ -273,7 +276,7 @@ def write_flow_profile_text(model, input_tokens):
     return flow_profile_text
 
 
-def to_antimony(model, hash_tokens=False):
+def to_antimony(model, tokens="SMILES"):
     """
     Write a model formatted for use with tellurium.
 
@@ -282,9 +285,8 @@ def to_antimony(model, hash_tokens=False):
     model: Classes.ModelWriter
         Model object containing information.
 
-    hash_tokens: bool
-        Whether to use the SHA1 hashes (up to 7 chars) of the reaction network
-        tokens.
+    tokens: str
+        Which type of tokens to use to denote entities.
 
     Returns
     -------
@@ -295,27 +297,21 @@ def to_antimony(model, hash_tokens=False):
     reaction_arrow = "=>"
     network = model.network
 
-    compound_tokens = create_token_table(
-        network.NetworkCompounds, hash_tokens=hash_tokens
-    )
+    compound_tokens = create_token_table(network.NetworkCompounds, token_type=tokens)
 
-    rxn_tokens = create_token_table(network.NetworkReactions, hash_tokens=hash_tokens)
+    rxn_tokens = create_token_table(network.NetworkReactions, token_type=tokens)
 
-    input_tokens = create_token_table(network.NetworkInputs, hash_tokens=hash_tokens)
-    input_process_tokens = create_token_table(
-        network.InputProcesses, hash_tokens=hash_tokens
-    )
+    input_tokens = create_token_table(network.NetworkInputs, token_type=tokens)
+    input_process_tokens = create_token_table(network.InputProcesses, token_type=tokens)
 
-    experimental_inputs = create_token_table(
-        [*model.flow_profiles], hash_tokens=hash_tokens
-    )
+    experimental_inputs = create_token_table([*model.flow_profiles], token_type=tokens)
 
     for e in experimental_inputs:
         input_tokens[e + "_#0"] = experimental_inputs[e]
 
-    output_tokens = create_token_table(network.NetworkOutputs, hash_tokens=hash_tokens)
+    output_tokens = create_token_table(network.NetworkOutputs, token_type=tokens)
     output_process_tokens = create_token_table(
-        network.OutputProcesses, hash_tokens=hash_tokens
+        network.OutputProcesses, token_type=tokens
     )
 
     compounds = list(compound_tokens.values())

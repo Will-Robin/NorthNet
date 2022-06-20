@@ -577,7 +577,7 @@ class ModelWriter:
 
         return mat_text
 
-    def to_antimony_model(self, hash_tokens=False):
+    def to_antimony_model(self, token_type="SMILES"):
         """
         Write the model in antimony format.
 
@@ -592,6 +592,6 @@ class ModelWriter:
 
         from NorthNet.Writing import model_to_antimony
 
-        antimony_text = model_to_antimony(self, hash_tokens=hash_tokens)
+        antimony_text = model_to_antimony(self, tokens=token_type)
 
         return antimony_text

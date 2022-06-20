@@ -16,6 +16,6 @@ experiment = DataReport(file=data_file)
 
 model = ModelWriter(network=network, experiment=experiment)
 
-antimony_model = model.to_antimony_model()
+antimony_model = model.to_antimony_model(token_type = "hash")
 
 print(antimony_model)
