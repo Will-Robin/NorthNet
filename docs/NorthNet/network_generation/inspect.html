@@ -99,10 +99,10 @@
 </span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>
 </span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a><span class="sd">    Parameters</span>
 </span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a><span class="sd">    ----------</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a><span class="sd">    reactions: list</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a><span class="sd">        List of NorthNet Generated_Reaction objects.</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a><span class="sd">    invalid_substructures: list</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a><span class="sd">        list of NorthNet Substructure objects.</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a><span class="sd">    reactions: list[NorthNet.Classes.Reaction]</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a><span class="sd">        List of Reactions</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a><span class="sd">    invalid_substructures: list[NorthNet.Classes.Substructure]</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a><span class="sd">        list of invalid Substructures.</span>
 </span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>
 </span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a><span class="sd">    Returns</span>
 </span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a><span class="sd">    -------</span>
@@ -141,9 +141,9 @@
 </span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>
 </span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a><span class="sd">    Parameters</span>
 </span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="sd">    ----------</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a><span class="sd">    reactant_list: NorthNet Compound Object</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a><span class="sd">    reactant_list: NorthNet.Classes.Compound</span>
 </span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="sd">    reaction_template: NorthNet ReactionTemplate object</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="sd">    reaction_template: NorthNet.Classes.ReactionTemplate</span>
 </span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>
 </span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a><span class="sd">    Returns</span>
 </span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="sd">    -------</span>
@@ -159,38 +159,32 @@
 </span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>    <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">test_list</span><span class="p">)</span>
 </span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>
 </span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="k">def</span> <span class="nf">check_reaction_occurence</span><span class="p">(</span><span class="n">reactants</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">reaction_template</span><span class="p">):</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="k">def</span> <span class="nf">check_reaction_occurence</span><span class="p">(</span><span class="n">compound</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">reaction_template</span><span class="p">):</span>
 </span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>    <span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="sd">    Check if a reaction template has already been applied to a compound in a</span>
 </span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a><span class="sd">    reaction network.</span>
 </span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>
 </span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a><span class="sd">    Parameters</span>
 </span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="sd">    ----------</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="sd">    reactants: list or tuple of NorthNet Compound objects</span>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a><span class="sd">    network: NorthNet Network object</span>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a><span class="sd">    reaction_template: NorthNet ReactionTemplate object</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="sd">    compound: NorthNet.Classes.Compound</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a><span class="sd">    network: NorthNet.Classes.Network</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a><span class="sd">    reaction_template: NorthNet.Classes.ReactionTemplate</span>
 </span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>
 </span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="sd">    Returns</span>
 </span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="sd">    -------</span>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="sd">    bool</span>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="sd">    reaction_performed: bool</span>
 </span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a><span class="sd">        Whether reaction type has been applied to the compound or not.</span>
 </span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reactants</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>        <span class="c1"># Written since Python was passing in the variable</span>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>        <span class="c1"># inside tuples of length 1, rather than the tuple.</span>
-</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>        <span class="n">reactants</span> <span class="o">=</span> <span class="p">(</span><span class="n">reactants</span><span class="p">,)</span>
-</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>
-</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>    <span class="n">reaction_name</span> <span class="o">=</span> <span class="n">reaction_template</span><span class="o">.</span><span class="n">Name</span>
-</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>
-</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>    <span class="k">for</span> <span class="n">reactant</span> <span class="ow">in</span> <span class="n">reactants</span><span class="p">:</span>
-</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>        <span class="n">used_reactions</span> <span class="o">=</span> <span class="n">reactant</span><span class="o">.</span><span class="n">Out</span>
-</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>        <span class="n">used_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">network</span><span class="o">.</span><span class="n">get_reaction_name</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">used_reactions</span><span class="p">]</span>
-</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>        <span class="n">reaction_performed</span> <span class="o">=</span> <span class="n">reaction_name</span> <span class="ow">in</span> <span class="n">used_classes</span>
-</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reaction_performed</span><span class="p">)</span>
-</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>
-</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>    <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>    <span class="n">reaction_name</span> <span class="o">=</span> <span class="n">reaction_template</span><span class="o">.</span><span class="n">Name</span>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>    <span class="n">used_reactions</span> <span class="o">=</span> <span class="n">compound</span><span class="o">.</span><span class="n">Out</span>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>    <span class="n">used_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">network</span><span class="o">.</span><span class="n">get_reaction_name</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">used_reactions</span><span class="p">]</span>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>    <span class="n">reaction_performed</span> <span class="o">=</span> <span class="n">reaction_name</span> <span class="ow">in</span> <span class="n">used_classes</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>    <span class="k">return</span> <span class="n">reaction_performed</span>
 </span></pre></div>
 
 
@@ -274,10 +268,10 @@ List of NorthNet Compound objects which contain the substructure.</li>
 </span><span id="remove_invalid_reactions-35"><a href="#remove_invalid_reactions-35"><span class="linenos">35</span></a>
 </span><span id="remove_invalid_reactions-36"><a href="#remove_invalid_reactions-36"><span class="linenos">36</span></a><span class="sd">    Parameters</span>
 </span><span id="remove_invalid_reactions-37"><a href="#remove_invalid_reactions-37"><span class="linenos">37</span></a><span class="sd">    ----------</span>
-</span><span id="remove_invalid_reactions-38"><a href="#remove_invalid_reactions-38"><span class="linenos">38</span></a><span class="sd">    reactions: list</span>
-</span><span id="remove_invalid_reactions-39"><a href="#remove_invalid_reactions-39"><span class="linenos">39</span></a><span class="sd">        List of NorthNet Generated_Reaction objects.</span>
-</span><span id="remove_invalid_reactions-40"><a href="#remove_invalid_reactions-40"><span class="linenos">40</span></a><span class="sd">    invalid_substructures: list</span>
-</span><span id="remove_invalid_reactions-41"><a href="#remove_invalid_reactions-41"><span class="linenos">41</span></a><span class="sd">        list of NorthNet Substructure objects.</span>
+</span><span id="remove_invalid_reactions-38"><a href="#remove_invalid_reactions-38"><span class="linenos">38</span></a><span class="sd">    reactions: list[NorthNet.Classes.Reaction]</span>
+</span><span id="remove_invalid_reactions-39"><a href="#remove_invalid_reactions-39"><span class="linenos">39</span></a><span class="sd">        List of Reactions</span>
+</span><span id="remove_invalid_reactions-40"><a href="#remove_invalid_reactions-40"><span class="linenos">40</span></a><span class="sd">    invalid_substructures: list[NorthNet.Classes.Substructure]</span>
+</span><span id="remove_invalid_reactions-41"><a href="#remove_invalid_reactions-41"><span class="linenos">41</span></a><span class="sd">        list of invalid Substructures.</span>
 </span><span id="remove_invalid_reactions-42"><a href="#remove_invalid_reactions-42"><span class="linenos">42</span></a>
 </span><span id="remove_invalid_reactions-43"><a href="#remove_invalid_reactions-43"><span class="linenos">43</span></a><span class="sd">    Returns</span>
 </span><span id="remove_invalid_reactions-44"><a href="#remove_invalid_reactions-44"><span class="linenos">44</span></a><span class="sd">    -------</span>
@@ -312,10 +306,10 @@ List of NorthNet Compound objects which contain the substructure.</li>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>reactions</strong> (list):
-List of NorthNet Generated_Reaction objects.</li>
-<li><strong>invalid_substructures</strong> (list):
-list of NorthNet Substructure objects.</li>
+<li><strong>reactions</strong> (list[<a href="../Classes/Reaction.html">NorthNet.Classes.Reaction</a>]):
+List of Reactions</li>
+<li><strong>invalid_substructures</strong> (list[<a href="../Classes/Substructure.html">NorthNet.Classes.Substructure</a>]):
+list of invalid Substructures.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -350,9 +344,9 @@ invalid substructures removed.</li>
 </span><span id="check_reaction_input-77"><a href="#check_reaction_input-77"><span class="linenos">77</span></a>
 </span><span id="check_reaction_input-78"><a href="#check_reaction_input-78"><span class="linenos">78</span></a><span class="sd">    Parameters</span>
 </span><span id="check_reaction_input-79"><a href="#check_reaction_input-79"><span class="linenos">79</span></a><span class="sd">    ----------</span>
-</span><span id="check_reaction_input-80"><a href="#check_reaction_input-80"><span class="linenos">80</span></a><span class="sd">    reactant_list: NorthNet Compound Object</span>
+</span><span id="check_reaction_input-80"><a href="#check_reaction_input-80"><span class="linenos">80</span></a><span class="sd">    reactant_list: NorthNet.Classes.Compound</span>
 </span><span id="check_reaction_input-81"><a href="#check_reaction_input-81"><span class="linenos">81</span></a>
-</span><span id="check_reaction_input-82"><a href="#check_reaction_input-82"><span class="linenos">82</span></a><span class="sd">    reaction_template: NorthNet ReactionTemplate object</span>
+</span><span id="check_reaction_input-82"><a href="#check_reaction_input-82"><span class="linenos">82</span></a><span class="sd">    reaction_template: NorthNet.Classes.ReactionTemplate</span>
 </span><span id="check_reaction_input-83"><a href="#check_reaction_input-83"><span class="linenos">83</span></a>
 </span><span id="check_reaction_input-84"><a href="#check_reaction_input-84"><span class="linenos">84</span></a><span class="sd">    Returns</span>
 </span><span id="check_reaction_input-85"><a href="#check_reaction_input-85"><span class="linenos">85</span></a><span class="sd">    -------</span>
@@ -378,8 +372,8 @@ the reactive substructures provided.</p>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><p><strong>reactant_list</strong> (NorthNet Compound Object):</p></li>
-<li><p><strong>reaction_template</strong> (NorthNet ReactionTemplate object):</p></li>
+<li><p><strong>reactant_list</strong> (<a href="../Classes/Compound.html">NorthNet.Classes.Compound</a>):</p></li>
+<li><p><strong>reaction_template</strong> (<a href="../Classes/ReactionTemplate.html">NorthNet.Classes.ReactionTemplate</a>):</p></li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -397,44 +391,38 @@ reaction substructure order supplied.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">check_reaction_occurence</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">reactants</span>, </span><span class="param"><span class="n">network</span>, </span><span class="param"><span class="n">reaction_template</span></span>)</span>
+        <span class="name">check_reaction_occurence</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">compound</span>, </span><span class="param"><span class="n">network</span>, </span><span class="param"><span class="n">reaction_template</span></span>)</span>
 
                 <label class="view-source-button" for="check_reaction_occurence-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#check_reaction_occurence"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="check_reaction_occurence-98"><a href="#check_reaction_occurence-98"><span class="linenos"> 98</span></a><span class="k">def</span> <span class="nf">check_reaction_occurence</span><span class="p">(</span><span class="n">reactants</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">reaction_template</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="check_reaction_occurence-98"><a href="#check_reaction_occurence-98"><span class="linenos"> 98</span></a><span class="k">def</span> <span class="nf">check_reaction_occurence</span><span class="p">(</span><span class="n">compound</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">reaction_template</span><span class="p">):</span>
 </span><span id="check_reaction_occurence-99"><a href="#check_reaction_occurence-99"><span class="linenos"> 99</span></a>    <span class="sd">&quot;&quot;&quot;</span>
 </span><span id="check_reaction_occurence-100"><a href="#check_reaction_occurence-100"><span class="linenos">100</span></a><span class="sd">    Check if a reaction template has already been applied to a compound in a</span>
 </span><span id="check_reaction_occurence-101"><a href="#check_reaction_occurence-101"><span class="linenos">101</span></a><span class="sd">    reaction network.</span>
 </span><span id="check_reaction_occurence-102"><a href="#check_reaction_occurence-102"><span class="linenos">102</span></a>
 </span><span id="check_reaction_occurence-103"><a href="#check_reaction_occurence-103"><span class="linenos">103</span></a><span class="sd">    Parameters</span>
 </span><span id="check_reaction_occurence-104"><a href="#check_reaction_occurence-104"><span class="linenos">104</span></a><span class="sd">    ----------</span>
-</span><span id="check_reaction_occurence-105"><a href="#check_reaction_occurence-105"><span class="linenos">105</span></a><span class="sd">    reactants: list or tuple of NorthNet Compound objects</span>
-</span><span id="check_reaction_occurence-106"><a href="#check_reaction_occurence-106"><span class="linenos">106</span></a><span class="sd">    network: NorthNet Network object</span>
-</span><span id="check_reaction_occurence-107"><a href="#check_reaction_occurence-107"><span class="linenos">107</span></a><span class="sd">    reaction_template: NorthNet ReactionTemplate object</span>
+</span><span id="check_reaction_occurence-105"><a href="#check_reaction_occurence-105"><span class="linenos">105</span></a><span class="sd">    compound: NorthNet.Classes.Compound</span>
+</span><span id="check_reaction_occurence-106"><a href="#check_reaction_occurence-106"><span class="linenos">106</span></a><span class="sd">    network: NorthNet.Classes.Network</span>
+</span><span id="check_reaction_occurence-107"><a href="#check_reaction_occurence-107"><span class="linenos">107</span></a><span class="sd">    reaction_template: NorthNet.Classes.ReactionTemplate</span>
 </span><span id="check_reaction_occurence-108"><a href="#check_reaction_occurence-108"><span class="linenos">108</span></a>
 </span><span id="check_reaction_occurence-109"><a href="#check_reaction_occurence-109"><span class="linenos">109</span></a><span class="sd">    Returns</span>
 </span><span id="check_reaction_occurence-110"><a href="#check_reaction_occurence-110"><span class="linenos">110</span></a><span class="sd">    -------</span>
-</span><span id="check_reaction_occurence-111"><a href="#check_reaction_occurence-111"><span class="linenos">111</span></a><span class="sd">    bool</span>
+</span><span id="check_reaction_occurence-111"><a href="#check_reaction_occurence-111"><span class="linenos">111</span></a><span class="sd">    reaction_performed: bool</span>
 </span><span id="check_reaction_occurence-112"><a href="#check_reaction_occurence-112"><span class="linenos">112</span></a><span class="sd">        Whether reaction type has been applied to the compound or not.</span>
 </span><span id="check_reaction_occurence-113"><a href="#check_reaction_occurence-113"><span class="linenos">113</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="check_reaction_occurence-114"><a href="#check_reaction_occurence-114"><span class="linenos">114</span></a>
-</span><span id="check_reaction_occurence-115"><a href="#check_reaction_occurence-115"><span class="linenos">115</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reactants</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-</span><span id="check_reaction_occurence-116"><a href="#check_reaction_occurence-116"><span class="linenos">116</span></a>        <span class="c1"># Written since Python was passing in the variable</span>
-</span><span id="check_reaction_occurence-117"><a href="#check_reaction_occurence-117"><span class="linenos">117</span></a>        <span class="c1"># inside tuples of length 1, rather than the tuple.</span>
-</span><span id="check_reaction_occurence-118"><a href="#check_reaction_occurence-118"><span class="linenos">118</span></a>        <span class="n">reactants</span> <span class="o">=</span> <span class="p">(</span><span class="n">reactants</span><span class="p">,)</span>
-</span><span id="check_reaction_occurence-119"><a href="#check_reaction_occurence-119"><span class="linenos">119</span></a>
-</span><span id="check_reaction_occurence-120"><a href="#check_reaction_occurence-120"><span class="linenos">120</span></a>    <span class="n">reaction_name</span> <span class="o">=</span> <span class="n">reaction_template</span><span class="o">.</span><span class="n">Name</span>
-</span><span id="check_reaction_occurence-121"><a href="#check_reaction_occurence-121"><span class="linenos">121</span></a>
-</span><span id="check_reaction_occurence-122"><a href="#check_reaction_occurence-122"><span class="linenos">122</span></a>    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="check_reaction_occurence-123"><a href="#check_reaction_occurence-123"><span class="linenos">123</span></a>    <span class="k">for</span> <span class="n">reactant</span> <span class="ow">in</span> <span class="n">reactants</span><span class="p">:</span>
-</span><span id="check_reaction_occurence-124"><a href="#check_reaction_occurence-124"><span class="linenos">124</span></a>        <span class="n">used_reactions</span> <span class="o">=</span> <span class="n">reactant</span><span class="o">.</span><span class="n">Out</span>
-</span><span id="check_reaction_occurence-125"><a href="#check_reaction_occurence-125"><span class="linenos">125</span></a>        <span class="n">used_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">network</span><span class="o">.</span><span class="n">get_reaction_name</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">used_reactions</span><span class="p">]</span>
-</span><span id="check_reaction_occurence-126"><a href="#check_reaction_occurence-126"><span class="linenos">126</span></a>        <span class="n">reaction_performed</span> <span class="o">=</span> <span class="n">reaction_name</span> <span class="ow">in</span> <span class="n">used_classes</span>
-</span><span id="check_reaction_occurence-127"><a href="#check_reaction_occurence-127"><span class="linenos">127</span></a>        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reaction_performed</span><span class="p">)</span>
-</span><span id="check_reaction_occurence-128"><a href="#check_reaction_occurence-128"><span class="linenos">128</span></a>
-</span><span id="check_reaction_occurence-129"><a href="#check_reaction_occurence-129"><span class="linenos">129</span></a>    <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</span><span id="check_reaction_occurence-115"><a href="#check_reaction_occurence-115"><span class="linenos">115</span></a>    <span class="n">reaction_name</span> <span class="o">=</span> <span class="n">reaction_template</span><span class="o">.</span><span class="n">Name</span>
+</span><span id="check_reaction_occurence-116"><a href="#check_reaction_occurence-116"><span class="linenos">116</span></a>
+</span><span id="check_reaction_occurence-117"><a href="#check_reaction_occurence-117"><span class="linenos">117</span></a>    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="check_reaction_occurence-118"><a href="#check_reaction_occurence-118"><span class="linenos">118</span></a>
+</span><span id="check_reaction_occurence-119"><a href="#check_reaction_occurence-119"><span class="linenos">119</span></a>    <span class="n">used_reactions</span> <span class="o">=</span> <span class="n">compound</span><span class="o">.</span><span class="n">Out</span>
+</span><span id="check_reaction_occurence-120"><a href="#check_reaction_occurence-120"><span class="linenos">120</span></a>    <span class="n">used_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">network</span><span class="o">.</span><span class="n">get_reaction_name</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">used_reactions</span><span class="p">]</span>
+</span><span id="check_reaction_occurence-121"><a href="#check_reaction_occurence-121"><span class="linenos">121</span></a>    <span class="n">reaction_performed</span> <span class="o">=</span> <span class="n">reaction_name</span> <span class="ow">in</span> <span class="n">used_classes</span>
+</span><span id="check_reaction_occurence-122"><a href="#check_reaction_occurence-122"><span class="linenos">122</span></a>
+</span><span id="check_reaction_occurence-123"><a href="#check_reaction_occurence-123"><span class="linenos">123</span></a>    <span class="k">return</span> <span class="n">reaction_performed</span>
 </span></pre></div>
 
 
@@ -444,15 +432,16 @@ reaction network.</p>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><p><strong>reactants</strong> (list or tuple of NorthNet Compound objects):</p></li>
-<li><p><strong>network</strong> (NorthNet Network object):</p></li>
-<li><p><strong>reaction_template</strong> (NorthNet ReactionTemplate object):</p></li>
+<li><p><strong>compound</strong> (<a href="../Classes/Compound.html">NorthNet.Classes.Compound</a>):</p></li>
+<li><p><strong>network</strong> (<a href="../Classes/Network.html">NorthNet.Classes.Network</a>):</p></li>
+<li><p><strong>reaction_template</strong> (<a href="../Classes/ReactionTemplate.html">NorthNet.Classes.ReactionTemplate</a>):</p></li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong>bool</strong>: Whether reaction type has been applied to the compound or not.</li>
+<li><strong>reaction_performed</strong> (bool):
+Whether reaction type has been applied to the compound or not.</li>
 </ul>
 </div>
 
