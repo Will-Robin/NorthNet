@@ -1,4 +1,3 @@
-import sys
 import numpy as np
 from NorthNet import Classes
 
@@ -221,70 +220,9 @@ class ModelWriter:
         -------
         text: str
         """
+        from NorthNet.Writing import write_flow_profile_text
 
-        if len(self.flow_profiles) == 0:
-            # No flow profile information
-            return ""
-
-        network = self.network
-
-        input_concentrations = np.zeros(
-            (len(self.flow_profiles), len(self.flow_profile_time))
-        )
-
-        for c, flow in enumerate(self.inflows):
-
-            compound = flow.split("_")[0]
-
-            if compound in self.inputs:
-                conc = self.inputs[compound]
-                flow_rate = self.flow_profiles[flow.split("_")[0]]
-                conc_profile = conc * flow_rate / self.reactor_volume
-                input_concentrations[c] = conc_profile
-
-        total_flows = np.zeros((len(self.outflows), len(self.sigma_flow)))
-
-        # assume that the output flow rates are equally partitioned between the
-        # output channels.
-        partitioned_flow = self.sigma_flow / len(self.outflows)
-        for c, out in enumerate(self.outflows):
-            total_flows[c] = partitioned_flow / self.reactor_volume
-
-        # Write concentration array
-        text = f"{indentation}F_in = np.array(\n"
-        text += indentation
-        array_text = np.array2string(
-            input_concentrations,
-            formatter={"float_kind": lambda x: "%.9f" % x},
-            separator=",",
-            threshold=np.inf,
-        )
-        text += array_text.replace("\n", f"\n{indentation}")
-        text += f"{indentation})\n\n"
-
-        # Write flow profile time axis
-        text += f"{indentation}flow_time = np.array(\n"
-        text += indentation
-        array_text = np.array2string(
-            self.flow_profile_time,
-            formatter={"float_kind": lambda x: "%.9f" % x},
-            separator=",",
-            threshold=np.inf,
-        )
-        text += array_text.replace("\n", f"\n{indentation}")
-        text += f"{indentation})\n\n"
-
-        # Write total flow rate.
-        text += f"{indentation}total_flow = np.array(\n"
-        text += indentation
-        array_text = np.array2string(
-            total_flows,
-            formatter={"float_kind": lambda x: "%.9f" % x},
-            separator=",",
-            threshold=np.inf,
-        )
-        text += array_text.replace("\n", f"\n{indentation}")
-        text += f"{indentation})\n"
+        text = write_flow_profile_text(self, indentation=indentation)
 
         return text
 
@@ -314,50 +252,9 @@ class ModelWriter:
             List of rate equations in text form.
         """
 
-        network = self.network
+        from NorthNet.Writing import write_model_equation_text
 
-        compounds = [*network.NetworkCompounds]
-
-        eq_lines = []
-
-        for count, compound in enumerate(compounds):
-            line_text = f"P[{count}] = "
-            for i in network.NetworkCompounds[compound].In:
-                if i in network.InputProcesses:
-                    input_id = network.InputProcesses[i].InputID
-                    input_conc = self.inflows[input_id]
-                    ki = f"+{input_conc}"
-                    line_text += ki
-                else:
-                    reactants = network.NetworkReactions[i].Reactants
-
-                    ki = f"+{self.rate_constants[i]}*"
-
-                    if len(reactants) == 0:
-                        specs = ""
-                    else:
-                        specs = "*".join([self.species[x] for x in reactants])
-
-                    line_text += f"{ki}{specs}"
-
-            for out in network.NetworkCompounds[compound].Out:
-                if out in network.OutputProcesses:
-                    output_process = network.OutputProcesses[out]
-                    out_compound = output_process.OutputCompound
-                    outlet = output_process.OutputID
-                    out_flow = self.outflows[outlet]
-                    reactor_conc = self.species[out_compound]
-                    ki = f"-{reactor_conc}*{out_flow}"
-                    line_text += ki
-                else:
-                    ki = f"-{self.rate_constants[out]}*"
-                    reactants = [
-                        self.species[x] for x in network.NetworkReactions[out].Reactants
-                    ]
-                    specs = "*".join(reactants)
-                    line_text += f"{ki}{specs}"
-
-            eq_lines.append(line_text)
+        eq_lines = write_model_equation_text(self)
 
         return eq_lines
 
@@ -374,33 +271,9 @@ class ModelWriter:
         lines: list[str]
         """
 
-        get_index = lambda x: int(x[x.find("[") + 1 : x.find("]")])
-        lines = []
+        from NorthNet.Writing import write_variables_text
 
-        lines.append("species = {")
-        for k in self.species:
-            idx = get_index(self.species[k])
-            lines.append(f"'{k}':{idx},")
-        lines.append("}")
-
-        lines.append("")
-        lines.append("reactions = {")
-        for k in self.rate_constants:
-            idx = get_index(self.rate_constants[k])
-            lines.append(f"'{k}':{idx},")
-        lines.append("}")
-
-        lines.append("")
-        lines.append("inputs = {")
-        for k in self.inputs:
-            idx = self.inputs[k]
-            lines.append(f"'{k}':{idx},")
-        lines.append("}")
-        lines.append("")
-
-        lines.append("k = np.zeros(max(reactions.values())+1) # rate constants")
-        lines.append("")
-        lines.append("S = np.zeros(len(species)) # initial concentrations")
+        lines = write_variables_text(self)
 
         return lines
 
@@ -420,69 +293,9 @@ class ModelWriter:
         text: str
             The module text.
         """
+        from NorthNet.Writing import model_to_numba
 
-        flow_profile_text = self.write_flow_profile_text(indentation="    ")
-
-        model_text = self.write_model_equation_text()
-
-        nf64 = "numba.float64"
-        numba_dec = ""
-        numba_dec += f"@numba.jit({nf64}[:]({nf64},{nf64}[:],{nf64}[:]),\n"
-        numba_dec += "\tlocals="
-
-        if flow_profile_text == "":
-            numba_dec += f"{{'P': {nf64}[:]}}"
-        else:
-            numba_dec += f"{{'P': {nf64}[:],'F': {nf64}[:,:],'I':{nf64}[:]}}"
-
-        numba_dec += ",nopython=True)"
-
-        lines = ["import numpy as np"]
-        if numba_decoration == "jit":
-            lines.append("import numba\n")
-            lines.append("")
-            lines.append(numba_dec)
-
-        if numba_decoration == "compile":
-            lines.append("import numba")
-            lines.append("from numba.pycc import CC\n")
-            mod_name = self.name
-            if self.name == "":
-                mod_name = "model_func"
-            lines.append(f"cc = CC('{mod_name}')\n")
-            lines.append(
-                '@cc.export("model_func", "float64[:](float64,float64[:],float64[:])")'
-            )
-
-        lines.append("def model_function(time, S, k):")
-        lines.append("")
-        lines.append("    P = np.zeros(len(S))")
-
-        if flow_profile_text != "":
-            lines.append("")
-            lines.append(flow_profile_text)
-            lines.append("    i = np.abs(flow_time - time).argmin()")
-            lines.append("")
-
-        for m_text in model_text:
-            lines.append(f"    {m_text}")
-
-        lines.append("    P *= time")
-        lines.append("")
-        lines.append("    return P")
-        lines.append("")
-        lines.append("def wrapper_function(time, S, k):")
-        lines.append("    return model_function(time, S, k)")
-        lines.append("")
-
-        lines.extend(self.write_variables_text())
-
-        lines.append("")
-        if numba_decoration == "compile":
-            lines.append('if __name__ == "__main__":')
-            lines.append("    cc.compile()")
-
-        text = "\n".join(lines)
+        text = model_to_numba(self, numba_decoration=numba_decoration)
 
         return text
 

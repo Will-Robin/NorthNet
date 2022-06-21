@@ -1,7 +1,7 @@
 from NorthNet.Utils import utils
 
 
-def create_token_table(tokens, token_type="SMILES"):
+def create_token_table(tokens, token_type="SMILES", prefix=""):
     """
     Create key value pairs of tokens as unmodified of as SHA1 hashes.
 
@@ -11,18 +11,21 @@ def create_token_table(tokens, token_type="SMILES"):
 
     Returns
     -------
-    token_table: dict
+    token_table: dict()
     """
 
     if token_type == "hash":
         token_conversion = lambda x: utils.sha1_hash(x, num_chars=7)
     elif token_type == "SMILES":
         token_conversion = lambda x: x
+    elif token_type == "symbols":
+        token_table = {tok: f"{prefix}{c}" for c, tok in enumerate(tokens, 1)}
+        return token_table
     else:
         print(f"{token_type} not supported, using SMILES.")
         token_conversion = lambda x: x
 
-    token_table = {}
+    token_table = dict()
     for tok in tokens:
         token_table[tok] = token_conversion(tok)
 
@@ -46,7 +49,7 @@ def write_compounds_text(compounds):
     species_text += "# List of compounds\n"
 
     species_text += "species "
-    species_text += " ".join(compounds)
+    species_text += ", ".join(compounds)
     species_text += ";\n"
 
     return species_text
@@ -74,14 +77,14 @@ def write_inputs_outputs_text(network, input_tokens, output_tokens):
     io_text += "# List of inputs\n"
 
     io_text += "inputs "
-    io_text += " ".join(inputs)
+    io_text += ", ".join(inputs)
     io_text += ";\n"
 
     io_text += "\n"
     io_text += "# List of outputs\n"
 
     io_text += "outputs "
-    io_text += " ".join(outputs)
+    io_text += ", ".join(outputs)
     io_text += ";\n"
 
     return io_text
@@ -297,21 +300,33 @@ def to_antimony(model, tokens="SMILES"):
     reaction_arrow = "=>"
     network = model.network
 
-    compound_tokens = create_token_table(network.NetworkCompounds, token_type=tokens)
+    compound_tokens = create_token_table(
+        network.NetworkCompounds, token_type=tokens, prefix="S"
+    )
 
-    rxn_tokens = create_token_table(network.NetworkReactions, token_type=tokens)
+    rxn_tokens = create_token_table(
+        network.NetworkReactions, token_type=tokens, prefix="R"
+    )
 
-    input_tokens = create_token_table(network.NetworkInputs, token_type=tokens)
-    input_process_tokens = create_token_table(network.InputProcesses, token_type=tokens)
+    input_tokens = create_token_table(
+        network.NetworkInputs, token_type=tokens, prefix="I"
+    )
+    input_process_tokens = create_token_table(
+        network.InputProcesses, token_type=tokens, prefix="IP"
+    )
 
-    experimental_inputs = create_token_table([*model.flow_profiles], token_type=tokens)
+    experimental_inputs = create_token_table(
+        [*model.flow_profiles], token_type=tokens, prefix="F"
+    )
 
     for e in experimental_inputs:
         input_tokens[e + "_#0"] = experimental_inputs[e]
 
-    output_tokens = create_token_table(network.NetworkOutputs, token_type=tokens)
+    output_tokens = create_token_table(
+        network.NetworkOutputs, token_type=tokens, prefix="O"
+    )
     output_process_tokens = create_token_table(
-        network.OutputProcesses, token_type=tokens
+        network.OutputProcesses, token_type=tokens, prefix="OP"
     )
 
     compounds = list(compound_tokens.values())
