@@ -19,6 +19,9 @@ def reaction_smiles_split(reaction_smiles):
     reactants = split_rxn[0].split(".")
     products = split_rxn[1].split(".")
 
+    reactants.sort()
+    products.sort()
+
     return reactants, products
 
 
@@ -39,10 +42,7 @@ def smiles_to_rdkit_reaction(smiles):
         Converted reaction.
     """
 
-    products_reactants = smiles.split(">>")
-
-    reactants = products_reactants[0].split(".")
-    products = products_reactants[1].split(".")
+    reactants, products = reaction_smiles_split(reaction_smiles)
 
     reactants_as_mol = [Chem.MolFromSmiles(r) for r in reactants]
     products_as_mol = [Chem.MolFromSmiles(p) for p in products]
