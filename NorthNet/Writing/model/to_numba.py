@@ -51,18 +51,21 @@ def write_flow_profile_text(model, indentation=""):
         separator=",",
         threshold=np.inf,
     )
+
     text += array_text.replace("\n", f"\n{indentation}")
     text += f"{indentation})\n\n"
 
     # Write flow profile time axis
     text += f"{indentation}flow_time = np.array(\n"
     text += indentation
+
     array_text = np.array2string(
         model.flow_profile_time,
         formatter={"float_kind": lambda x: "%.9f" % x},
         separator=",",
         threshold=np.inf,
     )
+
     text += array_text.replace("\n", f"\n{indentation}")
     text += f"{indentation})\n\n"
 
@@ -75,6 +78,7 @@ def write_flow_profile_text(model, indentation=""):
         separator=",",
         threshold=np.inf,
     )
+
     text += array_text.replace("\n", f"\n{indentation}")
     text += f"{indentation})\n"
 
@@ -153,6 +157,7 @@ def write_model_equation_text(model):
         eq_lines.append(line_text)
 
     return eq_lines
+
 
 def write_variables_text(model):
     """
