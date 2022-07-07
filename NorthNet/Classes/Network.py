@@ -137,6 +137,33 @@ class Network:
         for compound in compounds:
             self.add_compound(compound)
 
+    def remove_compound(self, compound):
+        """
+        Remove a compound and the reactions in which it is involved
+        from the network.
+
+        Parameters
+        ----------
+        compound: NorthNet.Classes.Compound
+            compound to be removed
+
+        Returns
+        -------
+        None
+        """
+
+        assert isinstance(compound, Classes.Compound)
+
+        remove_reactions = []
+        remove_reactions.extend(self.NetworkCompounds[compound.SMILES].In)
+        remove_reactions.extend(self.NetworkCompounds[compound.SMILES].Out)
+
+        remove_reactions = list(set(remove_reactions))
+
+        self.remove_reactions([self.NetworkReactions[r] for r in remove_reactions])
+
+        del self.NetworkCompounds[compound.SMILES]
+
     def remove_compounds(self, compounds):
         """
         Remove list of compounds and the reactions in which they are involved
