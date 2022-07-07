@@ -54,37 +54,37 @@
 
                         <label class="view-source-button" for="filters-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="k">def</span> <span class="nf">remove_reactions_by_product_substruct</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">substruct</span><span class="p">):</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a>    <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">    Remove the reactions in a nework if any of their products contain a defined</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">    substructure.</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="sd">    Parameters</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="sd">    ----------</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="sd">    network: NorthNet.Classes.Network</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="sd">        Network to check and modify.</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="sd">    substruct: NorthNet.Classes.Substructure</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="sd">        Substructure to check for in products.</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="sd">    Returns</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="sd">    -------</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">    None</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="n">remove_reactions</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">NetworkReactions</span><span class="p">:</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="n">reaction_object</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">NetworkReactions</span><span class="p">[</span><span class="n">reaction</span><span class="p">]</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="n">products</span> <span class="o">=</span> <span class="n">reaction_object</span><span class="o">.</span><span class="n">products</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>        <span class="k">for</span> <span class="n">product</span> <span class="ow">in</span> <span class="n">products</span><span class="p">:</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>            <span class="n">mol</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">NetworkCompounds</span><span class="p">[</span><span class="n">product</span><span class="p">]</span><span class="o">.</span><span class="n">Mol</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>            <span class="k">if</span> <span class="n">mol</span><span class="o">.</span><span class="n">HasSubstructMatch</span><span class="p">(</span><span class="n">substruct</span><span class="o">.</span><span class="n">Mol</span><span class="p">):</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>                <span class="n">remove_reactions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reaction_object</span><span class="p">)</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="n">network</span><span class="o">.</span><span class="n">remove_reactions</span><span class="p">(</span><span class="n">remove_reactions</span><span class="p">)</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#-1"><span class="linenos"> 1</span></a><span class="k">def</span> <span class="nf">remove_reactions_by_product_substruct</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">substruct</span><span class="p">):</span>
+</span><span id="L-2"><a href="#-2"><span class="linenos"> 2</span></a>    <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-3"><a href="#-3"><span class="linenos"> 3</span></a><span class="sd">    Remove the reactions in a nework if any of their products contain a defined</span>
+</span><span id="L-4"><a href="#-4"><span class="linenos"> 4</span></a><span class="sd">    substructure.</span>
+</span><span id="L-5"><a href="#-5"><span class="linenos"> 5</span></a>
+</span><span id="L-6"><a href="#-6"><span class="linenos"> 6</span></a><span class="sd">    Parameters</span>
+</span><span id="L-7"><a href="#-7"><span class="linenos"> 7</span></a><span class="sd">    ----------</span>
+</span><span id="L-8"><a href="#-8"><span class="linenos"> 8</span></a><span class="sd">    network: NorthNet.Classes.Network</span>
+</span><span id="L-9"><a href="#-9"><span class="linenos"> 9</span></a><span class="sd">        Network to check and modify.</span>
+</span><span id="L-10"><a href="#-10"><span class="linenos">10</span></a><span class="sd">    substruct: NorthNet.Classes.Substructure</span>
+</span><span id="L-11"><a href="#-11"><span class="linenos">11</span></a><span class="sd">        Substructure to check for in products.</span>
+</span><span id="L-12"><a href="#-12"><span class="linenos">12</span></a>
+</span><span id="L-13"><a href="#-13"><span class="linenos">13</span></a><span class="sd">    Returns</span>
+</span><span id="L-14"><a href="#-14"><span class="linenos">14</span></a><span class="sd">    -------</span>
+</span><span id="L-15"><a href="#-15"><span class="linenos">15</span></a><span class="sd">    None</span>
+</span><span id="L-16"><a href="#-16"><span class="linenos">16</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-17"><a href="#-17"><span class="linenos">17</span></a>
+</span><span id="L-18"><a href="#-18"><span class="linenos">18</span></a>    <span class="n">remove_reactions</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="L-19"><a href="#-19"><span class="linenos">19</span></a>
+</span><span id="L-20"><a href="#-20"><span class="linenos">20</span></a>    <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">NetworkReactions</span><span class="p">:</span>
+</span><span id="L-21"><a href="#-21"><span class="linenos">21</span></a>
+</span><span id="L-22"><a href="#-22"><span class="linenos">22</span></a>        <span class="n">reaction_object</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">NetworkReactions</span><span class="p">[</span><span class="n">reaction</span><span class="p">]</span>
+</span><span id="L-23"><a href="#-23"><span class="linenos">23</span></a>        <span class="n">products</span> <span class="o">=</span> <span class="n">reaction_object</span><span class="o">.</span><span class="n">products</span>
+</span><span id="L-24"><a href="#-24"><span class="linenos">24</span></a>
+</span><span id="L-25"><a href="#-25"><span class="linenos">25</span></a>        <span class="k">for</span> <span class="n">product</span> <span class="ow">in</span> <span class="n">products</span><span class="p">:</span>
+</span><span id="L-26"><a href="#-26"><span class="linenos">26</span></a>            <span class="n">mol</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">NetworkCompounds</span><span class="p">[</span><span class="n">product</span><span class="p">]</span><span class="o">.</span><span class="n">Mol</span>
+</span><span id="L-27"><a href="#-27"><span class="linenos">27</span></a>
+</span><span id="L-28"><a href="#-28"><span class="linenos">28</span></a>            <span class="k">if</span> <span class="n">mol</span><span class="o">.</span><span class="n">HasSubstructMatch</span><span class="p">(</span><span class="n">substruct</span><span class="o">.</span><span class="n">Mol</span><span class="p">):</span>
+</span><span id="L-29"><a href="#-29"><span class="linenos">29</span></a>                <span class="n">remove_reactions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reaction_object</span><span class="p">)</span>
+</span><span id="L-30"><a href="#-30"><span class="linenos">30</span></a>
+</span><span id="L-31"><a href="#-31"><span class="linenos">31</span></a>    <span class="n">network</span><span class="o">.</span><span class="n">remove_reactions</span><span class="p">(</span><span class="n">remove_reactions</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -100,37 +100,37 @@
 
     </div>
     <a class="headerlink" href="#remove_reactions_by_product_substruct"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="remove_reactions_by_product_substruct-2"><a href="#remove_reactions_by_product_substruct-2"><span class="linenos"> 2</span></a><span class="k">def</span> <span class="nf">remove_reactions_by_product_substruct</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">substruct</span><span class="p">):</span>
-</span><span id="remove_reactions_by_product_substruct-3"><a href="#remove_reactions_by_product_substruct-3"><span class="linenos"> 3</span></a>    <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="remove_reactions_by_product_substruct-4"><a href="#remove_reactions_by_product_substruct-4"><span class="linenos"> 4</span></a><span class="sd">    Remove the reactions in a nework if any of their products contain a defined</span>
-</span><span id="remove_reactions_by_product_substruct-5"><a href="#remove_reactions_by_product_substruct-5"><span class="linenos"> 5</span></a><span class="sd">    substructure.</span>
-</span><span id="remove_reactions_by_product_substruct-6"><a href="#remove_reactions_by_product_substruct-6"><span class="linenos"> 6</span></a>
-</span><span id="remove_reactions_by_product_substruct-7"><a href="#remove_reactions_by_product_substruct-7"><span class="linenos"> 7</span></a><span class="sd">    Parameters</span>
-</span><span id="remove_reactions_by_product_substruct-8"><a href="#remove_reactions_by_product_substruct-8"><span class="linenos"> 8</span></a><span class="sd">    ----------</span>
-</span><span id="remove_reactions_by_product_substruct-9"><a href="#remove_reactions_by_product_substruct-9"><span class="linenos"> 9</span></a><span class="sd">    network: NorthNet.Classes.Network</span>
-</span><span id="remove_reactions_by_product_substruct-10"><a href="#remove_reactions_by_product_substruct-10"><span class="linenos">10</span></a><span class="sd">        Network to check and modify.</span>
-</span><span id="remove_reactions_by_product_substruct-11"><a href="#remove_reactions_by_product_substruct-11"><span class="linenos">11</span></a><span class="sd">    substruct: NorthNet.Classes.Substructure</span>
-</span><span id="remove_reactions_by_product_substruct-12"><a href="#remove_reactions_by_product_substruct-12"><span class="linenos">12</span></a><span class="sd">        Substructure to check for in products.</span>
-</span><span id="remove_reactions_by_product_substruct-13"><a href="#remove_reactions_by_product_substruct-13"><span class="linenos">13</span></a>
-</span><span id="remove_reactions_by_product_substruct-14"><a href="#remove_reactions_by_product_substruct-14"><span class="linenos">14</span></a><span class="sd">    Returns</span>
-</span><span id="remove_reactions_by_product_substruct-15"><a href="#remove_reactions_by_product_substruct-15"><span class="linenos">15</span></a><span class="sd">    -------</span>
-</span><span id="remove_reactions_by_product_substruct-16"><a href="#remove_reactions_by_product_substruct-16"><span class="linenos">16</span></a><span class="sd">    None</span>
-</span><span id="remove_reactions_by_product_substruct-17"><a href="#remove_reactions_by_product_substruct-17"><span class="linenos">17</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="remove_reactions_by_product_substruct-18"><a href="#remove_reactions_by_product_substruct-18"><span class="linenos">18</span></a>
-</span><span id="remove_reactions_by_product_substruct-19"><a href="#remove_reactions_by_product_substruct-19"><span class="linenos">19</span></a>    <span class="n">remove_reactions</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="remove_reactions_by_product_substruct-20"><a href="#remove_reactions_by_product_substruct-20"><span class="linenos">20</span></a>
-</span><span id="remove_reactions_by_product_substruct-21"><a href="#remove_reactions_by_product_substruct-21"><span class="linenos">21</span></a>    <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">NetworkReactions</span><span class="p">:</span>
-</span><span id="remove_reactions_by_product_substruct-22"><a href="#remove_reactions_by_product_substruct-22"><span class="linenos">22</span></a>
-</span><span id="remove_reactions_by_product_substruct-23"><a href="#remove_reactions_by_product_substruct-23"><span class="linenos">23</span></a>        <span class="n">reaction_object</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">NetworkReactions</span><span class="p">[</span><span class="n">reaction</span><span class="p">]</span>
-</span><span id="remove_reactions_by_product_substruct-24"><a href="#remove_reactions_by_product_substruct-24"><span class="linenos">24</span></a>        <span class="n">products</span> <span class="o">=</span> <span class="n">reaction_object</span><span class="o">.</span><span class="n">products</span>
-</span><span id="remove_reactions_by_product_substruct-25"><a href="#remove_reactions_by_product_substruct-25"><span class="linenos">25</span></a>
-</span><span id="remove_reactions_by_product_substruct-26"><a href="#remove_reactions_by_product_substruct-26"><span class="linenos">26</span></a>        <span class="k">for</span> <span class="n">product</span> <span class="ow">in</span> <span class="n">products</span><span class="p">:</span>
-</span><span id="remove_reactions_by_product_substruct-27"><a href="#remove_reactions_by_product_substruct-27"><span class="linenos">27</span></a>            <span class="n">mol</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">NetworkCompounds</span><span class="p">[</span><span class="n">product</span><span class="p">]</span><span class="o">.</span><span class="n">Mol</span>
-</span><span id="remove_reactions_by_product_substruct-28"><a href="#remove_reactions_by_product_substruct-28"><span class="linenos">28</span></a>
-</span><span id="remove_reactions_by_product_substruct-29"><a href="#remove_reactions_by_product_substruct-29"><span class="linenos">29</span></a>            <span class="k">if</span> <span class="n">mol</span><span class="o">.</span><span class="n">HasSubstructMatch</span><span class="p">(</span><span class="n">substruct</span><span class="o">.</span><span class="n">Mol</span><span class="p">):</span>
-</span><span id="remove_reactions_by_product_substruct-30"><a href="#remove_reactions_by_product_substruct-30"><span class="linenos">30</span></a>                <span class="n">remove_reactions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reaction_object</span><span class="p">)</span>
-</span><span id="remove_reactions_by_product_substruct-31"><a href="#remove_reactions_by_product_substruct-31"><span class="linenos">31</span></a>
-</span><span id="remove_reactions_by_product_substruct-32"><a href="#remove_reactions_by_product_substruct-32"><span class="linenos">32</span></a>    <span class="n">network</span><span class="o">.</span><span class="n">remove_reactions</span><span class="p">(</span><span class="n">remove_reactions</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="remove_reactions_by_product_substruct-2"><a href="#-2"><span class="linenos"> 2</span></a><span class="k">def</span> <span class="nf">remove_reactions_by_product_substruct</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">substruct</span><span class="p">):</span>
+</span><span id="remove_reactions_by_product_substruct-3"><a href="#-3"><span class="linenos"> 3</span></a>    <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="remove_reactions_by_product_substruct-4"><a href="#-4"><span class="linenos"> 4</span></a><span class="sd">    Remove the reactions in a nework if any of their products contain a defined</span>
+</span><span id="remove_reactions_by_product_substruct-5"><a href="#-5"><span class="linenos"> 5</span></a><span class="sd">    substructure.</span>
+</span><span id="remove_reactions_by_product_substruct-6"><a href="#-6"><span class="linenos"> 6</span></a>
+</span><span id="remove_reactions_by_product_substruct-7"><a href="#-7"><span class="linenos"> 7</span></a><span class="sd">    Parameters</span>
+</span><span id="remove_reactions_by_product_substruct-8"><a href="#-8"><span class="linenos"> 8</span></a><span class="sd">    ----------</span>
+</span><span id="remove_reactions_by_product_substruct-9"><a href="#-9"><span class="linenos"> 9</span></a><span class="sd">    network: NorthNet.Classes.Network</span>
+</span><span id="remove_reactions_by_product_substruct-10"><a href="#-10"><span class="linenos">10</span></a><span class="sd">        Network to check and modify.</span>
+</span><span id="remove_reactions_by_product_substruct-11"><a href="#-11"><span class="linenos">11</span></a><span class="sd">    substruct: NorthNet.Classes.Substructure</span>
+</span><span id="remove_reactions_by_product_substruct-12"><a href="#-12"><span class="linenos">12</span></a><span class="sd">        Substructure to check for in products.</span>
+</span><span id="remove_reactions_by_product_substruct-13"><a href="#-13"><span class="linenos">13</span></a>
+</span><span id="remove_reactions_by_product_substruct-14"><a href="#-14"><span class="linenos">14</span></a><span class="sd">    Returns</span>
+</span><span id="remove_reactions_by_product_substruct-15"><a href="#-15"><span class="linenos">15</span></a><span class="sd">    -------</span>
+</span><span id="remove_reactions_by_product_substruct-16"><a href="#-16"><span class="linenos">16</span></a><span class="sd">    None</span>
+</span><span id="remove_reactions_by_product_substruct-17"><a href="#-17"><span class="linenos">17</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="remove_reactions_by_product_substruct-18"><a href="#-18"><span class="linenos">18</span></a>
+</span><span id="remove_reactions_by_product_substruct-19"><a href="#-19"><span class="linenos">19</span></a>    <span class="n">remove_reactions</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="remove_reactions_by_product_substruct-20"><a href="#-20"><span class="linenos">20</span></a>
+</span><span id="remove_reactions_by_product_substruct-21"><a href="#-21"><span class="linenos">21</span></a>    <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">NetworkReactions</span><span class="p">:</span>
+</span><span id="remove_reactions_by_product_substruct-22"><a href="#-22"><span class="linenos">22</span></a>
+</span><span id="remove_reactions_by_product_substruct-23"><a href="#-23"><span class="linenos">23</span></a>        <span class="n">reaction_object</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">NetworkReactions</span><span class="p">[</span><span class="n">reaction</span><span class="p">]</span>
+</span><span id="remove_reactions_by_product_substruct-24"><a href="#-24"><span class="linenos">24</span></a>        <span class="n">products</span> <span class="o">=</span> <span class="n">reaction_object</span><span class="o">.</span><span class="n">products</span>
+</span><span id="remove_reactions_by_product_substruct-25"><a href="#-25"><span class="linenos">25</span></a>
+</span><span id="remove_reactions_by_product_substruct-26"><a href="#-26"><span class="linenos">26</span></a>        <span class="k">for</span> <span class="n">product</span> <span class="ow">in</span> <span class="n">products</span><span class="p">:</span>
+</span><span id="remove_reactions_by_product_substruct-27"><a href="#-27"><span class="linenos">27</span></a>            <span class="n">mol</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">NetworkCompounds</span><span class="p">[</span><span class="n">product</span><span class="p">]</span><span class="o">.</span><span class="n">Mol</span>
+</span><span id="remove_reactions_by_product_substruct-28"><a href="#-28"><span class="linenos">28</span></a>
+</span><span id="remove_reactions_by_product_substruct-29"><a href="#-29"><span class="linenos">29</span></a>            <span class="k">if</span> <span class="n">mol</span><span class="o">.</span><span class="n">HasSubstructMatch</span><span class="p">(</span><span class="n">substruct</span><span class="o">.</span><span class="n">Mol</span><span class="p">):</span>
+</span><span id="remove_reactions_by_product_substruct-30"><a href="#-30"><span class="linenos">30</span></a>                <span class="n">remove_reactions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reaction_object</span><span class="p">)</span>
+</span><span id="remove_reactions_by_product_substruct-31"><a href="#-31"><span class="linenos">31</span></a>
+</span><span id="remove_reactions_by_product_substruct-32"><a href="#-32"><span class="linenos">32</span></a>    <span class="n">network</span><span class="o">.</span><span class="n">remove_reactions</span><span class="p">(</span><span class="n">remove_reactions</span><span class="p">)</span>
 </span></pre></div>
 
 

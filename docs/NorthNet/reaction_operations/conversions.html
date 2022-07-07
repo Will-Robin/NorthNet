@@ -57,61 +57,61 @@
 
                         <label class="view-source-button" for="conversions-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">Chem</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">AllChem</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="k">def</span> <span class="nf">reaction_smiles_split</span><span class="p">(</span><span class="n">reaction_smiles</span><span class="p">):</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>    <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="sd">    Parameters</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="sd">    ----------</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="sd">    reaction_smiles: str</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="sd">    Returns</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="sd">    -------</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="sd">    reactants, products: tuple(list[str])</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="n">split_rxn</span> <span class="o">=</span> <span class="n">reaction_smiles</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&quot;</span><span class="p">)</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="n">reactants</span> <span class="o">=</span> <span class="n">split_rxn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="n">products</span> <span class="o">=</span> <span class="n">split_rxn</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="k">return</span> <span class="n">reactants</span><span class="p">,</span> <span class="n">products</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="k">def</span> <span class="nf">smiles_to_rdkit_reaction</span><span class="p">(</span><span class="n">smiles</span><span class="p">):</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="sd">    For converting reaction SMILES strings into RDKit AllChem.ChemicalReaction</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="sd">    objects.</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="sd">    Parameters</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="sd">    ----------</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="sd">    smiles: str</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="sd">        Reaction SMILES.</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="sd">    Returns</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="sd">    -------</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="sd">    rdkit_reaction: RDKit AllChem.Reaction</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a><span class="sd">        Converted reaction.</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>    <span class="n">products_reactants</span> <span class="o">=</span> <span class="n">smiles</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&quot;</span><span class="p">)</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>    <span class="n">reactants</span> <span class="o">=</span> <span class="n">products_reactants</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>    <span class="n">products</span> <span class="o">=</span> <span class="n">products_reactants</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>    <span class="n">reactants_as_mol</span> <span class="o">=</span> <span class="p">[</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">reactants</span><span class="p">]</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>    <span class="n">products_as_mol</span> <span class="o">=</span> <span class="p">[</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">products</span><span class="p">]</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>    <span class="n">rdkit_reaction</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">ChemicalReaction</span><span class="p">()</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>    <span class="p">[</span><span class="n">rdkit_reaction</span><span class="o">.</span><span class="n">AddReactantTemplate</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">reactants_as_mol</span><span class="p">]</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>    <span class="p">[</span><span class="n">rdkit_reaction</span><span class="o">.</span><span class="n">AddProductTemplate</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">products_as_mol</span><span class="p">]</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>    <span class="k">return</span> <span class="n">rdkit_reaction</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#-1"><span class="linenos"> 1</span></a><span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">Chem</span>
+</span><span id="L-2"><a href="#-2"><span class="linenos"> 2</span></a><span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">AllChem</span>
+</span><span id="L-3"><a href="#-3"><span class="linenos"> 3</span></a>
+</span><span id="L-4"><a href="#-4"><span class="linenos"> 4</span></a>
+</span><span id="L-5"><a href="#-5"><span class="linenos"> 5</span></a><span class="k">def</span> <span class="nf">reaction_smiles_split</span><span class="p">(</span><span class="n">reaction_smiles</span><span class="p">):</span>
+</span><span id="L-6"><a href="#-6"><span class="linenos"> 6</span></a>    <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-7"><a href="#-7"><span class="linenos"> 7</span></a><span class="sd">    Parameters</span>
+</span><span id="L-8"><a href="#-8"><span class="linenos"> 8</span></a><span class="sd">    ----------</span>
+</span><span id="L-9"><a href="#-9"><span class="linenos"> 9</span></a><span class="sd">    reaction_smiles: str</span>
+</span><span id="L-10"><a href="#-10"><span class="linenos">10</span></a>
+</span><span id="L-11"><a href="#-11"><span class="linenos">11</span></a>
+</span><span id="L-12"><a href="#-12"><span class="linenos">12</span></a><span class="sd">    Returns</span>
+</span><span id="L-13"><a href="#-13"><span class="linenos">13</span></a><span class="sd">    -------</span>
+</span><span id="L-14"><a href="#-14"><span class="linenos">14</span></a><span class="sd">    reactants, products: tuple(list[str])</span>
+</span><span id="L-15"><a href="#-15"><span class="linenos">15</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-16"><a href="#-16"><span class="linenos">16</span></a>
+</span><span id="L-17"><a href="#-17"><span class="linenos">17</span></a>    <span class="n">split_rxn</span> <span class="o">=</span> <span class="n">reaction_smiles</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&quot;</span><span class="p">)</span>
+</span><span id="L-18"><a href="#-18"><span class="linenos">18</span></a>
+</span><span id="L-19"><a href="#-19"><span class="linenos">19</span></a>    <span class="n">reactants</span> <span class="o">=</span> <span class="n">split_rxn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+</span><span id="L-20"><a href="#-20"><span class="linenos">20</span></a>    <span class="n">products</span> <span class="o">=</span> <span class="n">split_rxn</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+</span><span id="L-21"><a href="#-21"><span class="linenos">21</span></a>
+</span><span id="L-22"><a href="#-22"><span class="linenos">22</span></a>    <span class="n">reactants</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+</span><span id="L-23"><a href="#-23"><span class="linenos">23</span></a>    <span class="n">products</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+</span><span id="L-24"><a href="#-24"><span class="linenos">24</span></a>
+</span><span id="L-25"><a href="#-25"><span class="linenos">25</span></a>    <span class="k">return</span> <span class="n">reactants</span><span class="p">,</span> <span class="n">products</span>
+</span><span id="L-26"><a href="#-26"><span class="linenos">26</span></a>
+</span><span id="L-27"><a href="#-27"><span class="linenos">27</span></a>
+</span><span id="L-28"><a href="#-28"><span class="linenos">28</span></a><span class="k">def</span> <span class="nf">smiles_to_rdkit_reaction</span><span class="p">(</span><span class="n">smiles</span><span class="p">):</span>
+</span><span id="L-29"><a href="#-29"><span class="linenos">29</span></a>    <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-30"><a href="#-30"><span class="linenos">30</span></a><span class="sd">    For converting reaction SMILES strings into RDKit AllChem.ChemicalReaction</span>
+</span><span id="L-31"><a href="#-31"><span class="linenos">31</span></a><span class="sd">    objects.</span>
+</span><span id="L-32"><a href="#-32"><span class="linenos">32</span></a>
+</span><span id="L-33"><a href="#-33"><span class="linenos">33</span></a><span class="sd">    Parameters</span>
+</span><span id="L-34"><a href="#-34"><span class="linenos">34</span></a><span class="sd">    ----------</span>
+</span><span id="L-35"><a href="#-35"><span class="linenos">35</span></a><span class="sd">    smiles: str</span>
+</span><span id="L-36"><a href="#-36"><span class="linenos">36</span></a><span class="sd">        Reaction SMILES.</span>
+</span><span id="L-37"><a href="#-37"><span class="linenos">37</span></a>
+</span><span id="L-38"><a href="#-38"><span class="linenos">38</span></a><span class="sd">    Returns</span>
+</span><span id="L-39"><a href="#-39"><span class="linenos">39</span></a><span class="sd">    -------</span>
+</span><span id="L-40"><a href="#-40"><span class="linenos">40</span></a>
+</span><span id="L-41"><a href="#-41"><span class="linenos">41</span></a><span class="sd">    rdkit_reaction: RDKit AllChem.Reaction</span>
+</span><span id="L-42"><a href="#-42"><span class="linenos">42</span></a><span class="sd">        Converted reaction.</span>
+</span><span id="L-43"><a href="#-43"><span class="linenos">43</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-44"><a href="#-44"><span class="linenos">44</span></a>
+</span><span id="L-45"><a href="#-45"><span class="linenos">45</span></a>    <span class="n">reactants</span><span class="p">,</span> <span class="n">products</span> <span class="o">=</span> <span class="n">reaction_smiles_split</span><span class="p">(</span><span class="n">reaction_smiles</span><span class="p">)</span>
+</span><span id="L-46"><a href="#-46"><span class="linenos">46</span></a>
+</span><span id="L-47"><a href="#-47"><span class="linenos">47</span></a>    <span class="n">reactants_as_mol</span> <span class="o">=</span> <span class="p">[</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">reactants</span><span class="p">]</span>
+</span><span id="L-48"><a href="#-48"><span class="linenos">48</span></a>    <span class="n">products_as_mol</span> <span class="o">=</span> <span class="p">[</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">products</span><span class="p">]</span>
+</span><span id="L-49"><a href="#-49"><span class="linenos">49</span></a>
+</span><span id="L-50"><a href="#-50"><span class="linenos">50</span></a>    <span class="n">rdkit_reaction</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">ChemicalReaction</span><span class="p">()</span>
+</span><span id="L-51"><a href="#-51"><span class="linenos">51</span></a>
+</span><span id="L-52"><a href="#-52"><span class="linenos">52</span></a>    <span class="p">[</span><span class="n">rdkit_reaction</span><span class="o">.</span><span class="n">AddReactantTemplate</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">reactants_as_mol</span><span class="p">]</span>
+</span><span id="L-53"><a href="#-53"><span class="linenos">53</span></a>    <span class="p">[</span><span class="n">rdkit_reaction</span><span class="o">.</span><span class="n">AddProductTemplate</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">products_as_mol</span><span class="p">]</span>
+</span><span id="L-54"><a href="#-54"><span class="linenos">54</span></a>
+</span><span id="L-55"><a href="#-55"><span class="linenos">55</span></a>    <span class="k">return</span> <span class="n">rdkit_reaction</span>
 </span></pre></div>
 
 
@@ -127,24 +127,27 @@
 
     </div>
     <a class="headerlink" href="#reaction_smiles_split"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="reaction_smiles_split-6"><a href="#reaction_smiles_split-6"><span class="linenos"> 6</span></a><span class="k">def</span> <span class="nf">reaction_smiles_split</span><span class="p">(</span><span class="n">reaction_smiles</span><span class="p">):</span>
-</span><span id="reaction_smiles_split-7"><a href="#reaction_smiles_split-7"><span class="linenos"> 7</span></a>    <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="reaction_smiles_split-8"><a href="#reaction_smiles_split-8"><span class="linenos"> 8</span></a><span class="sd">    Parameters</span>
-</span><span id="reaction_smiles_split-9"><a href="#reaction_smiles_split-9"><span class="linenos"> 9</span></a><span class="sd">    ----------</span>
-</span><span id="reaction_smiles_split-10"><a href="#reaction_smiles_split-10"><span class="linenos">10</span></a><span class="sd">    reaction_smiles: str</span>
-</span><span id="reaction_smiles_split-11"><a href="#reaction_smiles_split-11"><span class="linenos">11</span></a>
-</span><span id="reaction_smiles_split-12"><a href="#reaction_smiles_split-12"><span class="linenos">12</span></a>
-</span><span id="reaction_smiles_split-13"><a href="#reaction_smiles_split-13"><span class="linenos">13</span></a><span class="sd">    Returns</span>
-</span><span id="reaction_smiles_split-14"><a href="#reaction_smiles_split-14"><span class="linenos">14</span></a><span class="sd">    -------</span>
-</span><span id="reaction_smiles_split-15"><a href="#reaction_smiles_split-15"><span class="linenos">15</span></a><span class="sd">    reactants, products: tuple(list[str])</span>
-</span><span id="reaction_smiles_split-16"><a href="#reaction_smiles_split-16"><span class="linenos">16</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="reaction_smiles_split-17"><a href="#reaction_smiles_split-17"><span class="linenos">17</span></a>
-</span><span id="reaction_smiles_split-18"><a href="#reaction_smiles_split-18"><span class="linenos">18</span></a>    <span class="n">split_rxn</span> <span class="o">=</span> <span class="n">reaction_smiles</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&quot;</span><span class="p">)</span>
-</span><span id="reaction_smiles_split-19"><a href="#reaction_smiles_split-19"><span class="linenos">19</span></a>
-</span><span id="reaction_smiles_split-20"><a href="#reaction_smiles_split-20"><span class="linenos">20</span></a>    <span class="n">reactants</span> <span class="o">=</span> <span class="n">split_rxn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-</span><span id="reaction_smiles_split-21"><a href="#reaction_smiles_split-21"><span class="linenos">21</span></a>    <span class="n">products</span> <span class="o">=</span> <span class="n">split_rxn</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-</span><span id="reaction_smiles_split-22"><a href="#reaction_smiles_split-22"><span class="linenos">22</span></a>
-</span><span id="reaction_smiles_split-23"><a href="#reaction_smiles_split-23"><span class="linenos">23</span></a>    <span class="k">return</span> <span class="n">reactants</span><span class="p">,</span> <span class="n">products</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="reaction_smiles_split-6"><a href="#-6"><span class="linenos"> 6</span></a><span class="k">def</span> <span class="nf">reaction_smiles_split</span><span class="p">(</span><span class="n">reaction_smiles</span><span class="p">):</span>
+</span><span id="reaction_smiles_split-7"><a href="#-7"><span class="linenos"> 7</span></a>    <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="reaction_smiles_split-8"><a href="#-8"><span class="linenos"> 8</span></a><span class="sd">    Parameters</span>
+</span><span id="reaction_smiles_split-9"><a href="#-9"><span class="linenos"> 9</span></a><span class="sd">    ----------</span>
+</span><span id="reaction_smiles_split-10"><a href="#-10"><span class="linenos">10</span></a><span class="sd">    reaction_smiles: str</span>
+</span><span id="reaction_smiles_split-11"><a href="#-11"><span class="linenos">11</span></a>
+</span><span id="reaction_smiles_split-12"><a href="#-12"><span class="linenos">12</span></a>
+</span><span id="reaction_smiles_split-13"><a href="#-13"><span class="linenos">13</span></a><span class="sd">    Returns</span>
+</span><span id="reaction_smiles_split-14"><a href="#-14"><span class="linenos">14</span></a><span class="sd">    -------</span>
+</span><span id="reaction_smiles_split-15"><a href="#-15"><span class="linenos">15</span></a><span class="sd">    reactants, products: tuple(list[str])</span>
+</span><span id="reaction_smiles_split-16"><a href="#-16"><span class="linenos">16</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="reaction_smiles_split-17"><a href="#-17"><span class="linenos">17</span></a>
+</span><span id="reaction_smiles_split-18"><a href="#-18"><span class="linenos">18</span></a>    <span class="n">split_rxn</span> <span class="o">=</span> <span class="n">reaction_smiles</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&quot;</span><span class="p">)</span>
+</span><span id="reaction_smiles_split-19"><a href="#-19"><span class="linenos">19</span></a>
+</span><span id="reaction_smiles_split-20"><a href="#-20"><span class="linenos">20</span></a>    <span class="n">reactants</span> <span class="o">=</span> <span class="n">split_rxn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+</span><span id="reaction_smiles_split-21"><a href="#-21"><span class="linenos">21</span></a>    <span class="n">products</span> <span class="o">=</span> <span class="n">split_rxn</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+</span><span id="reaction_smiles_split-22"><a href="#-22"><span class="linenos">22</span></a>
+</span><span id="reaction_smiles_split-23"><a href="#-23"><span class="linenos">23</span></a>    <span class="n">reactants</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+</span><span id="reaction_smiles_split-24"><a href="#-24"><span class="linenos">24</span></a>    <span class="n">products</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+</span><span id="reaction_smiles_split-25"><a href="#-25"><span class="linenos">25</span></a>
+</span><span id="reaction_smiles_split-26"><a href="#-26"><span class="linenos">26</span></a>    <span class="k">return</span> <span class="n">reactants</span><span class="p">,</span> <span class="n">products</span>
 </span></pre></div>
 
 
@@ -174,37 +177,34 @@
 
     </div>
     <a class="headerlink" href="#smiles_to_rdkit_reaction"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="smiles_to_rdkit_reaction-26"><a href="#smiles_to_rdkit_reaction-26"><span class="linenos">26</span></a><span class="k">def</span> <span class="nf">smiles_to_rdkit_reaction</span><span class="p">(</span><span class="n">smiles</span><span class="p">):</span>
-</span><span id="smiles_to_rdkit_reaction-27"><a href="#smiles_to_rdkit_reaction-27"><span class="linenos">27</span></a>    <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="smiles_to_rdkit_reaction-28"><a href="#smiles_to_rdkit_reaction-28"><span class="linenos">28</span></a><span class="sd">    For converting reaction SMILES strings into RDKit AllChem.ChemicalReaction</span>
-</span><span id="smiles_to_rdkit_reaction-29"><a href="#smiles_to_rdkit_reaction-29"><span class="linenos">29</span></a><span class="sd">    objects.</span>
-</span><span id="smiles_to_rdkit_reaction-30"><a href="#smiles_to_rdkit_reaction-30"><span class="linenos">30</span></a>
-</span><span id="smiles_to_rdkit_reaction-31"><a href="#smiles_to_rdkit_reaction-31"><span class="linenos">31</span></a><span class="sd">    Parameters</span>
-</span><span id="smiles_to_rdkit_reaction-32"><a href="#smiles_to_rdkit_reaction-32"><span class="linenos">32</span></a><span class="sd">    ----------</span>
-</span><span id="smiles_to_rdkit_reaction-33"><a href="#smiles_to_rdkit_reaction-33"><span class="linenos">33</span></a><span class="sd">    smiles: str</span>
-</span><span id="smiles_to_rdkit_reaction-34"><a href="#smiles_to_rdkit_reaction-34"><span class="linenos">34</span></a><span class="sd">        Reaction SMILES.</span>
-</span><span id="smiles_to_rdkit_reaction-35"><a href="#smiles_to_rdkit_reaction-35"><span class="linenos">35</span></a>
-</span><span id="smiles_to_rdkit_reaction-36"><a href="#smiles_to_rdkit_reaction-36"><span class="linenos">36</span></a><span class="sd">    Returns</span>
-</span><span id="smiles_to_rdkit_reaction-37"><a href="#smiles_to_rdkit_reaction-37"><span class="linenos">37</span></a><span class="sd">    -------</span>
-</span><span id="smiles_to_rdkit_reaction-38"><a href="#smiles_to_rdkit_reaction-38"><span class="linenos">38</span></a>
-</span><span id="smiles_to_rdkit_reaction-39"><a href="#smiles_to_rdkit_reaction-39"><span class="linenos">39</span></a><span class="sd">    rdkit_reaction: RDKit AllChem.Reaction</span>
-</span><span id="smiles_to_rdkit_reaction-40"><a href="#smiles_to_rdkit_reaction-40"><span class="linenos">40</span></a><span class="sd">        Converted reaction.</span>
-</span><span id="smiles_to_rdkit_reaction-41"><a href="#smiles_to_rdkit_reaction-41"><span class="linenos">41</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="smiles_to_rdkit_reaction-42"><a href="#smiles_to_rdkit_reaction-42"><span class="linenos">42</span></a>
-</span><span id="smiles_to_rdkit_reaction-43"><a href="#smiles_to_rdkit_reaction-43"><span class="linenos">43</span></a>    <span class="n">products_reactants</span> <span class="o">=</span> <span class="n">smiles</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&quot;</span><span class="p">)</span>
-</span><span id="smiles_to_rdkit_reaction-44"><a href="#smiles_to_rdkit_reaction-44"><span class="linenos">44</span></a>
-</span><span id="smiles_to_rdkit_reaction-45"><a href="#smiles_to_rdkit_reaction-45"><span class="linenos">45</span></a>    <span class="n">reactants</span> <span class="o">=</span> <span class="n">products_reactants</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-</span><span id="smiles_to_rdkit_reaction-46"><a href="#smiles_to_rdkit_reaction-46"><span class="linenos">46</span></a>    <span class="n">products</span> <span class="o">=</span> <span class="n">products_reactants</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-</span><span id="smiles_to_rdkit_reaction-47"><a href="#smiles_to_rdkit_reaction-47"><span class="linenos">47</span></a>
-</span><span id="smiles_to_rdkit_reaction-48"><a href="#smiles_to_rdkit_reaction-48"><span class="linenos">48</span></a>    <span class="n">reactants_as_mol</span> <span class="o">=</span> <span class="p">[</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">reactants</span><span class="p">]</span>
-</span><span id="smiles_to_rdkit_reaction-49"><a href="#smiles_to_rdkit_reaction-49"><span class="linenos">49</span></a>    <span class="n">products_as_mol</span> <span class="o">=</span> <span class="p">[</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">products</span><span class="p">]</span>
-</span><span id="smiles_to_rdkit_reaction-50"><a href="#smiles_to_rdkit_reaction-50"><span class="linenos">50</span></a>
-</span><span id="smiles_to_rdkit_reaction-51"><a href="#smiles_to_rdkit_reaction-51"><span class="linenos">51</span></a>    <span class="n">rdkit_reaction</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">ChemicalReaction</span><span class="p">()</span>
-</span><span id="smiles_to_rdkit_reaction-52"><a href="#smiles_to_rdkit_reaction-52"><span class="linenos">52</span></a>
-</span><span id="smiles_to_rdkit_reaction-53"><a href="#smiles_to_rdkit_reaction-53"><span class="linenos">53</span></a>    <span class="p">[</span><span class="n">rdkit_reaction</span><span class="o">.</span><span class="n">AddReactantTemplate</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">reactants_as_mol</span><span class="p">]</span>
-</span><span id="smiles_to_rdkit_reaction-54"><a href="#smiles_to_rdkit_reaction-54"><span class="linenos">54</span></a>    <span class="p">[</span><span class="n">rdkit_reaction</span><span class="o">.</span><span class="n">AddProductTemplate</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">products_as_mol</span><span class="p">]</span>
-</span><span id="smiles_to_rdkit_reaction-55"><a href="#smiles_to_rdkit_reaction-55"><span class="linenos">55</span></a>
-</span><span id="smiles_to_rdkit_reaction-56"><a href="#smiles_to_rdkit_reaction-56"><span class="linenos">56</span></a>    <span class="k">return</span> <span class="n">rdkit_reaction</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="smiles_to_rdkit_reaction-29"><a href="#-29"><span class="linenos">29</span></a><span class="k">def</span> <span class="nf">smiles_to_rdkit_reaction</span><span class="p">(</span><span class="n">smiles</span><span class="p">):</span>
+</span><span id="smiles_to_rdkit_reaction-30"><a href="#-30"><span class="linenos">30</span></a>    <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="smiles_to_rdkit_reaction-31"><a href="#-31"><span class="linenos">31</span></a><span class="sd">    For converting reaction SMILES strings into RDKit AllChem.ChemicalReaction</span>
+</span><span id="smiles_to_rdkit_reaction-32"><a href="#-32"><span class="linenos">32</span></a><span class="sd">    objects.</span>
+</span><span id="smiles_to_rdkit_reaction-33"><a href="#-33"><span class="linenos">33</span></a>
+</span><span id="smiles_to_rdkit_reaction-34"><a href="#-34"><span class="linenos">34</span></a><span class="sd">    Parameters</span>
+</span><span id="smiles_to_rdkit_reaction-35"><a href="#-35"><span class="linenos">35</span></a><span class="sd">    ----------</span>
+</span><span id="smiles_to_rdkit_reaction-36"><a href="#-36"><span class="linenos">36</span></a><span class="sd">    smiles: str</span>
+</span><span id="smiles_to_rdkit_reaction-37"><a href="#-37"><span class="linenos">37</span></a><span class="sd">        Reaction SMILES.</span>
+</span><span id="smiles_to_rdkit_reaction-38"><a href="#-38"><span class="linenos">38</span></a>
+</span><span id="smiles_to_rdkit_reaction-39"><a href="#-39"><span class="linenos">39</span></a><span class="sd">    Returns</span>
+</span><span id="smiles_to_rdkit_reaction-40"><a href="#-40"><span class="linenos">40</span></a><span class="sd">    -------</span>
+</span><span id="smiles_to_rdkit_reaction-41"><a href="#-41"><span class="linenos">41</span></a>
+</span><span id="smiles_to_rdkit_reaction-42"><a href="#-42"><span class="linenos">42</span></a><span class="sd">    rdkit_reaction: RDKit AllChem.Reaction</span>
+</span><span id="smiles_to_rdkit_reaction-43"><a href="#-43"><span class="linenos">43</span></a><span class="sd">        Converted reaction.</span>
+</span><span id="smiles_to_rdkit_reaction-44"><a href="#-44"><span class="linenos">44</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="smiles_to_rdkit_reaction-45"><a href="#-45"><span class="linenos">45</span></a>
+</span><span id="smiles_to_rdkit_reaction-46"><a href="#-46"><span class="linenos">46</span></a>    <span class="n">reactants</span><span class="p">,</span> <span class="n">products</span> <span class="o">=</span> <span class="n">reaction_smiles_split</span><span class="p">(</span><span class="n">reaction_smiles</span><span class="p">)</span>
+</span><span id="smiles_to_rdkit_reaction-47"><a href="#-47"><span class="linenos">47</span></a>
+</span><span id="smiles_to_rdkit_reaction-48"><a href="#-48"><span class="linenos">48</span></a>    <span class="n">reactants_as_mol</span> <span class="o">=</span> <span class="p">[</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">reactants</span><span class="p">]</span>
+</span><span id="smiles_to_rdkit_reaction-49"><a href="#-49"><span class="linenos">49</span></a>    <span class="n">products_as_mol</span> <span class="o">=</span> <span class="p">[</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">products</span><span class="p">]</span>
+</span><span id="smiles_to_rdkit_reaction-50"><a href="#-50"><span class="linenos">50</span></a>
+</span><span id="smiles_to_rdkit_reaction-51"><a href="#-51"><span class="linenos">51</span></a>    <span class="n">rdkit_reaction</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">ChemicalReaction</span><span class="p">()</span>
+</span><span id="smiles_to_rdkit_reaction-52"><a href="#-52"><span class="linenos">52</span></a>
+</span><span id="smiles_to_rdkit_reaction-53"><a href="#-53"><span class="linenos">53</span></a>    <span class="p">[</span><span class="n">rdkit_reaction</span><span class="o">.</span><span class="n">AddReactantTemplate</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">reactants_as_mol</span><span class="p">]</span>
+</span><span id="smiles_to_rdkit_reaction-54"><a href="#-54"><span class="linenos">54</span></a>    <span class="p">[</span><span class="n">rdkit_reaction</span><span class="o">.</span><span class="n">AddProductTemplate</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">products_as_mol</span><span class="p">]</span>
+</span><span id="smiles_to_rdkit_reaction-55"><a href="#-55"><span class="linenos">55</span></a>
+</span><span id="smiles_to_rdkit_reaction-56"><a href="#-56"><span class="linenos">56</span></a>    <span class="k">return</span> <span class="n">rdkit_reaction</span>
 </span></pre></div>
 
 

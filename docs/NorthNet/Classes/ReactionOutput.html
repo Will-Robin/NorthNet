@@ -60,44 +60,44 @@
 
                         <label class="view-source-button" for="ReactionOutput-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="k">class</span> <span class="nc">ReactionOutput</span><span class="p">:</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a>    <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">    Class to store outputs as reactions into reaction network</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reaction_output_string</span><span class="p">):</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="sd">        Parameters</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="sd">        ----------</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="sd">        reaction_input_string: str</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="sd">            A token for reaction output should follow the convention</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="sd">            `SMILES&gt;&gt;#0`</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">        Attributes</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="sd">        ----------</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">        token: string</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="sd">            Token for the output.</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">        OutputID: str</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="sd">            ID for the output.</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="sd">        OutputCompound: str</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="sd">            The compound associated with the output.</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="sd">        In: list[str]</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="sd">            List of processes connected to the output.</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>            <span class="n">reaction_output_string</span><span class="p">,</span> <span class="nb">str</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="p">),</span> <span class="s2">&quot;&quot;&quot;class ReactionOutput:</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="s2">            reaction_output_string must be string like SMILES&gt;&gt;#0&quot;&quot;&quot;</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">reaction_output_string</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>        <span class="n">token_sides</span> <span class="o">=</span> <span class="n">reaction_output_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&quot;</span><span class="p">)</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">OutputID</span> <span class="o">=</span> <span class="n">token_sides</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">OutputCompound</span> <span class="o">=</span> <span class="n">token_sides</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">In</span> <span class="o">=</span> <span class="p">[]</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#-1"><span class="linenos"> 1</span></a><span class="k">class</span> <span class="nc">ReactionOutput</span><span class="p">:</span>
+</span><span id="L-2"><a href="#-2"><span class="linenos"> 2</span></a>    <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-3"><a href="#-3"><span class="linenos"> 3</span></a><span class="sd">    Class to store outputs as reactions into reaction network</span>
+</span><span id="L-4"><a href="#-4"><span class="linenos"> 4</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-5"><a href="#-5"><span class="linenos"> 5</span></a>
+</span><span id="L-6"><a href="#-6"><span class="linenos"> 6</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reaction_output_string</span><span class="p">):</span>
+</span><span id="L-7"><a href="#-7"><span class="linenos"> 7</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-8"><a href="#-8"><span class="linenos"> 8</span></a>
+</span><span id="L-9"><a href="#-9"><span class="linenos"> 9</span></a><span class="sd">        Parameters</span>
+</span><span id="L-10"><a href="#-10"><span class="linenos">10</span></a><span class="sd">        ----------</span>
+</span><span id="L-11"><a href="#-11"><span class="linenos">11</span></a><span class="sd">        reaction_input_string: str</span>
+</span><span id="L-12"><a href="#-12"><span class="linenos">12</span></a><span class="sd">            A token for reaction output should follow the convention</span>
+</span><span id="L-13"><a href="#-13"><span class="linenos">13</span></a><span class="sd">            `SMILES&gt;&gt;#0`</span>
+</span><span id="L-14"><a href="#-14"><span class="linenos">14</span></a>
+</span><span id="L-15"><a href="#-15"><span class="linenos">15</span></a><span class="sd">        Attributes</span>
+</span><span id="L-16"><a href="#-16"><span class="linenos">16</span></a><span class="sd">        ----------</span>
+</span><span id="L-17"><a href="#-17"><span class="linenos">17</span></a><span class="sd">        token: string</span>
+</span><span id="L-18"><a href="#-18"><span class="linenos">18</span></a><span class="sd">            Token for the output.</span>
+</span><span id="L-19"><a href="#-19"><span class="linenos">19</span></a><span class="sd">        OutputID: str</span>
+</span><span id="L-20"><a href="#-20"><span class="linenos">20</span></a><span class="sd">            ID for the output.</span>
+</span><span id="L-21"><a href="#-21"><span class="linenos">21</span></a><span class="sd">        OutputCompound: str</span>
+</span><span id="L-22"><a href="#-22"><span class="linenos">22</span></a><span class="sd">            The compound associated with the output.</span>
+</span><span id="L-23"><a href="#-23"><span class="linenos">23</span></a><span class="sd">        In: list[str]</span>
+</span><span id="L-24"><a href="#-24"><span class="linenos">24</span></a><span class="sd">            List of processes connected to the output.</span>
+</span><span id="L-25"><a href="#-25"><span class="linenos">25</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-26"><a href="#-26"><span class="linenos">26</span></a>
+</span><span id="L-27"><a href="#-27"><span class="linenos">27</span></a>        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span>
+</span><span id="L-28"><a href="#-28"><span class="linenos">28</span></a>            <span class="n">reaction_output_string</span><span class="p">,</span> <span class="nb">str</span>
+</span><span id="L-29"><a href="#-29"><span class="linenos">29</span></a>        <span class="p">),</span> <span class="s2">&quot;&quot;&quot;class ReactionOutput:</span>
+</span><span id="L-30"><a href="#-30"><span class="linenos">30</span></a><span class="s2">            reaction_output_string must be string like SMILES&gt;&gt;#0&quot;&quot;&quot;</span>
+</span><span id="L-31"><a href="#-31"><span class="linenos">31</span></a>
+</span><span id="L-32"><a href="#-32"><span class="linenos">32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">reaction_output_string</span>
+</span><span id="L-33"><a href="#-33"><span class="linenos">33</span></a>
+</span><span id="L-34"><a href="#-34"><span class="linenos">34</span></a>        <span class="n">token_sides</span> <span class="o">=</span> <span class="n">reaction_output_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&quot;</span><span class="p">)</span>
+</span><span id="L-35"><a href="#-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">OutputID</span> <span class="o">=</span> <span class="n">token_sides</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="L-36"><a href="#-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">OutputCompound</span> <span class="o">=</span> <span class="n">token_sides</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="L-37"><a href="#-37"><span class="linenos">37</span></a>
+</span><span id="L-38"><a href="#-38"><span class="linenos">38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">In</span> <span class="o">=</span> <span class="p">[]</span>
 </span></pre></div>
 
 
@@ -113,44 +113,44 @@
 
     </div>
     <a class="headerlink" href="#ReactionOutput"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ReactionOutput-2"><a href="#ReactionOutput-2"><span class="linenos"> 2</span></a><span class="k">class</span> <span class="nc">ReactionOutput</span><span class="p">:</span>
-</span><span id="ReactionOutput-3"><a href="#ReactionOutput-3"><span class="linenos"> 3</span></a>    <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="ReactionOutput-4"><a href="#ReactionOutput-4"><span class="linenos"> 4</span></a><span class="sd">    Class to store outputs as reactions into reaction network</span>
-</span><span id="ReactionOutput-5"><a href="#ReactionOutput-5"><span class="linenos"> 5</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="ReactionOutput-6"><a href="#ReactionOutput-6"><span class="linenos"> 6</span></a>
-</span><span id="ReactionOutput-7"><a href="#ReactionOutput-7"><span class="linenos"> 7</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reaction_output_string</span><span class="p">):</span>
-</span><span id="ReactionOutput-8"><a href="#ReactionOutput-8"><span class="linenos"> 8</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="ReactionOutput-9"><a href="#ReactionOutput-9"><span class="linenos"> 9</span></a>
-</span><span id="ReactionOutput-10"><a href="#ReactionOutput-10"><span class="linenos">10</span></a><span class="sd">        Parameters</span>
-</span><span id="ReactionOutput-11"><a href="#ReactionOutput-11"><span class="linenos">11</span></a><span class="sd">        ----------</span>
-</span><span id="ReactionOutput-12"><a href="#ReactionOutput-12"><span class="linenos">12</span></a><span class="sd">        reaction_input_string: str</span>
-</span><span id="ReactionOutput-13"><a href="#ReactionOutput-13"><span class="linenos">13</span></a><span class="sd">            A token for reaction output should follow the convention</span>
-</span><span id="ReactionOutput-14"><a href="#ReactionOutput-14"><span class="linenos">14</span></a><span class="sd">            `SMILES&gt;&gt;#0`</span>
-</span><span id="ReactionOutput-15"><a href="#ReactionOutput-15"><span class="linenos">15</span></a>
-</span><span id="ReactionOutput-16"><a href="#ReactionOutput-16"><span class="linenos">16</span></a><span class="sd">        Attributes</span>
-</span><span id="ReactionOutput-17"><a href="#ReactionOutput-17"><span class="linenos">17</span></a><span class="sd">        ----------</span>
-</span><span id="ReactionOutput-18"><a href="#ReactionOutput-18"><span class="linenos">18</span></a><span class="sd">        token: string</span>
-</span><span id="ReactionOutput-19"><a href="#ReactionOutput-19"><span class="linenos">19</span></a><span class="sd">            Token for the output.</span>
-</span><span id="ReactionOutput-20"><a href="#ReactionOutput-20"><span class="linenos">20</span></a><span class="sd">        OutputID: str</span>
-</span><span id="ReactionOutput-21"><a href="#ReactionOutput-21"><span class="linenos">21</span></a><span class="sd">            ID for the output.</span>
-</span><span id="ReactionOutput-22"><a href="#ReactionOutput-22"><span class="linenos">22</span></a><span class="sd">        OutputCompound: str</span>
-</span><span id="ReactionOutput-23"><a href="#ReactionOutput-23"><span class="linenos">23</span></a><span class="sd">            The compound associated with the output.</span>
-</span><span id="ReactionOutput-24"><a href="#ReactionOutput-24"><span class="linenos">24</span></a><span class="sd">        In: list[str]</span>
-</span><span id="ReactionOutput-25"><a href="#ReactionOutput-25"><span class="linenos">25</span></a><span class="sd">            List of processes connected to the output.</span>
-</span><span id="ReactionOutput-26"><a href="#ReactionOutput-26"><span class="linenos">26</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="ReactionOutput-27"><a href="#ReactionOutput-27"><span class="linenos">27</span></a>
-</span><span id="ReactionOutput-28"><a href="#ReactionOutput-28"><span class="linenos">28</span></a>        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span>
-</span><span id="ReactionOutput-29"><a href="#ReactionOutput-29"><span class="linenos">29</span></a>            <span class="n">reaction_output_string</span><span class="p">,</span> <span class="nb">str</span>
-</span><span id="ReactionOutput-30"><a href="#ReactionOutput-30"><span class="linenos">30</span></a>        <span class="p">),</span> <span class="s2">&quot;&quot;&quot;class ReactionOutput:</span>
-</span><span id="ReactionOutput-31"><a href="#ReactionOutput-31"><span class="linenos">31</span></a><span class="s2">            reaction_output_string must be string like SMILES&gt;&gt;#0&quot;&quot;&quot;</span>
-</span><span id="ReactionOutput-32"><a href="#ReactionOutput-32"><span class="linenos">32</span></a>
-</span><span id="ReactionOutput-33"><a href="#ReactionOutput-33"><span class="linenos">33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">reaction_output_string</span>
-</span><span id="ReactionOutput-34"><a href="#ReactionOutput-34"><span class="linenos">34</span></a>
-</span><span id="ReactionOutput-35"><a href="#ReactionOutput-35"><span class="linenos">35</span></a>        <span class="n">token_sides</span> <span class="o">=</span> <span class="n">reaction_output_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&quot;</span><span class="p">)</span>
-</span><span id="ReactionOutput-36"><a href="#ReactionOutput-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">OutputID</span> <span class="o">=</span> <span class="n">token_sides</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-</span><span id="ReactionOutput-37"><a href="#ReactionOutput-37"><span class="linenos">37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">OutputCompound</span> <span class="o">=</span> <span class="n">token_sides</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="ReactionOutput-38"><a href="#ReactionOutput-38"><span class="linenos">38</span></a>
-</span><span id="ReactionOutput-39"><a href="#ReactionOutput-39"><span class="linenos">39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">In</span> <span class="o">=</span> <span class="p">[]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ReactionOutput-2"><a href="#-2"><span class="linenos"> 2</span></a><span class="k">class</span> <span class="nc">ReactionOutput</span><span class="p">:</span>
+</span><span id="ReactionOutput-3"><a href="#-3"><span class="linenos"> 3</span></a>    <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="ReactionOutput-4"><a href="#-4"><span class="linenos"> 4</span></a><span class="sd">    Class to store outputs as reactions into reaction network</span>
+</span><span id="ReactionOutput-5"><a href="#-5"><span class="linenos"> 5</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="ReactionOutput-6"><a href="#-6"><span class="linenos"> 6</span></a>
+</span><span id="ReactionOutput-7"><a href="#-7"><span class="linenos"> 7</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reaction_output_string</span><span class="p">):</span>
+</span><span id="ReactionOutput-8"><a href="#-8"><span class="linenos"> 8</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="ReactionOutput-9"><a href="#-9"><span class="linenos"> 9</span></a>
+</span><span id="ReactionOutput-10"><a href="#-10"><span class="linenos">10</span></a><span class="sd">        Parameters</span>
+</span><span id="ReactionOutput-11"><a href="#-11"><span class="linenos">11</span></a><span class="sd">        ----------</span>
+</span><span id="ReactionOutput-12"><a href="#-12"><span class="linenos">12</span></a><span class="sd">        reaction_input_string: str</span>
+</span><span id="ReactionOutput-13"><a href="#-13"><span class="linenos">13</span></a><span class="sd">            A token for reaction output should follow the convention</span>
+</span><span id="ReactionOutput-14"><a href="#-14"><span class="linenos">14</span></a><span class="sd">            `SMILES&gt;&gt;#0`</span>
+</span><span id="ReactionOutput-15"><a href="#-15"><span class="linenos">15</span></a>
+</span><span id="ReactionOutput-16"><a href="#-16"><span class="linenos">16</span></a><span class="sd">        Attributes</span>
+</span><span id="ReactionOutput-17"><a href="#-17"><span class="linenos">17</span></a><span class="sd">        ----------</span>
+</span><span id="ReactionOutput-18"><a href="#-18"><span class="linenos">18</span></a><span class="sd">        token: string</span>
+</span><span id="ReactionOutput-19"><a href="#-19"><span class="linenos">19</span></a><span class="sd">            Token for the output.</span>
+</span><span id="ReactionOutput-20"><a href="#-20"><span class="linenos">20</span></a><span class="sd">        OutputID: str</span>
+</span><span id="ReactionOutput-21"><a href="#-21"><span class="linenos">21</span></a><span class="sd">            ID for the output.</span>
+</span><span id="ReactionOutput-22"><a href="#-22"><span class="linenos">22</span></a><span class="sd">        OutputCompound: str</span>
+</span><span id="ReactionOutput-23"><a href="#-23"><span class="linenos">23</span></a><span class="sd">            The compound associated with the output.</span>
+</span><span id="ReactionOutput-24"><a href="#-24"><span class="linenos">24</span></a><span class="sd">        In: list[str]</span>
+</span><span id="ReactionOutput-25"><a href="#-25"><span class="linenos">25</span></a><span class="sd">            List of processes connected to the output.</span>
+</span><span id="ReactionOutput-26"><a href="#-26"><span class="linenos">26</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="ReactionOutput-27"><a href="#-27"><span class="linenos">27</span></a>
+</span><span id="ReactionOutput-28"><a href="#-28"><span class="linenos">28</span></a>        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span>
+</span><span id="ReactionOutput-29"><a href="#-29"><span class="linenos">29</span></a>            <span class="n">reaction_output_string</span><span class="p">,</span> <span class="nb">str</span>
+</span><span id="ReactionOutput-30"><a href="#-30"><span class="linenos">30</span></a>        <span class="p">),</span> <span class="s2">&quot;&quot;&quot;class ReactionOutput:</span>
+</span><span id="ReactionOutput-31"><a href="#-31"><span class="linenos">31</span></a><span class="s2">            reaction_output_string must be string like SMILES&gt;&gt;#0&quot;&quot;&quot;</span>
+</span><span id="ReactionOutput-32"><a href="#-32"><span class="linenos">32</span></a>
+</span><span id="ReactionOutput-33"><a href="#-33"><span class="linenos">33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">reaction_output_string</span>
+</span><span id="ReactionOutput-34"><a href="#-34"><span class="linenos">34</span></a>
+</span><span id="ReactionOutput-35"><a href="#-35"><span class="linenos">35</span></a>        <span class="n">token_sides</span> <span class="o">=</span> <span class="n">reaction_output_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&quot;</span><span class="p">)</span>
+</span><span id="ReactionOutput-36"><a href="#-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">OutputID</span> <span class="o">=</span> <span class="n">token_sides</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="ReactionOutput-37"><a href="#-37"><span class="linenos">37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">OutputCompound</span> <span class="o">=</span> <span class="n">token_sides</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="ReactionOutput-38"><a href="#-38"><span class="linenos">38</span></a>
+</span><span id="ReactionOutput-39"><a href="#-39"><span class="linenos">39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">In</span> <span class="o">=</span> <span class="p">[]</span>
 </span></pre></div>
 
 
@@ -168,39 +168,39 @@
 
     </div>
     <a class="headerlink" href="#ReactionOutput.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ReactionOutput.__init__-7"><a href="#ReactionOutput.__init__-7"><span class="linenos"> 7</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reaction_output_string</span><span class="p">):</span>
-</span><span id="ReactionOutput.__init__-8"><a href="#ReactionOutput.__init__-8"><span class="linenos"> 8</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="ReactionOutput.__init__-9"><a href="#ReactionOutput.__init__-9"><span class="linenos"> 9</span></a>
-</span><span id="ReactionOutput.__init__-10"><a href="#ReactionOutput.__init__-10"><span class="linenos">10</span></a><span class="sd">        Parameters</span>
-</span><span id="ReactionOutput.__init__-11"><a href="#ReactionOutput.__init__-11"><span class="linenos">11</span></a><span class="sd">        ----------</span>
-</span><span id="ReactionOutput.__init__-12"><a href="#ReactionOutput.__init__-12"><span class="linenos">12</span></a><span class="sd">        reaction_input_string: str</span>
-</span><span id="ReactionOutput.__init__-13"><a href="#ReactionOutput.__init__-13"><span class="linenos">13</span></a><span class="sd">            A token for reaction output should follow the convention</span>
-</span><span id="ReactionOutput.__init__-14"><a href="#ReactionOutput.__init__-14"><span class="linenos">14</span></a><span class="sd">            `SMILES&gt;&gt;#0`</span>
-</span><span id="ReactionOutput.__init__-15"><a href="#ReactionOutput.__init__-15"><span class="linenos">15</span></a>
-</span><span id="ReactionOutput.__init__-16"><a href="#ReactionOutput.__init__-16"><span class="linenos">16</span></a><span class="sd">        Attributes</span>
-</span><span id="ReactionOutput.__init__-17"><a href="#ReactionOutput.__init__-17"><span class="linenos">17</span></a><span class="sd">        ----------</span>
-</span><span id="ReactionOutput.__init__-18"><a href="#ReactionOutput.__init__-18"><span class="linenos">18</span></a><span class="sd">        token: string</span>
-</span><span id="ReactionOutput.__init__-19"><a href="#ReactionOutput.__init__-19"><span class="linenos">19</span></a><span class="sd">            Token for the output.</span>
-</span><span id="ReactionOutput.__init__-20"><a href="#ReactionOutput.__init__-20"><span class="linenos">20</span></a><span class="sd">        OutputID: str</span>
-</span><span id="ReactionOutput.__init__-21"><a href="#ReactionOutput.__init__-21"><span class="linenos">21</span></a><span class="sd">            ID for the output.</span>
-</span><span id="ReactionOutput.__init__-22"><a href="#ReactionOutput.__init__-22"><span class="linenos">22</span></a><span class="sd">        OutputCompound: str</span>
-</span><span id="ReactionOutput.__init__-23"><a href="#ReactionOutput.__init__-23"><span class="linenos">23</span></a><span class="sd">            The compound associated with the output.</span>
-</span><span id="ReactionOutput.__init__-24"><a href="#ReactionOutput.__init__-24"><span class="linenos">24</span></a><span class="sd">        In: list[str]</span>
-</span><span id="ReactionOutput.__init__-25"><a href="#ReactionOutput.__init__-25"><span class="linenos">25</span></a><span class="sd">            List of processes connected to the output.</span>
-</span><span id="ReactionOutput.__init__-26"><a href="#ReactionOutput.__init__-26"><span class="linenos">26</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="ReactionOutput.__init__-27"><a href="#ReactionOutput.__init__-27"><span class="linenos">27</span></a>
-</span><span id="ReactionOutput.__init__-28"><a href="#ReactionOutput.__init__-28"><span class="linenos">28</span></a>        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span>
-</span><span id="ReactionOutput.__init__-29"><a href="#ReactionOutput.__init__-29"><span class="linenos">29</span></a>            <span class="n">reaction_output_string</span><span class="p">,</span> <span class="nb">str</span>
-</span><span id="ReactionOutput.__init__-30"><a href="#ReactionOutput.__init__-30"><span class="linenos">30</span></a>        <span class="p">),</span> <span class="s2">&quot;&quot;&quot;class ReactionOutput:</span>
-</span><span id="ReactionOutput.__init__-31"><a href="#ReactionOutput.__init__-31"><span class="linenos">31</span></a><span class="s2">            reaction_output_string must be string like SMILES&gt;&gt;#0&quot;&quot;&quot;</span>
-</span><span id="ReactionOutput.__init__-32"><a href="#ReactionOutput.__init__-32"><span class="linenos">32</span></a>
-</span><span id="ReactionOutput.__init__-33"><a href="#ReactionOutput.__init__-33"><span class="linenos">33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">reaction_output_string</span>
-</span><span id="ReactionOutput.__init__-34"><a href="#ReactionOutput.__init__-34"><span class="linenos">34</span></a>
-</span><span id="ReactionOutput.__init__-35"><a href="#ReactionOutput.__init__-35"><span class="linenos">35</span></a>        <span class="n">token_sides</span> <span class="o">=</span> <span class="n">reaction_output_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&quot;</span><span class="p">)</span>
-</span><span id="ReactionOutput.__init__-36"><a href="#ReactionOutput.__init__-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">OutputID</span> <span class="o">=</span> <span class="n">token_sides</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-</span><span id="ReactionOutput.__init__-37"><a href="#ReactionOutput.__init__-37"><span class="linenos">37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">OutputCompound</span> <span class="o">=</span> <span class="n">token_sides</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="ReactionOutput.__init__-38"><a href="#ReactionOutput.__init__-38"><span class="linenos">38</span></a>
-</span><span id="ReactionOutput.__init__-39"><a href="#ReactionOutput.__init__-39"><span class="linenos">39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">In</span> <span class="o">=</span> <span class="p">[]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ReactionOutput.__init__-7"><a href="#-7"><span class="linenos"> 7</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reaction_output_string</span><span class="p">):</span>
+</span><span id="ReactionOutput.__init__-8"><a href="#-8"><span class="linenos"> 8</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="ReactionOutput.__init__-9"><a href="#-9"><span class="linenos"> 9</span></a>
+</span><span id="ReactionOutput.__init__-10"><a href="#-10"><span class="linenos">10</span></a><span class="sd">        Parameters</span>
+</span><span id="ReactionOutput.__init__-11"><a href="#-11"><span class="linenos">11</span></a><span class="sd">        ----------</span>
+</span><span id="ReactionOutput.__init__-12"><a href="#-12"><span class="linenos">12</span></a><span class="sd">        reaction_input_string: str</span>
+</span><span id="ReactionOutput.__init__-13"><a href="#-13"><span class="linenos">13</span></a><span class="sd">            A token for reaction output should follow the convention</span>
+</span><span id="ReactionOutput.__init__-14"><a href="#-14"><span class="linenos">14</span></a><span class="sd">            `SMILES&gt;&gt;#0`</span>
+</span><span id="ReactionOutput.__init__-15"><a href="#-15"><span class="linenos">15</span></a>
+</span><span id="ReactionOutput.__init__-16"><a href="#-16"><span class="linenos">16</span></a><span class="sd">        Attributes</span>
+</span><span id="ReactionOutput.__init__-17"><a href="#-17"><span class="linenos">17</span></a><span class="sd">        ----------</span>
+</span><span id="ReactionOutput.__init__-18"><a href="#-18"><span class="linenos">18</span></a><span class="sd">        token: string</span>
+</span><span id="ReactionOutput.__init__-19"><a href="#-19"><span class="linenos">19</span></a><span class="sd">            Token for the output.</span>
+</span><span id="ReactionOutput.__init__-20"><a href="#-20"><span class="linenos">20</span></a><span class="sd">        OutputID: str</span>
+</span><span id="ReactionOutput.__init__-21"><a href="#-21"><span class="linenos">21</span></a><span class="sd">            ID for the output.</span>
+</span><span id="ReactionOutput.__init__-22"><a href="#-22"><span class="linenos">22</span></a><span class="sd">        OutputCompound: str</span>
+</span><span id="ReactionOutput.__init__-23"><a href="#-23"><span class="linenos">23</span></a><span class="sd">            The compound associated with the output.</span>
+</span><span id="ReactionOutput.__init__-24"><a href="#-24"><span class="linenos">24</span></a><span class="sd">        In: list[str]</span>
+</span><span id="ReactionOutput.__init__-25"><a href="#-25"><span class="linenos">25</span></a><span class="sd">            List of processes connected to the output.</span>
+</span><span id="ReactionOutput.__init__-26"><a href="#-26"><span class="linenos">26</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="ReactionOutput.__init__-27"><a href="#-27"><span class="linenos">27</span></a>
+</span><span id="ReactionOutput.__init__-28"><a href="#-28"><span class="linenos">28</span></a>        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span>
+</span><span id="ReactionOutput.__init__-29"><a href="#-29"><span class="linenos">29</span></a>            <span class="n">reaction_output_string</span><span class="p">,</span> <span class="nb">str</span>
+</span><span id="ReactionOutput.__init__-30"><a href="#-30"><span class="linenos">30</span></a>        <span class="p">),</span> <span class="s2">&quot;&quot;&quot;class ReactionOutput:</span>
+</span><span id="ReactionOutput.__init__-31"><a href="#-31"><span class="linenos">31</span></a><span class="s2">            reaction_output_string must be string like SMILES&gt;&gt;#0&quot;&quot;&quot;</span>
+</span><span id="ReactionOutput.__init__-32"><a href="#-32"><span class="linenos">32</span></a>
+</span><span id="ReactionOutput.__init__-33"><a href="#-33"><span class="linenos">33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">reaction_output_string</span>
+</span><span id="ReactionOutput.__init__-34"><a href="#-34"><span class="linenos">34</span></a>
+</span><span id="ReactionOutput.__init__-35"><a href="#-35"><span class="linenos">35</span></a>        <span class="n">token_sides</span> <span class="o">=</span> <span class="n">reaction_output_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&quot;</span><span class="p">)</span>
+</span><span id="ReactionOutput.__init__-36"><a href="#-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">OutputID</span> <span class="o">=</span> <span class="n">token_sides</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="ReactionOutput.__init__-37"><a href="#-37"><span class="linenos">37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">OutputCompound</span> <span class="o">=</span> <span class="n">token_sides</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="ReactionOutput.__init__-38"><a href="#-38"><span class="linenos">38</span></a>
+</span><span id="ReactionOutput.__init__-39"><a href="#-39"><span class="linenos">39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">In</span> <span class="o">=</span> <span class="p">[]</span>
 </span></pre></div>
 
 

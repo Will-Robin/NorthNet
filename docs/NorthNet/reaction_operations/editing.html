@@ -54,34 +54,34 @@
 
                         <label class="view-source-button" for="editing-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">import</span> <span class="nn">NorthNet.reaction_operations.conversions</span> <span class="k">as</span> <span class="nn">conv</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">from</span> <span class="nn">NorthNet</span> <span class="kn">import</span> <span class="n">molecule_operations</span> <span class="k">as</span> <span class="n">mol_ops</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="k">def</span> <span class="nf">canonicalise_reaction_smiles</span><span class="p">(</span><span class="n">reaction_smiles</span><span class="p">):</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>    <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="sd">    Canonicalise the consituent SMILES of a reaction SMILES string.</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="sd">    Parameters</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="sd">    ----------</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="sd">    reaction_smiles: str</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="sd">    Returns</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="sd">    -------</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">    canonicalised_rxn_smiles: str</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="n">reactants</span><span class="p">,</span> <span class="n">products</span> <span class="o">=</span> <span class="n">conv</span><span class="o">.</span><span class="n">reaction_smiles_split</span><span class="p">(</span><span class="n">reaction_smiles</span><span class="p">)</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="n">canonical_reacts</span> <span class="o">=</span> <span class="p">[</span><span class="n">mol_ops</span><span class="o">.</span><span class="n">canonicalise</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">reactants</span><span class="p">]</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="n">canonical_prods</span> <span class="o">=</span> <span class="p">[</span><span class="n">mol_ops</span><span class="o">.</span><span class="n">canonicalise</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">products</span><span class="p">]</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="n">lhs</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">canonical_reacts</span><span class="p">)</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="n">rhs</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">canonical_prods</span><span class="p">)</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="n">canonicalised_rxn_smiles</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lhs</span><span class="si">}</span><span class="s2">&gt;&gt;</span><span class="si">{</span><span class="n">rhs</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="k">return</span> <span class="n">canonicalised_rxn_smiles</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#-1"><span class="linenos"> 1</span></a><span class="kn">import</span> <span class="nn">NorthNet.reaction_operations.conversions</span> <span class="k">as</span> <span class="nn">conv</span>
+</span><span id="L-2"><a href="#-2"><span class="linenos"> 2</span></a><span class="kn">from</span> <span class="nn">NorthNet</span> <span class="kn">import</span> <span class="n">molecule_operations</span> <span class="k">as</span> <span class="n">mol_ops</span>
+</span><span id="L-3"><a href="#-3"><span class="linenos"> 3</span></a>
+</span><span id="L-4"><a href="#-4"><span class="linenos"> 4</span></a>
+</span><span id="L-5"><a href="#-5"><span class="linenos"> 5</span></a><span class="k">def</span> <span class="nf">canonicalise_reaction_smiles</span><span class="p">(</span><span class="n">reaction_smiles</span><span class="p">):</span>
+</span><span id="L-6"><a href="#-6"><span class="linenos"> 6</span></a>    <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-7"><a href="#-7"><span class="linenos"> 7</span></a><span class="sd">    Canonicalise the consituent SMILES of a reaction SMILES string.</span>
+</span><span id="L-8"><a href="#-8"><span class="linenos"> 8</span></a>
+</span><span id="L-9"><a href="#-9"><span class="linenos"> 9</span></a><span class="sd">    Parameters</span>
+</span><span id="L-10"><a href="#-10"><span class="linenos">10</span></a><span class="sd">    ----------</span>
+</span><span id="L-11"><a href="#-11"><span class="linenos">11</span></a><span class="sd">    reaction_smiles: str</span>
+</span><span id="L-12"><a href="#-12"><span class="linenos">12</span></a>
+</span><span id="L-13"><a href="#-13"><span class="linenos">13</span></a><span class="sd">    Returns</span>
+</span><span id="L-14"><a href="#-14"><span class="linenos">14</span></a><span class="sd">    -------</span>
+</span><span id="L-15"><a href="#-15"><span class="linenos">15</span></a><span class="sd">    canonicalised_rxn_smiles: str</span>
+</span><span id="L-16"><a href="#-16"><span class="linenos">16</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-17"><a href="#-17"><span class="linenos">17</span></a>
+</span><span id="L-18"><a href="#-18"><span class="linenos">18</span></a>    <span class="n">reactants</span><span class="p">,</span> <span class="n">products</span> <span class="o">=</span> <span class="n">conv</span><span class="o">.</span><span class="n">reaction_smiles_split</span><span class="p">(</span><span class="n">reaction_smiles</span><span class="p">)</span>
+</span><span id="L-19"><a href="#-19"><span class="linenos">19</span></a>
+</span><span id="L-20"><a href="#-20"><span class="linenos">20</span></a>    <span class="n">canonical_reacts</span> <span class="o">=</span> <span class="p">[</span><span class="n">mol_ops</span><span class="o">.</span><span class="n">canonicalise</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">reactants</span><span class="p">]</span>
+</span><span id="L-21"><a href="#-21"><span class="linenos">21</span></a>    <span class="n">canonical_prods</span> <span class="o">=</span> <span class="p">[</span><span class="n">mol_ops</span><span class="o">.</span><span class="n">canonicalise</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">products</span><span class="p">]</span>
+</span><span id="L-22"><a href="#-22"><span class="linenos">22</span></a>
+</span><span id="L-23"><a href="#-23"><span class="linenos">23</span></a>    <span class="n">lhs</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">canonical_reacts</span><span class="p">)</span>
+</span><span id="L-24"><a href="#-24"><span class="linenos">24</span></a>    <span class="n">rhs</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">canonical_prods</span><span class="p">)</span>
+</span><span id="L-25"><a href="#-25"><span class="linenos">25</span></a>
+</span><span id="L-26"><a href="#-26"><span class="linenos">26</span></a>    <span class="n">canonicalised_rxn_smiles</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lhs</span><span class="si">}</span><span class="s2">&gt;&gt;</span><span class="si">{</span><span class="n">rhs</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="L-27"><a href="#-27"><span class="linenos">27</span></a>
+</span><span id="L-28"><a href="#-28"><span class="linenos">28</span></a>    <span class="k">return</span> <span class="n">canonicalised_rxn_smiles</span>
 </span></pre></div>
 
 
@@ -97,30 +97,30 @@
 
     </div>
     <a class="headerlink" href="#canonicalise_reaction_smiles"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="canonicalise_reaction_smiles-6"><a href="#canonicalise_reaction_smiles-6"><span class="linenos"> 6</span></a><span class="k">def</span> <span class="nf">canonicalise_reaction_smiles</span><span class="p">(</span><span class="n">reaction_smiles</span><span class="p">):</span>
-</span><span id="canonicalise_reaction_smiles-7"><a href="#canonicalise_reaction_smiles-7"><span class="linenos"> 7</span></a>    <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="canonicalise_reaction_smiles-8"><a href="#canonicalise_reaction_smiles-8"><span class="linenos"> 8</span></a><span class="sd">    Canonicalise the consituent SMILES of a reaction SMILES string.</span>
-</span><span id="canonicalise_reaction_smiles-9"><a href="#canonicalise_reaction_smiles-9"><span class="linenos"> 9</span></a>
-</span><span id="canonicalise_reaction_smiles-10"><a href="#canonicalise_reaction_smiles-10"><span class="linenos">10</span></a><span class="sd">    Parameters</span>
-</span><span id="canonicalise_reaction_smiles-11"><a href="#canonicalise_reaction_smiles-11"><span class="linenos">11</span></a><span class="sd">    ----------</span>
-</span><span id="canonicalise_reaction_smiles-12"><a href="#canonicalise_reaction_smiles-12"><span class="linenos">12</span></a><span class="sd">    reaction_smiles: str</span>
-</span><span id="canonicalise_reaction_smiles-13"><a href="#canonicalise_reaction_smiles-13"><span class="linenos">13</span></a>
-</span><span id="canonicalise_reaction_smiles-14"><a href="#canonicalise_reaction_smiles-14"><span class="linenos">14</span></a><span class="sd">    Returns</span>
-</span><span id="canonicalise_reaction_smiles-15"><a href="#canonicalise_reaction_smiles-15"><span class="linenos">15</span></a><span class="sd">    -------</span>
-</span><span id="canonicalise_reaction_smiles-16"><a href="#canonicalise_reaction_smiles-16"><span class="linenos">16</span></a><span class="sd">    canonicalised_rxn_smiles: str</span>
-</span><span id="canonicalise_reaction_smiles-17"><a href="#canonicalise_reaction_smiles-17"><span class="linenos">17</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="canonicalise_reaction_smiles-18"><a href="#canonicalise_reaction_smiles-18"><span class="linenos">18</span></a>
-</span><span id="canonicalise_reaction_smiles-19"><a href="#canonicalise_reaction_smiles-19"><span class="linenos">19</span></a>    <span class="n">reactants</span><span class="p">,</span> <span class="n">products</span> <span class="o">=</span> <span class="n">conv</span><span class="o">.</span><span class="n">reaction_smiles_split</span><span class="p">(</span><span class="n">reaction_smiles</span><span class="p">)</span>
-</span><span id="canonicalise_reaction_smiles-20"><a href="#canonicalise_reaction_smiles-20"><span class="linenos">20</span></a>
-</span><span id="canonicalise_reaction_smiles-21"><a href="#canonicalise_reaction_smiles-21"><span class="linenos">21</span></a>    <span class="n">canonical_reacts</span> <span class="o">=</span> <span class="p">[</span><span class="n">mol_ops</span><span class="o">.</span><span class="n">canonicalise</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">reactants</span><span class="p">]</span>
-</span><span id="canonicalise_reaction_smiles-22"><a href="#canonicalise_reaction_smiles-22"><span class="linenos">22</span></a>    <span class="n">canonical_prods</span> <span class="o">=</span> <span class="p">[</span><span class="n">mol_ops</span><span class="o">.</span><span class="n">canonicalise</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">products</span><span class="p">]</span>
-</span><span id="canonicalise_reaction_smiles-23"><a href="#canonicalise_reaction_smiles-23"><span class="linenos">23</span></a>
-</span><span id="canonicalise_reaction_smiles-24"><a href="#canonicalise_reaction_smiles-24"><span class="linenos">24</span></a>    <span class="n">lhs</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">canonical_reacts</span><span class="p">)</span>
-</span><span id="canonicalise_reaction_smiles-25"><a href="#canonicalise_reaction_smiles-25"><span class="linenos">25</span></a>    <span class="n">rhs</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">canonical_prods</span><span class="p">)</span>
-</span><span id="canonicalise_reaction_smiles-26"><a href="#canonicalise_reaction_smiles-26"><span class="linenos">26</span></a>
-</span><span id="canonicalise_reaction_smiles-27"><a href="#canonicalise_reaction_smiles-27"><span class="linenos">27</span></a>    <span class="n">canonicalised_rxn_smiles</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lhs</span><span class="si">}</span><span class="s2">&gt;&gt;</span><span class="si">{</span><span class="n">rhs</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="canonicalise_reaction_smiles-28"><a href="#canonicalise_reaction_smiles-28"><span class="linenos">28</span></a>
-</span><span id="canonicalise_reaction_smiles-29"><a href="#canonicalise_reaction_smiles-29"><span class="linenos">29</span></a>    <span class="k">return</span> <span class="n">canonicalised_rxn_smiles</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="canonicalise_reaction_smiles-6"><a href="#-6"><span class="linenos"> 6</span></a><span class="k">def</span> <span class="nf">canonicalise_reaction_smiles</span><span class="p">(</span><span class="n">reaction_smiles</span><span class="p">):</span>
+</span><span id="canonicalise_reaction_smiles-7"><a href="#-7"><span class="linenos"> 7</span></a>    <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="canonicalise_reaction_smiles-8"><a href="#-8"><span class="linenos"> 8</span></a><span class="sd">    Canonicalise the consituent SMILES of a reaction SMILES string.</span>
+</span><span id="canonicalise_reaction_smiles-9"><a href="#-9"><span class="linenos"> 9</span></a>
+</span><span id="canonicalise_reaction_smiles-10"><a href="#-10"><span class="linenos">10</span></a><span class="sd">    Parameters</span>
+</span><span id="canonicalise_reaction_smiles-11"><a href="#-11"><span class="linenos">11</span></a><span class="sd">    ----------</span>
+</span><span id="canonicalise_reaction_smiles-12"><a href="#-12"><span class="linenos">12</span></a><span class="sd">    reaction_smiles: str</span>
+</span><span id="canonicalise_reaction_smiles-13"><a href="#-13"><span class="linenos">13</span></a>
+</span><span id="canonicalise_reaction_smiles-14"><a href="#-14"><span class="linenos">14</span></a><span class="sd">    Returns</span>
+</span><span id="canonicalise_reaction_smiles-15"><a href="#-15"><span class="linenos">15</span></a><span class="sd">    -------</span>
+</span><span id="canonicalise_reaction_smiles-16"><a href="#-16"><span class="linenos">16</span></a><span class="sd">    canonicalised_rxn_smiles: str</span>
+</span><span id="canonicalise_reaction_smiles-17"><a href="#-17"><span class="linenos">17</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="canonicalise_reaction_smiles-18"><a href="#-18"><span class="linenos">18</span></a>
+</span><span id="canonicalise_reaction_smiles-19"><a href="#-19"><span class="linenos">19</span></a>    <span class="n">reactants</span><span class="p">,</span> <span class="n">products</span> <span class="o">=</span> <span class="n">conv</span><span class="o">.</span><span class="n">reaction_smiles_split</span><span class="p">(</span><span class="n">reaction_smiles</span><span class="p">)</span>
+</span><span id="canonicalise_reaction_smiles-20"><a href="#-20"><span class="linenos">20</span></a>
+</span><span id="canonicalise_reaction_smiles-21"><a href="#-21"><span class="linenos">21</span></a>    <span class="n">canonical_reacts</span> <span class="o">=</span> <span class="p">[</span><span class="n">mol_ops</span><span class="o">.</span><span class="n">canonicalise</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">reactants</span><span class="p">]</span>
+</span><span id="canonicalise_reaction_smiles-22"><a href="#-22"><span class="linenos">22</span></a>    <span class="n">canonical_prods</span> <span class="o">=</span> <span class="p">[</span><span class="n">mol_ops</span><span class="o">.</span><span class="n">canonicalise</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">products</span><span class="p">]</span>
+</span><span id="canonicalise_reaction_smiles-23"><a href="#-23"><span class="linenos">23</span></a>
+</span><span id="canonicalise_reaction_smiles-24"><a href="#-24"><span class="linenos">24</span></a>    <span class="n">lhs</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">canonical_reacts</span><span class="p">)</span>
+</span><span id="canonicalise_reaction_smiles-25"><a href="#-25"><span class="linenos">25</span></a>    <span class="n">rhs</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">canonical_prods</span><span class="p">)</span>
+</span><span id="canonicalise_reaction_smiles-26"><a href="#-26"><span class="linenos">26</span></a>
+</span><span id="canonicalise_reaction_smiles-27"><a href="#-27"><span class="linenos">27</span></a>    <span class="n">canonicalised_rxn_smiles</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lhs</span><span class="si">}</span><span class="s2">&gt;&gt;</span><span class="si">{</span><span class="n">rhs</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="canonicalise_reaction_smiles-28"><a href="#-28"><span class="linenos">28</span></a>
+</span><span id="canonicalise_reaction_smiles-29"><a href="#-29"><span class="linenos">29</span></a>    <span class="k">return</span> <span class="n">canonicalised_rxn_smiles</span>
 </span></pre></div>
 
 
