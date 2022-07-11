@@ -195,7 +195,7 @@ G = reaction_network.convert_to_networkx()
 # a more 'open' layout so we can see some detail.
 [G.remove_node(n) for n in ["C=O","O","[OH-]"]]
 
-pos = vis.generate_networkx_layout(G, render_engine = "sfdp")
+pos = vis.generate_networkx_layout(G, render_engine = "neato")
 
 # The layout can be generated directly from the network, too.
 # pos = vis.generate_network_layout(reaction_network, render_engine = "sfdp")
