@@ -77,8 +77,8 @@ if __name__ == "__main__":
     S0[7] = 55.5
     S0[3] = 0.12
 
-    rate_constants = np.ones(k.shape) * 500
+    rate_constants = np.ones(k.shape) * 5
 
-    max_time = 5407.6 - 4317.0
+    max_time = 10
 
-    main(S0, rate_constants, max_time, 1.0)
+    main(S0, rate_constants, max_time, 0.01)

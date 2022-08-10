@@ -1,7 +1,7 @@
 import numpy as np
 from NorthNet.Classes import DataReport
-from NorthNet.Classes import ReactionInput
-from NorthNet.Classes import ReactionOutput
+from NorthNet.Classes import InputProcess
+from NorthNet.Classes import OutputProcess
 from NorthNet.Classes import Network
 from NorthNet.Classes import ModelWriter
 from NorthNet.Loading import load_network_from_reaction_list
@@ -34,5 +34,4 @@ for fl in model.flow_profiles:
 
 model_text = model.write_to_module_text(numba_decoration="compile")
 
-with open("exampleModel.py", "w") as file:
-    file.write(model_text)
+print(model_text)

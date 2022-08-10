@@ -1170,7 +1170,6 @@ def model_function(time, S, k):
     P[5] = +k[2]*S[4]*S[1]-S[5]*total_flow[0,i]
     P[6] = +k[3]*S[4]*S[1]-S[6]*total_flow[0,i]
     P[7] = +k[4]*S[7]*S[1]+F_in[2,i]-k[4]*S[7]*S[1]-S[7]*total_flow[0,i]
-    P *= time
 
     return P
 

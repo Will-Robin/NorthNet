@@ -16,7 +16,3 @@ model = ModelWriter(network=network)
 model_text = model.write_to_module_text(numba_decoration="compile")
 
 print(model_text)
-
-quit()
-with open(f"models/{exp}_Model.py", "w") as file:
-    file.write(model_text)
