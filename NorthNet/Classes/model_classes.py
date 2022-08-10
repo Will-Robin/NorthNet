@@ -151,12 +151,17 @@ class ModelWriter:
         M, not mM), and the keys to conditions should follow some relatively strict
         patterns.
 
-        "reactor_volume": gives the reactor volume in L
-        "{}/ M": gives the concentration of an inlet in M.
-        "{}_flow_{}", not containing "time": gives the flow rate of an input,
-        in L/ s
-        "{}_flow_time_{}": (contains "flow" and "time") gives the time axis of
-        the flow profiles.
+        data_report.conditions["reactor_volume"]:
+            the reactor volume in L
+
+        data_report.conditions["{}/ M"]:
+            concentration of an inlet compound in M.
+
+        data_report.conditions["{}_flow_{}"], (not containing "time"):
+            flow rate of an input in L/ s
+
+        data_report.conditions["{}_flow_time_{}"] (contains "flow" and "time"):
+            time axis of the flow profiles in s.
 
         Parameters
         ----------
