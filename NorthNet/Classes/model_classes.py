@@ -220,9 +220,9 @@ class ModelWriter:
         -------
         text: str
         """
-        from NorthNet.Writing import write_flow_profile_text
+        from NorthNet.Writing import flow_profile_to_string
 
-        text = write_flow_profile_text(self, indentation=indentation)
+        text = flow_profile_to_string(self, indentation=indentation)
 
         return text
 
@@ -252,9 +252,9 @@ class ModelWriter:
             List of rate equations in text form.
         """
 
-        from NorthNet.Writing import write_model_equation_text
+        from NorthNet.Writing import topology_to_string
 
-        eq_lines = write_model_equation_text(self)
+        eq_lines = topology_to_string(self)
 
         return eq_lines
 
@@ -271,9 +271,9 @@ class ModelWriter:
         lines: list[str]
         """
 
-        from NorthNet.Writing import write_variables_text
+        from NorthNet.Writing import variables_to_string
 
-        lines = write_variables_text(self)
+        lines = variables_to_string(self)
 
         return lines
 

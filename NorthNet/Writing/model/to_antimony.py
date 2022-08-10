@@ -144,6 +144,7 @@ def write_reactions_text(
         reactions_text += f"{reaction_string}\n"
 
     reactions_text += "# Reaction inputs\n"
+
     for c, input in enumerate(network.InputProcesses, c + 1):
 
         process = network.InputProcesses[input]
