@@ -79,6 +79,6 @@ if __name__ == "__main__":
 
     rate_constants = np.ones(k.shape) * 5
 
-    max_time = 10
+    max_time = 2000
 
     main(S0, rate_constants, max_time, 0.01)
