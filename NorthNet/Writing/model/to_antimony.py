@@ -123,9 +123,15 @@ def write_reactions_text(
     reactions_text: str
     """
 
+    if reaction_arrow not in ["=>","->"]:
+        print(f"{reaction_arrow} not supported, using =>.")
+        reaction_arrow = "=>"
+
+    rate_constant_label = 1 # A label for rate constants (will be incremented)
+
     reactions_text = "\n"
     reactions_text += "# List of reactions and rate equations\n"
-    for c, rxn in enumerate(network.NetworkReactions, 1):
+    for rxn in network.NetworkReactions:
 
         reaction = network.NetworkReactions[rxn]
 
@@ -135,7 +141,7 @@ def write_reactions_text(
         lhs = " + ".join(reactants)
         rhs = " + ".join(products)
 
-        equation = f"k{c}*" + "*".join(reactants)
+        equation = f"k{rate_constant_label}*" + "*".join(reactants)
 
         reaction_string = f"{rxn_tokens[rxn]}: "
         reaction_string += f"{lhs} {reaction_arrow} {rhs}; "
@@ -143,9 +149,11 @@ def write_reactions_text(
 
         reactions_text += f"{reaction_string}\n"
 
+        rate_constant_label += 1
+
     reactions_text += "# Reaction inputs\n"
 
-    for c, input in enumerate(network.InputProcesses, c + 1):
+    for input in network.InputProcesses:
 
         process = network.InputProcesses[input]
 
@@ -155,7 +163,7 @@ def write_reactions_text(
         lhs = input_source
         rhs = ".".join(input_compound)
 
-        equation = f"k{c}*{input_source}"
+        equation = f"k{rate_constant_label}*{input_source}"
 
         input_string = f"{input_process_tokens[input]}: "
         input_string += f"{lhs} {reaction_arrow} {rhs}; "
@@ -163,8 +171,10 @@ def write_reactions_text(
 
         reactions_text += f"{input_string}\n"
 
+        rate_constant_label += 1
+
     reactions_text += "# Reaction outputs\n"
-    for c, output in enumerate(network.OutputProcesses, c + 1):
+    for output in network.OutputProcesses:
 
         process = network.OutputProcesses[output]
 
@@ -174,13 +184,15 @@ def write_reactions_text(
         lhs = output_source
         rhs = output_compound
 
-        equation = f"k{c}*{output_compound}"
+        equation = f"k{rate_constant_label}*{output_compound}"
 
         output_string = f"{output_process_tokens[output]}: "
         output_string += f"{lhs} {reaction_arrow} {rhs}; "
         output_string += f"{equation}"
 
         reactions_text += f"{output_string}\n"
+
+        rate_constant_label += 1
 
     return reactions_text
 
@@ -266,12 +278,14 @@ def write_flow_profile_text(model, input_tokens):
         flow_profile_text = flow_profile_text.strip(",")
         flow_profile_text += ";\n"
 
+    # If the time is longer than the end of the flow profile, then the final
+    # value of the flow profile is used.
     flow_profile_text += f"at ({t0} < time): "
 
     for flow in model.flow_profiles:
         flow_token = flow + "_#0"
         input = input_tokens[flow_token]
-        flow_value = model.flow_profiles[flow][x] / model.sigma_flow[x]
+        flow_value = model.flow_profiles[flow][-1] / model.sigma_flow[-1]
         flow_profile_text += f"{input}={flow_value},"
 
     flow_profile_text = flow_profile_text.strip(",")
