@@ -204,7 +204,7 @@ class ModelWriter:
         # No information about multiple outputs for now.
         # Connect a single output to all of the compounds in the network
         for comp in self.network.NetworkCompounds:
-            output = Classes.ReactionOutput(f"{comp}>>#0")
+            output = Classes.OutputProcess(f"{comp}>>#0")
             self.network.add_output_process(output)
 
     def write_flow_profile_text(self, indentation=""):

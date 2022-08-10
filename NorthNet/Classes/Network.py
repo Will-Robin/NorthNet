@@ -394,7 +394,7 @@ class Network:
         None
         """
         assert isinstance(
-            output, Classes.ReactionOutput
+            output, Classes.OutputProcess
         ), """Network.add_output_process(): output arg must be a NorthNet
             ReactionOutput object"""
 

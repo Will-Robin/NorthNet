@@ -27,7 +27,7 @@ def add_flow_inputs(network, inputs):
 
     add_outputs = []
     for compound in network.NetworkCompounds:
-        r_obj = Classes.ReactionOutput("{}>>Sample".format(compound))
+        r_obj = Classes.OutputProcess("{}>>Sample".format(compound))
         add_outputs.append(r_obj)
 
     network.add_outputs(add_outputs)

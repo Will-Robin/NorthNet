@@ -10,7 +10,7 @@ from NorthNet.Classes.Reaction import Reaction
 from NorthNet.Classes.NetworkInput import NetworkInput
 from NorthNet.Classes.NetworkOutput import NetworkOutput
 from NorthNet.Classes.ReactionInput import ReactionInput
-from NorthNet.Classes.ReactionOutput import ReactionOutput
+from NorthNet.Classes.OutputProcess import OutputProcess
 from NorthNet.Classes.Network import Network
 from NorthNet.Classes.SubstructureNetwork import SubstructureNetwork
 
