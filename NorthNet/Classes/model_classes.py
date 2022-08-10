@@ -198,7 +198,7 @@ class ModelWriter:
         # update the network to reflect the inputs and outputs implied by the
         # conditions
         for inp in self.inputs:
-            input = Classes.ReactionInput(f"{inp}_#0>>{inp}")
+            input = Classes.InputProcess(f"{inp}_#0>>{inp}")
             self.network.add_input_process(input)
 
         # No information about multiple outputs for now.

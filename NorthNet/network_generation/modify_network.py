@@ -20,7 +20,7 @@ def add_flow_inputs(network, inputs):
 
     add_inputs = []
     for inp in inputs:
-        r_obj = Classes.ReactionInput("{}_#0>>{}".format(inp, inp))
+        r_obj = Classes.InputProcess("{}_#0>>{}".format(inp, inp))
         add_inputs.append(r_obj)
 
     network.add_inputs(add_inputs)
