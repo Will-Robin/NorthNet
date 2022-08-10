@@ -268,7 +268,6 @@ def to_numba(model, numba_decoration=None):
     for m_text in model_text:
         lines.append(f"    {m_text}")
 
-    lines.append("    P *= time")
     lines.append("")
     lines.append("    return P")
     lines.append("")
