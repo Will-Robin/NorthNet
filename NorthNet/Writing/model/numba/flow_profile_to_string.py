@@ -24,15 +24,16 @@ def flow_profile_to_string(model, indentation=""):
         (len(model.flow_profiles), len(model.flow_profile_time))
     )
 
+    # Create arrays for input flows
     for c, flow in enumerate(model.inflows):
 
         compound = flow.split("_")[0]
 
         if compound in model.inputs:
-            conc = model.inputs[compound]
+            # flow rate / reactor volume
             flow_rate = model.flow_profiles[flow.split("_")[0]]
-            conc_profile = conc * flow_rate / model.reactor_volume
-            input_concentrations[c] = conc_profile
+            res_profile = flow_rate / model.reactor_volume
+            input_concentrations[c] = res_profile
 
     total_flows = np.zeros((len(model.outflows), len(model.sigma_flow)))
 

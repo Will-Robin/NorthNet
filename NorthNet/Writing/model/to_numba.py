@@ -5,7 +5,7 @@ from .numba.flow_profile_to_string import flow_profile_to_string
 
 def to_numba(model, numba_decoration=None):
     """
-    Convert a network to numpy/numba code.
+    Convert a model to a numpy/numba code model of a CSTR.
 
     Parameters
     ----------
@@ -27,15 +27,19 @@ def to_numba(model, numba_decoration=None):
 
     flow_profile_text = flow_profile_to_string(model, indentation="    ")
 
+    variables_text = variables_to_string(model)
+
     # Create strings for numba's decoration arguments.
     nf64 = "numba.float64"
     numba_dec = ""
     numba_dec += f"@numba.jit({nf64}[:]({nf64},{nf64}[:],{nf64}[:]),\n"
-    numba_dec += "\tlocals="
+    numba_dec += "    locals="
 
     if flow_profile_text == "":
+        # No flow profile variables are in the function.
         numba_dec += f"{{'P': {nf64}[:]}}"
     else:
+        # Include the flow profile arrays in the decorator.
         numba_dec += f"{{'P': {nf64}[:],'F': {nf64}[:,:],'I':{nf64}[:]}}"
 
     numba_dec += ",nopython=True)"
@@ -43,18 +47,15 @@ def to_numba(model, numba_decoration=None):
     # Create the header import lines
     lines = ["import numpy as np"]
     if numba_decoration == "jit":
-        lines.append("import numba\n")
-        lines.append("")
-        lines.append(numba_dec)
+        lines.extend(["import numba", "", "", numba_dec])
 
     elif numba_decoration == "compile":
-        lines.append("import numba")
-        lines.append("from numba.pycc import CC\n")
+        lines.extend(["import numba", "from numba.pycc import CC", ""])
         # TODO: add check that the model name is a valid python variable
         mod_name = model.name
         if model.name == "":
             mod_name = "model_func"
-        lines.append(f"cc = CC('{mod_name}')\n")
+        lines.extend([f"cc = CC('{mod_name}')", ""])
         lines.append(
             '@cc.export("model_func", "float64[:](float64,float64[:],float64[:])")'
         )
@@ -62,38 +63,34 @@ def to_numba(model, numba_decoration=None):
         lines.append("")
 
     # Write the lines for the model function.
-    lines.append("def model_function(time, S, k):")
-    lines.append("")
-    lines.append("    P = np.zeros(len(S))")
+    lines.extend(
+        ["def model_function(time, S, k):", "", "    P = np.zeros(len(S))", ""]
+    )
 
     # Include flow profiles
     if flow_profile_text != "":
-        lines.append("")
-        lines.append(flow_profile_text)
-        lines.append("    i = np.abs(flow_time - time).argmin()")
-        lines.append("")
+        lines.extend(
+            [flow_profile_text, "    i = np.abs(flow_time - time).argmin()", ""]
+        )
 
     # Include the differential equations.
     for m_text in model_text:
         lines.append(f"    {m_text}")
 
     # Include return value.
-    lines.append("")
-    lines.append("    return P")
-    lines.append("")
+    lines.extend(["", "    return P", ""])
+
     # Lines for the wrapper function.
     lines.append("def wrapper_function(time, S, k):")
     lines.append("    return model_function(time, S, k)")
     lines.append("")
 
     # Lines for variables
-    lines.extend(variables_to_string(model))
+    lines.extend(variables_text)
 
     # Compilation commands.
     if numba_decoration == "compile":
-        lines.append("")
-        lines.append('if __name__ == "__main__":')
-        lines.append("    cc.compile()")
+        lines.extend(["", 'if __name__ == "__main__":', "    cc.compile()"])
 
     # Convert lines list to a string
     text = "\n".join(lines)

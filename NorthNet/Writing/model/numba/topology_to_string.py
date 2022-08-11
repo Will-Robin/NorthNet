@@ -34,9 +34,11 @@ def topology_to_string(model):
         line_text = f"P[{count}] = "
         for i in network.NetworkCompounds[compound].In:
             if i in network.InputProcesses:
+                conc = model.inputs[compound]
                 input_id = network.InputProcesses[i].InputID
-                input_conc = model.inflows[input_id]
-                ki = f"+{input_conc}"
+                input_rate = model.inflows[input_id]
+                # (flow_rate / vol ) * concentration
+                ki = f"+({input_rate}*{conc})"
                 line_text += ki
             else:
                 reactants = network.NetworkReactions[i].Reactants
