@@ -1,4 +1,4 @@
-class ReactionInput:
+class InputProcess:
     """
     Class to store inputs as reactions into reaction network
     """

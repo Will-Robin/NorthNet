@@ -1,4 +1,4 @@
-class ReactionOutput:
+class OutputProcess:
     """
     Class to store outputs as reactions into reaction network
     """

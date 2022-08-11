@@ -330,7 +330,7 @@ class Network:
         """
 
         assert isinstance(
-            input_addition, Classes.ReactionInput
+            input_addition, Classes.InputProcess
         ), """Network.add_input_process(): input arg must be a NorthNet
             ReactionInput object"""
 
@@ -394,7 +394,7 @@ class Network:
         None
         """
         assert isinstance(
-            output, Classes.ReactionOutput
+            output, Classes.OutputProcess
         ), """Network.add_output_process(): output arg must be a NorthNet
             ReactionOutput object"""
 

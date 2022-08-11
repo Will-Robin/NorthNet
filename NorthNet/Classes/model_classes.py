@@ -151,12 +151,17 @@ class ModelWriter:
         M, not mM), and the keys to conditions should follow some relatively strict
         patterns.
 
-        "reactor_volume": gives the reactor volume in L
-        "{}/ M": gives the concentration of an inlet in M.
-        "{}_flow_{}", not containing "time": gives the flow rate of an input,
-        in L/ s
-        "{}_flow_time_{}": (contains "flow" and "time") gives the time axis of
-        the flow profiles.
+        data_report.conditions["reactor_volume"]:
+            the reactor volume in L
+
+        data_report.conditions["{}/ M"]:
+            concentration of an inlet compound in M.
+
+        data_report.conditions["{}_flow_{}"], (not containing "time"):
+            flow rate of an input in L/ s
+
+        data_report.conditions["{}_flow_time_{}"] (contains "flow" and "time"):
+            time axis of the flow profiles in s.
 
         Parameters
         ----------
@@ -198,13 +203,13 @@ class ModelWriter:
         # update the network to reflect the inputs and outputs implied by the
         # conditions
         for inp in self.inputs:
-            input = Classes.ReactionInput(f"{inp}_#0>>{inp}")
+            input = Classes.InputProcess(f"{inp}_#0>>{inp}")
             self.network.add_input_process(input)
 
         # No information about multiple outputs for now.
         # Connect a single output to all of the compounds in the network
         for comp in self.network.NetworkCompounds:
-            output = Classes.ReactionOutput(f"{comp}>>#0")
+            output = Classes.OutputProcess(f"{comp}>>#0")
             self.network.add_output_process(output)
 
     def write_flow_profile_text(self, indentation=""):
@@ -220,9 +225,9 @@ class ModelWriter:
         -------
         text: str
         """
-        from NorthNet.Writing import write_flow_profile_text
+        from NorthNet.Writing import flow_profile_to_string
 
-        text = write_flow_profile_text(self, indentation=indentation)
+        text = flow_profile_to_string(self, indentation=indentation)
 
         return text
 
@@ -252,9 +257,9 @@ class ModelWriter:
             List of rate equations in text form.
         """
 
-        from NorthNet.Writing import write_model_equation_text
+        from NorthNet.Writing import topology_to_string
 
-        eq_lines = write_model_equation_text(self)
+        eq_lines = topology_to_string(self)
 
         return eq_lines
 
@@ -271,9 +276,9 @@ class ModelWriter:
         lines: list[str]
         """
 
-        from NorthNet.Writing import write_variables_text
+        from NorthNet.Writing import variables_to_string
 
-        lines = write_variables_text(self)
+        lines = variables_to_string(self)
 
         return lines
 

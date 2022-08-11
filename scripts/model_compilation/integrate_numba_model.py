@@ -73,12 +73,12 @@ if __name__ == "__main__":
 
     S0 = np.zeros(S.shape)
 
-    S0[0] = 2.0
+    S0[0] = 0.0
     S0[7] = 55.5
-    S0[3] = 0.12
+    S0[3] = 0.0
 
-    rate_constants = np.ones(k.shape) * 500
+    rate_constants = np.ones(k.shape) * 0.0
 
-    max_time = 5407.6 - 4317.0
+    max_time = 2000
 
-    main(S0, rate_constants, max_time, 1.0)
+    main(S0, rate_constants, max_time, 0.01)

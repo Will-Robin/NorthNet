@@ -20,14 +20,14 @@ def add_flow_inputs(network, inputs):
 
     add_inputs = []
     for inp in inputs:
-        r_obj = Classes.ReactionInput("{}_#0>>{}".format(inp, inp))
+        r_obj = Classes.InputProcess("{}_#0>>{}".format(inp, inp))
         add_inputs.append(r_obj)
 
     network.add_inputs(add_inputs)
 
     add_outputs = []
     for compound in network.NetworkCompounds:
-        r_obj = Classes.ReactionOutput("{}>>Sample".format(compound))
+        r_obj = Classes.OutputProcess("{}>>Sample".format(compound))
         add_outputs.append(r_obj)
 
     network.add_outputs(add_outputs)
