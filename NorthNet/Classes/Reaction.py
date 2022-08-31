@@ -7,7 +7,9 @@ class Reaction:
     A class representing chemical reactions
     """
 
-    def __init__(self, reaction_smiles, reaction_template=None, info=dict()):
+    def __init__(
+        self, reaction_smiles, reaction_template=None, info=dict(), canonicalise=False
+    ):
         """
         Parameters
         ----------
@@ -47,9 +49,12 @@ class Reaction:
 
         assert isinstance(info, dict), """class Reaction: info arg should be a dict."""
 
-        canonical_rxn_smiles = reac_ops.canonicalise_reaction_smiles(reaction_smiles)
+        if canonicalise:
+            rxn_smiles = reac_ops.canonicalise_reaction_smiles(reaction_smiles)
+        else:
+            rxn_smiles = reaction_smiles
 
-        self.ReactionSMILES = canonical_rxn_smiles
+        self.ReactionSMILES = rxn_smiles
 
         if reaction_template is None:
             self.ReactionTemplate = Classes.ReactionTemplate("none", "", [], [])
@@ -58,6 +63,4 @@ class Reaction:
 
         self.Data = info
 
-        self.Reactants, self.Products = reac_ops.reaction_smiles_split(
-            canonical_rxn_smiles
-        )
+        self.Reactants, self.Products = reac_ops.reaction_smiles_split(rxn_smiles)
