@@ -20,7 +20,7 @@ def flow_profile_to_string(model, indentation=""):
         # No flow profile information
         return ""
 
-    input_concentrations = np.zeros(
+    input_flows = np.zeros(
         (len(model.flow_profiles), len(model.flow_profile_time))
     )
 
@@ -33,7 +33,7 @@ def flow_profile_to_string(model, indentation=""):
             # flow rate / reactor volume
             flow_rate = model.flow_profiles[flow.split("_")[0]]
             res_profile = flow_rate / model.reactor_volume
-            input_concentrations[c] = res_profile
+            input_flows[c] = res_profile
 
     total_flows = np.zeros((len(model.outflows), len(model.sigma_flow)))
 
@@ -47,7 +47,7 @@ def flow_profile_to_string(model, indentation=""):
     text = f"{indentation}F_in = np.array(\n"
     text += indentation
     array_text = np.array2string(
-        input_concentrations,
+        input_flows,
         formatter={"float_kind": lambda x: "%.9f" % x},
         separator=",",
         threshold=np.inf,
