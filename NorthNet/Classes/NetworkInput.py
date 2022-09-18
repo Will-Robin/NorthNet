@@ -19,10 +19,21 @@ class NetworkInput:
             List of reaction input tokens which this NetworkInput feeds into.
         """
 
+        self.verify_input()
+
+        self.token = net_input
+        self.Out = []
+
+    def verify_input(self, net_input):
+        """
+        Check that the input arguments are of the correct type.
+
+        Parameters
+        ----------
+        net_input: str
+        """
+
         assert isinstance(
             net_input, str
         ), """class NetworkInput:
             id arg must be str like SMILES_#0."""
-
-        self.token = net_input
-        self.Out = []

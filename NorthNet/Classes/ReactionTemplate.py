@@ -28,6 +28,39 @@ class ReactionTemplate:
         ProductSubstructures: list[str]
         """
 
+        self.verify_input(
+            name, reaction_SMARTS, reactant_substructs, product_substructs
+        )
+
+        self.Name = name
+        if reaction_SMARTS != "":
+            self.Reaction = AllChem.ReactionFromSmarts(reaction_SMARTS)
+            self.ReactionSMARTS = AllChem.ReactionToSmarts(self.Reaction)
+        else:
+            self.Reaction = None
+            self.ReactionSMARTS = ""
+
+        self.ReactantSubstructures = reactant_substructs
+        self.ProductSubstructures = product_substructs
+
+    def verify_input(
+        self, name, reaction_SMARTS, reactant_substructs, product_substructs
+    ):
+        """
+        Check that the input arguments are of the correct type.
+
+        Parameters
+        ----------
+        name: str
+            name for reaction.
+        reaction_SMARTS: str
+            reaction string.
+        reactant_substructs: list[str]
+            reacting substructures
+        product_substructs: list[str]
+            substructures to which reactant substructures are converted.
+        """
+
         assert isinstance(
             name, str
         ), """class ReactionTemplate:
@@ -63,14 +96,3 @@ class ReactionTemplate:
                 product_substructs, list
             ), """class ReactionTemplate:
                 product_substructs arg should be a list of SMARTS strings."""
-
-        self.Name = name
-        if reaction_SMARTS != "":
-            self.Reaction = AllChem.ReactionFromSmarts(reaction_SMARTS)
-            self.ReactionSMARTS = AllChem.ReactionToSmarts(self.Reaction)
-        else:
-            self.Reaction = None
-            self.ReactionSMARTS = ""
-
-        self.ReactantSubstructures = reactant_substructs
-        self.ProductSubstructures = product_substructs

@@ -25,10 +25,7 @@ class Substructure:
             List of reaction tokens of which the substructure is a product.
         """
 
-        assert isinstance(
-            SMARTS, str
-        ), """class Substructure:
-            argument should be a SMARTS string."""
+        self.verify_input(SMARTS)
 
         self.Mol = Chem.MolFromSmarts(SMARTS)
 
@@ -40,3 +37,19 @@ class Substructure:
         self.MatchingCompounds = []
         self.ReactionParticipations = []
         self.ProducingReactions = []
+
+    def verify_input(self, SMARTS):
+        """
+        Check that the input arguments are of the correct type.
+
+        Parameters
+        ----------
+        SMARTS: str
+            SMARTS corresponding to substructure.
+
+        """
+
+        assert isinstance(
+            SMARTS, str
+        ), """class Substructure:
+            argument should be a SMARTS string."""

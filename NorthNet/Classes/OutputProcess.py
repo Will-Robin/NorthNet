@@ -24,10 +24,7 @@ class OutputProcess:
             List of processes connected to the output.
         """
 
-        assert isinstance(
-            reaction_output_string, str
-        ), """class ReactionOutput:
-            reaction_output_string must be string like SMILES>>#0"""
+        self.verify_input(reaction_output_string)
 
         self.token = reaction_output_string
 
@@ -36,3 +33,19 @@ class OutputProcess:
         self.OutputCompound = token_sides[0]
 
         self.In = []
+
+    def verify_input(self, reaction_output_string):
+        """
+        Check that the input arguments are of the correct type.
+
+        Parameters
+        ----------
+        reaction_input_string: str
+            A token for reaction output should follow the convention
+            `SMILES>>#0`
+        """
+
+        assert isinstance(
+            reaction_output_string, str
+        ), """class ReactionOutput:
+            reaction_output_string must be string like SMILES>>#0"""

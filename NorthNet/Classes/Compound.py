@@ -28,9 +28,7 @@ class Compound:
             engage in, or are products of, reactions.
         """
 
-        assert isinstance(
-            SMILES, str
-        ), "class Compound: argument should be a SMILES string."
+        self.verify_input(SMILES)
 
         self.Mol = Chem.MolFromSmiles(SMILES)
 
@@ -42,3 +40,17 @@ class Compound:
         self.Out = []
 
         self.ReactiveSubstructures = []
+
+    def verify_input(self, SMILES):
+        """
+        Check that the input arguments are of the correct type.
+
+        Parameters
+        ----------
+        SMILES: str
+            SMILES corresponding to compound.
+        """
+
+        assert isinstance(
+            SMILES, str
+        ), "class Compound: argument should be a SMILES string."

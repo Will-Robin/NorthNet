@@ -19,10 +19,21 @@ class NetworkOutput:
             List of Reaction Output processes connected to the output.
         """
 
+        self.verify_input(output)
+
+        self.token = output
+        self.In = []
+
+    def verify_input(self, output):
+        """
+        Check that the input arguments are of the correct type.
+
+        Parameters
+        ----------
+        output: str
+        """
+
         assert isinstance(
             output, str
         ), """class NetworkOutput:
             id arg must be str like SMILES_#0."""
-
-        self.token = output
-        self.In = []

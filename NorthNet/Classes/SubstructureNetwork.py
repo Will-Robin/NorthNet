@@ -61,14 +61,7 @@ class SubstructureNetwork:
             by SMILES.
         """
 
-        assert isinstance(
-            name, str
-        ), """class SubstructureNetwork:
-            name arg should be a string."""
-        assert isinstance(
-            name, str
-        ), """class SubstructureNetwork:
-            description arg should be a string."""
+        self.verify_input(name, description)
 
         self.Name = name
         self.Description = description
@@ -80,6 +73,17 @@ class SubstructureNetwork:
             pass
         else:
             self.add_reactions(reactions)
+
+    def verify_input(self, name, description):
+
+        assert isinstance(
+            name, str
+        ), """class SubstructureNetwork:
+            name arg should be a string."""
+        assert isinstance(
+            description, str
+        ), """class SubstructureNetwork:
+            description arg should be a string."""
 
     def add_compound(self, compound):
         """

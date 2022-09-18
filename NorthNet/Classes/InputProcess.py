@@ -22,10 +22,7 @@ class InputProcess:
             List of compounds arising from the input.
         """
 
-        assert isinstance(
-            reaction_input_string, str
-        ), """class ReactionInput:
-            reaction_input_string arg must be str like SMILES_#0>>SMILES."""
+        self.verify_input(reaction_input_string)
 
         self.token = reaction_input_string
 
@@ -34,3 +31,17 @@ class InputProcess:
         self.InputCompound = token_sides[1].split(".")
 
         self.Out = []
+
+    def verify_input(self, reaction_input_string):
+        """
+        Check that the input arguments are of the correct type.
+
+        Parameters
+        ----------
+        reaction_input_string: str
+        """
+
+        assert isinstance(
+            reaction_input_string, str
+        ), """class ReactionInput:
+            reaction_input_string arg must be str like SMILES_#0>>SMILES."""

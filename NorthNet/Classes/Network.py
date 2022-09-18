@@ -47,26 +47,7 @@ class Network:
             by their tokens: {token: NorthNet.Classes.ReactionOutput}
         """
 
-        if isinstance(reactions, list):
-            check_rxns = [isinstance(r, Classes.Reaction) for r in reactions]
-            assert all(
-                check_rxns
-            ), """class Network:
-                reactions arg should be a list of NorthNet Reaction objects."""
-        else:
-            assert isinstance(
-                reactions, list
-            ), """class Network:
-                reactions arg should be a list of NorthNet Reaction objects."""
-
-        assert isinstance(
-            name, str
-        ), """class Network:
-                name arg should be a string."""
-        assert isinstance(
-            name, str
-        ), """class Network:
-                description arg should be a string."""
+        self.verify_input(reactions, name, description)
 
         self.Name = name
         self.Description = description
@@ -87,6 +68,42 @@ class Network:
             pass
         else:
             self.add_reactions(reactions)
+
+    def verify_input(self, reactions, name, description):
+        """
+        Check that the input arguments are of the correct type.
+
+        Parameters
+        ----------
+        reactions: list[NorthNet.Classes.Reaction]
+            List of reactions to create the network.
+        name: string
+            A label name for the network.
+        description: string
+            A description for the network.
+        """
+
+        if isinstance(reactions, list):
+            check_rxns = [isinstance(r, Classes.Reaction) for r in reactions]
+            assert all(
+                check_rxns
+            ), """class Network:
+                reactions arg should be a list of NorthNet Reaction objects."""
+        else:
+            assert isinstance(
+                reactions, list
+            ), """class Network:
+                reactions arg should be a list of NorthNet Reaction objects."""
+
+        assert isinstance(
+            name, str
+        ), """class Network:
+                name arg should be a string."""
+
+        assert isinstance(
+            description, str
+        ), """class Network:
+                description arg should be a string."""
 
     def add_compound(self, compound):
         """

@@ -14,10 +14,10 @@ from NorthNet.Classes.OutputProcess import OutputProcess
 from NorthNet.Classes.Network import Network
 from NorthNet.Classes.SubstructureNetwork import SubstructureNetwork
 
-from NorthNet.Classes.data_classes import ExperimentInformation
-from NorthNet.Classes.data_classes import DataReport
-from NorthNet.Classes.data_classes import DataSet
+from NorthNet.Classes.ExperimentInformation import ExperimentInformation
+from NorthNet.Classes.DataReport import DataReport
+from NorthNet.Classes.DataSet import DataSet
 
 from NorthNet.Classes.ExperimentConditions import ExperimentConditions
 
-from NorthNet.Classes.model_classes import ModelWriter
+from NorthNet.Classes.ModelWriter import ModelWriter

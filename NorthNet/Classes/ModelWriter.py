@@ -5,7 +5,7 @@ from NorthNet import Classes
 class ModelWriter:
     """
     A class designed to generate modelling apparatus by combining a Network
-    structure and experimental conditions.
+    structure, experimental data and conditions.
     """
 
     def __init__(
@@ -43,21 +43,7 @@ class ModelWriter:
         outflows: dict
         """
 
-        if network:
-            assert isinstance(
-                network, Classes.Network
-            ), """Classes.ModelWriter:
-                network kwarg should be Network object"""
-        if experiment:
-            assert isinstance(
-                experiment, Classes.DataReport
-            ), """Classes.ModelWriter:
-                experiment kwarg should be DataReport object."""
-        if conditions:
-            assert isinstance(
-                conditions, Classes.ExperimentConditions
-            ), """Classes.ModelWriter:
-                conditions kwarg should be ExperimentConditions object."""
+        self.verify_input(network, experiment, conditions)
 
         # name
         self.name = model_name
@@ -97,6 +83,36 @@ class ModelWriter:
             pass
         else:
             self.create_network_tokens()
+
+    def verify_input(network, experiment, conditions):
+        """
+        Check that the input arguments are of the correct type.
+
+        Parameters
+        ----------
+        network: NorthNet.Classes.Network
+
+        experiment: NorthNet.Classes.DataReport
+
+        conditions: NorthNet.Classes.ExperimentConditions
+
+        """
+
+        if network:
+            assert isinstance(
+                network, Classes.Network
+            ), """Classes.ModelWriter:
+                network kwarg should be Network object"""
+        if experiment:
+            assert isinstance(
+                experiment, Classes.DataReport
+            ), """Classes.ModelWriter:
+                experiment kwarg should be DataReport object."""
+        if conditions:
+            assert isinstance(
+                conditions, Classes.ExperimentConditions
+            ), """Classes.ModelWriter:
+                conditions kwarg should be ExperimentConditions object."""
 
     def create_network_tokens(self):
         """
