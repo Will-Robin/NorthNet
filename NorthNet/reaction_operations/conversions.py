@@ -25,14 +25,14 @@ def reaction_smiles_split(reaction_smiles):
     return reactants, products
 
 
-def smiles_to_rdkit_reaction(smiles):
+def smiles_to_rdkit_reaction(reaction_smiles):
     """
     For converting reaction SMILES strings into RDKit AllChem.ChemicalReaction
     objects.
 
     Parameters
     ----------
-    smiles: str
+    reaction_smiles: str
         Reaction SMILES.
 
     Returns
